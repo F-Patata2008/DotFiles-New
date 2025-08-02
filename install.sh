@@ -69,6 +69,7 @@ PACMAN_PACKAGES="
     biber
     nerd-fonts-fira-code
     gcc
+    g++
 "
 
 echo "Instalando paquetes de pacman..."
@@ -116,12 +117,26 @@ else
 fi
 
 # --------------------------------------------------------------------
-# FASE 3: INSTALACIÓN DE TEMAS ADICIONALES
+# FASE 3: ACTUALIZAR SUBMÓDULOS DE GIT
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 3: Instalando temas adicionales (Plymouth y GRUB)"
+echo "FASE 3: Actualizando submódulos de Git (oh-my-zsh)..."
+echo "--------------------------------------------------------"
+echo ""
+
+# Este comando se debe ejecutar desde la raíz del repositorio de dotfiles
+git submodule update --init --recursive
+echo "  ✔️ Submódulos de Git actualizados."
+
+# --------------------------------------------------------------------
+# FASE 4: INSTALACIÓN DE TEMAS ADICIONALES
+# --------------------------------------------------------------------
+
+echo ""
+echo "--------------------------------------------------------"
+echo "FASE 4: Instalando temas adicionales (Plymouth y GRUB)"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -146,12 +161,12 @@ echo "  ✔️ Tema de GRUB instalado. Por favor, revisa /etc/default/grub y eje
 echo ""
 
 # --------------------------------------------------------------------
-# FASE 4: INSTALACIÓN DEL FIRMWARE PARA LECTOR DE HUELLAS GOODIX
+# FASE 5: INSTALACIÓN DEL FIRMWARE PARA LECTOR DE HUELLAS GOODIX
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 4: Instalando firmware para lector de huellas Goodix"
+echo "FASE 5: Instalando firmware para lector de huellas Goodix"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -196,12 +211,12 @@ cd ..
 rm -rf goodix-fp-dump
 
 # --------------------------------------------------------------------
-# FASE 5: CLONANDO REPOSITORIOS PERSONALES
+# FASE 6: CLONANDO REPOSITORIOS PERSONALES
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 5: Clonando repositorios personales"
+echo "FASE 6: Clonando repositorios personales"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -211,12 +226,12 @@ git clone https://github.com/F-Patata2008/Progra.git ~/Progra
 echo "  ✔️ Repositorios clonados correctamente en tu directorio personal."
 
 # --------------------------------------------------------------------
-# FASE 6: APLICANDO DOTFILES CON GNU STOW Y CONFIGURANDO PERMISOS
+# FASE 7: APLICANDO DOTFILES CON GNU STOW Y CONFIGURANDO PERMISOS
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 6: Aplicando dotfiles con GNU Stow y configurando permisos"
+echo "FASE 7: Aplicando dotfiles con GNU Stow y configurando permisos"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -251,12 +266,12 @@ sudo usermod -aG input $(whoami)
 echo "  ✔️ Usuario añadido al grupo 'input'."
 
 # --------------------------------------------------------------------
-# FASE 7: PASOS POST-INSTALACIÓN
+# FASE 8: PASOS POST-INSTALACIÓN
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 7: Pasos de configuración post-instalación"
+echo "FASE 8: Pasos de configuración post-instalación"
 echo "--------------------------------------------------------"
 echo ""
 

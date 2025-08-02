@@ -8,3 +8,17 @@ Haciendo push...
 branch 'main' set up to track 'origin/main'.
 [2025-08-01 21:28:02] ✅ Push exitoso
 ========== 2025-08-01 22:44:03 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9fefae3] Patata: 2025-08-01 22:44:03
+ 11 files changed, 710 insertions(+), 25 deletions(-)
+ create mode 100644 i3/.config/i3/config
+ create mode 100644 i3/.config/i3/i3blocks.conf
+ create mode 100644 i3/.config/i3/scripts/disk
+ create mode 100755 i3/.config/i3/scripts/lock
+ create mode 100644 i3/.config/i3/scripts/memory
+ create mode 100644 i3/.config/i3/scripts/spotify.py
+ create mode 100644 i3/.config/i3/scripts/volume
+ create mode 100644 i3status/.config/i3status/i3status.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 22:44:03]  Push exitoso

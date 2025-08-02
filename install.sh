@@ -61,15 +61,18 @@ PACMAN_PACKAGES="
     nodejs
     npm
     i3
+    i3lock
+    i3status
     xorg-xinit
     xorg
     gnome-system-monitor
     hyprshot
     fprintd
     biber
-    nerd-fonts-fira-code
+    nerd-fonts-jetbrains-mono
     gcc
     g++
+    zsh
 "
 
 echo "Instalando paquetes de pacman..."
@@ -131,12 +134,36 @@ git submodule update --init --recursive
 echo "  ✔️ Submódulos de Git actualizados."
 
 # --------------------------------------------------------------------
-# FASE 4: INSTALACIÓN DE TEMAS ADICIONALES
+# FASE 4: INSTALACIÓN DE POWERLEVEL10K (Siguiendo la instalación oficial)
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 4: Instalando temas adicionales (Plymouth y GRUB)"
+echo "FASE 4: Instalando el tema Powerlevel10k para Oh My Zsh..."
+echo "--------------------------------------------------------"
+echo ""
+
+# Crear el directorio para los temas personalizados si no existe
+P10K_DIR="ohmyzsh/.oh-my-zsh/custom/themes"
+mkdir -p "$P10K_DIR"
+
+# Clonar el repositorio de Powerlevel10k en el directorio de temas de Oh My Zsh
+# Se utiliza 'cd' para moverse al directorio de P10K antes de clonar
+if [ -d "$P10K_DIR/powerlevel10k" ]; then
+    echo "  -> El repositorio de Powerlevel10k ya existe. No se clonará de nuevo."
+else
+    echo "  ➡️ Clonando repositorio de Powerlevel10k..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR/powerlevel10k"
+    echo "  ✔️ Powerlevel10k instalado correctamente."
+fi
+
+# --------------------------------------------------------------------
+# FASE 5: INSTALACIÓN DE TEMAS ADICIONALES
+# --------------------------------------------------------------------
+
+echo ""
+echo "--------------------------------------------------------"
+echo "FASE 5: Instalando temas adicionales (Plymouth y GRUB)"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -161,12 +188,12 @@ echo "  ✔️ Tema de GRUB instalado. Por favor, revisa /etc/default/grub y eje
 echo ""
 
 # --------------------------------------------------------------------
-# FASE 5: INSTALACIÓN DEL FIRMWARE PARA LECTOR DE HUELLAS GOODIX
+# FASE 6: INSTALACIÓN DEL FIRMWARE PARA LECTOR DE HUELLAS GOODIX
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 5: Instalando firmware para lector de huellas Goodix"
+echo "FASE 6: Instalando firmware para lector de huellas Goodix"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -211,12 +238,12 @@ cd ..
 rm -rf goodix-fp-dump
 
 # --------------------------------------------------------------------
-# FASE 6: CLONANDO REPOSITORIOS PERSONALES
+# FASE 7: CLONANDO REPOSITORIOS PERSONALES
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 6: Clonando repositorios personales"
+echo "FASE 7: Clonando repositorios personales"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -226,17 +253,17 @@ git clone https://github.com/F-Patata2008/Progra.git ~/Progra
 echo "  ✔️ Repositorios clonados correctamente en tu directorio personal."
 
 # --------------------------------------------------------------------
-# FASE 7: APLICANDO DOTFILES CON GNU STOW Y CONFIGURANDO PERMISOS
+# FASE 8: APLICANDO DOTFILES CON GNU STOW Y CONFIGURANDO PERMISOS
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 7: Aplicando dotfiles con GNU Stow y configurando permisos"
+echo "FASE 8: Aplicando dotfiles con GNU Stow y configurando permisos"
 echo "--------------------------------------------------------"
 echo ""
 
 # Lista de todos los paquetes de Stow
-PACKAGES="fastfetch hypr kitty nvim ohmyzsh rofi swaylock swaync wal waybar zsh"
+PACKAGES="fastfetch hypr kitty nvim ohmyzsh rofi swaylock swaync wal waybar zsh i3"
 
 # Función para stowing seguro
 safe_stow() {
@@ -266,12 +293,32 @@ sudo usermod -aG input $(whoami)
 echo "  ✔️ Usuario añadido al grupo 'input'."
 
 # --------------------------------------------------------------------
-# FASE 8: PASOS POST-INSTALACIÓN
+# FASE 9: CONFIGURACIÓN DE ZSH COMO SHELL PREDETERMINADA
 # --------------------------------------------------------------------
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 8: Pasos de configuración post-instalación"
+echo "FASE 9: Configurando Zsh como shell predeterminada"
+echo "--------------------------------------------------------"
+echo ""
+
+# Verificar si el shell actual es Zsh
+if [ "$SHELL" != "/bin/zsh" ]; then
+    echo "-> El shell actual no es Zsh. Cambiando a Zsh..."
+    # Se utiliza 'chsh' para cambiar el shell del usuario actual
+    chsh -s /bin/zsh
+    echo "  ✔️ Shell cambiada a Zsh. Deberás cerrar sesión y volver a entrar para que el cambio surta efecto."
+else
+    echo "  ✔️ El shell predeterminado ya es Zsh. No se necesita hacer cambios."
+fi
+
+# --------------------------------------------------------------------
+# FASE 10: PASOS POST-INSTALACIÓN
+# --------------------------------------------------------------------
+
+echo ""
+echo "--------------------------------------------------------"
+echo "FASE 10: Pasos de configuración post-instalación"
 echo "--------------------------------------------------------"
 echo ""
 
@@ -284,23 +331,16 @@ else
     echo "  -> Omitiendo 'wal -R'."
 fi
 
-read -p "¿Quieres configurar 'p10k' ahora? (y/n): " p10k_choice
-if [[ "$p10k_choice" =~ ^[Yy]$ ]]; then
-    p10k configure
-    echo "  ✔️ Configuración de Powerlevel10k completada."
-else
-    echo "  -> Omitiendo 'p10k configure'."
-fi
-
 echo ""
 echo "--------------------------------------------------------"
 echo "¡Instalación de dotfiles completada!"
 echo "--------------------------------------------------------"
 echo ""
 echo "Pasos adicionales importantes:"
-echo "1. Reinicia tu sistema o cierra sesión para que los cambios de los grupos y el entorno surtan efecto."
-echo "2. Ejecuta 'sudo plymouth-set-default-theme -R minecraft-theme' para activar el tema de Plymouth."
-echo "3. Revisa /etc/default/grub y ejecuta 'sudo grub-mkconfig -o /boot/grub/grub.cfg' si es necesario."
+echo "1. **Reinicia tu sistema o cierra sesión** para que los cambios de los grupos y el entorno surtan efecto, y para que Zsh sea tu shell predeterminada."
+echo "2. Para configurar tu `prompt`, abre una nueva terminal Zsh y ejecuta 'p10k configure'."
+echo "3. Ejecuta 'sudo plymouth-set-default-theme -R minecraft-theme' para activar el tema de Plymouth."
+echo "4. Revisa /etc/default/grub y ejecuta 'sudo grub-mkconfig -o /boot/grub/grub.cfg' si es necesario."
 echo ""
 echo "¡Disfruta tu nuevo entorno!"
 

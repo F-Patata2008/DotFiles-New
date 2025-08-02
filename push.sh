@@ -20,7 +20,7 @@ timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
   read commit_message
 
   if [[ -z "$commit_message" ]]; then
-    commit_message="Auto-commit: $timestamp"
+    commit_message="Patata: $timestamp"
   fi
 
   echo "Haciendo commit..."
@@ -28,7 +28,7 @@ timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 
   echo "Haciendo push..."
   if git push -u origin main; then
-    echo "[$timestamp] ✅ Push exitoso"
+    echo "[$timestamp]  Push exitoso"
     notify-send "Git Auto Push" "✅ Push realizado con éxito"
   else
     echo "[$timestamp] ❌ Error al hacer push"

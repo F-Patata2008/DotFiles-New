@@ -61,8 +61,9 @@ PACMAN_PACKAGES="
     nodejs
     npm
     i3
-    i3lock
     i3status
+    i3blocks
+    feh
     xorg-xinit
     xorg
     gnome-system-monitor
@@ -103,11 +104,13 @@ else
 fi
 
 # Lista de paquetes del AUR.
+# Se ha añadido i3lock-color a esta lista.
 AUR_PACKAGES="
     clipse-git
     swaync-git
     modrinth-app-bin
     libfprint-goodixtls-55x4
+    i3lock-color
 "
 
 if [ -n "$AUR_PACKAGES" ]; then
@@ -193,49 +196,58 @@ echo ""
 
 echo ""
 echo "--------------------------------------------------------"
-echo "FASE 6: Instalando firmware para lector de huellas Goodix"
+echo "FASE 6: Instalación opcional del firmware para lector de huellas Goodix"
 echo "--------------------------------------------------------"
 echo ""
 
-# El script requiere Python 3.10 o superior.
-PYTHON_VERSION=$(python3 --version 2>/dev/null | awk '{print $2}')
-if [[ -z "$PYTHON_VERSION" || "$(echo -e "3.10\n$PYTHON_VERSION" | sort -V | head -n1)" != "3.10" ]]; then
-    echo "  ❌ ERROR: Se requiere Python 3.10 o superior. La versión detectada es: $PYTHON_VERSION"
-    echo "     Por favor, actualiza tu versión de Python y vuelve a ejecutar el script."
-    exit 1
+read -p "¿Quieres instalar y configurar el firmware del lector de huellas Goodix? (y/n): " FINGERPRINT_CHOICE
+
+if [[ "$FINGERPRINT_CHOICE" =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "  ➡️ Iniciando instalación del firmware..."
+
+    # El script requiere Python 3.10 o superior.
+    PYTHON_VERSION=$(python3 --version 2>/dev/null | awk '{print $2}')
+    if [[ -z "$PYTHON_VERSION" || "$(echo -e "3.10\n$PYTHON_VERSION" | sort -V | head -n1)" != "3.10" ]]; then
+        echo "  ❌ ERROR: Se requiere Python 3.10 o superior. La versión detectada es: $PYTHON_VERSION"
+        echo "     Por favor, actualiza tu versión de Python y vuelve a ejecutar el script."
+        exit 1
+    fi
+
+    echo "  ✔️ Versión de Python (>= 3.10) detectada: $PYTHON_VERSION"
+
+    # Clonar el repositorio y configurar el entorno virtual
+    git clone --recurse-submodules https://github.com/goodix-fp-linux-dev/goodix-fp-dump.git
+    cd goodix-fp-dump
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+
+    # Obtener la ID del dispositivo del usuario
+    echo ""
+    echo "  ❗ ATENCIÓN: Necesitamos la ID de tu lector de huellas."
+    echo "     A continuación, se listará la información de tu dispositivo."
+    echo "     Por favor, busca la línea que dice 'idProduct' y anota el valor."
+    echo "     Ejemplo: 'idProduct            0x55b4'"
+    echo ""
+    sudo lsusb -vd "27c6:" | grep "idProduct"
+
+    read -p "Ingresa el ID de tu dispositivo (ej: 55b4): " DEVICE_ID
+
+    # Ejecutar el script para instalar el firmware
+    echo ""
+    echo "  ➡️ Ejecutando script para instalar el firmware (ingresa tu contraseña si se solicita)..."
+    sudo python3 run_5110.py --id $DEVICE_ID
+
+    # Limpiar el directorio temporal
+    echo ""
+    echo "  ✔️ Instalación del firmware completada."
+    deactivate
+    cd ..
+    rm -rf goodix-fp-dump
+else
+    echo "  -> Omitiendo la instalación del firmware para el lector de huellas."
 fi
-
-echo "  ✔️ Versión de Python (>= 3.10) detectada: $PYTHON_VERSION"
-
-# Clonar el repositorio y configurar el entorno virtual
-git clone --recurse-submodules https://github.com/goodix-fp-linux-dev/goodix-fp-dump.git
-cd goodix-fp-dump
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# Obtener la ID del dispositivo del usuario
-echo ""
-echo "  ❗ ATENCIÓN: Necesitamos la ID de tu lector de huellas."
-echo "     A continuación, se listará la información de tu dispositivo."
-echo "     Por favor, busca la línea que dice 'idProduct' y anota el valor."
-echo "     Ejemplo: 'idProduct            0x55b4'"
-echo ""
-sudo lsusb -vd "27c6:" | grep "idProduct"
-
-read -p "Ingresa el ID de tu dispositivo (ej: 55b4): " DEVICE_ID
-
-# Ejecutar el script para instalar el firmware
-echo ""
-echo "  ➡️ Ejecutando script para instalar el firmware (ingresa tu contraseña si se solicita)..."
-sudo python3 run_5110.py --id $DEVICE_ID
-
-# Limpiar el directorio temporal
-echo ""
-echo "  ✔️ Instalación del firmware completada."
-deactivate
-cd ..
-rm -rf goodix-fp-dump
 
 # --------------------------------------------------------------------
 # FASE 7: CLONANDO REPOSITORIOS PERSONALES
@@ -262,8 +274,8 @@ echo "FASE 8: Aplicando dotfiles con GNU Stow y configurando permisos"
 echo "--------------------------------------------------------"
 echo ""
 
-# Lista de todos los paquetes de Stow
-PACKAGES="fastfetch hypr kitty nvim ohmyzsh rofi swaylock swaync wal waybar zsh i3"
+# La lista de paquetes de Stow ha sido modificada para incluir solo i3 y i3status, según tu solicitud.
+PACKAGES="i3 i3status"
 
 # Función para stowing seguro
 safe_stow() {

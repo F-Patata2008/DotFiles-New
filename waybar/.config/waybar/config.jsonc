@@ -1,0 +1,145 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 0,
+
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces",
+        "custom/separator",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        //"custom/placeholder",
+        "custom/notification",
+        "cpu",
+        "memory"
+    ],
+    "modules-right": [
+        "power-profiles-daemon",
+        "custom/separator",
+        "pulseaudio",
+        "custom/separator",
+        "network",
+        "custom/separator",
+        "battery",
+        "custom/separator",
+        "custom/bluetooth",
+        "custom/separator",
+        "custom/wallpaper",
+        "custom/separator",
+        "clock",
+        "custom/separator",
+        "custom/power",
+    ],
+
+    "custom/logo": {
+        "format": "",
+        "tooltip": "I use Arch BTW"
+    },
+
+    "hyprland/workspaces": {
+        "persistent-workspaces": { "1": [], "2": [], "3": [] },
+        "format": "{icon}",
+        "format-icons": { "1": "1", "2": "2", "3": "3", "4": "4" }
+    },
+
+    "custom/placeholder": {
+        "format": "Mundo Hola",
+        "tooltip": false
+    },
+
+    "custom/separator": {
+        "format": "|",
+        "tooltip": false
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰖁",
+        "on-click": "pavucontrol",
+        "format-icons": { "default": ["", "", ""] }
+    },
+
+    "network": {
+        "format-wifi": "󰤨 {essid}",
+        "format-ethernet": "󰈀",
+        "format-disconnected": "󰤮",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "on-click": "nm-connection-editor"
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄{capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "on-update": "[[ {capacity} -le 30 && {capacity} -gt 15 && {status} != 'charging' ]] && notify-send -u normal 'Battery Low' 'Battery at {capacity}%! Please connect charger.' || [[ {capacity} -le 15 && {status} != 'charging' ]] && notify-send -u critical 'Battery Critical' 'Battery at {capacity}%! System may shut down soon.'"
+    },
+
+    "custom/bluetooth": {
+        "format": "󰂯",
+        "on-click": "blueman-manager",
+        "tooltip": false
+    },
+
+    "custom/wallpaper": {
+        "format": "󰋩",
+        "on-click": "/home/patata/.config/hypr/scripts/random_wallpaper.sh",
+        "tooltip": false
+    },
+
+    "custom/power": {
+        "format": "",
+        "on-click": "wlogout",
+        "tooltip": false
+    },
+    "clock": {
+        "interval": 60,
+        "tooltip": true,
+        "format": "{:%H:%M}",
+        "tooltip-format": "{:%d-%m-%y}",
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "custom/notification": {
+        "tooltip": false,
+        "format": "Mundo Hola {icon} {text}",
+        "format-icons": {
+            "notification": "<span foreground='red'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "sleep 0.1 && swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+    "cpu": {
+        "format": "  {usage}%",
+        "tooltip": true,
+        "on-click": "gnome-system-monitor"
+    },
+    "memory": {
+        "format": "  {}%    󰾷 {swapPercentage}%",
+    	"tooltip": true,
+        "on-click": "gnome-system-monitor"
+    }
+}

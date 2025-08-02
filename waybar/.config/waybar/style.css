@@ -1,0 +1,160 @@
+/* Import the pywal color palette first */
+@import "/home/patata/.cache/wal/colors-waybar.css";
+
+/* --- Define our color scheme --- */
+@define-color bar-bg rgba(26, 27, 38, 0.75);       /* Bar background with transparency */
+@define-color module-bg rgba(0, 0, 8, .7);         /* Module group background */
+@define-color module-hover-bg rgba(26, 27, 38, 0.9); /* Module background on hover */
+@define-color text-main #c0caf5;                  /* Main text color */
+@define-color text-hover #cdd6f4;                 /* Text color on hover */
+@define-color workspace-active-bg #13131d;       /* Active workspace background */
+@define-color workspace-hover-bg #11111b;       /* Workspace hover background */
+@define-color arch-icon-hover #1793d1;            /* Arch icon hover color */
+
+/* --- Global Settings --- */
+* {
+    border: none;
+    border-radius: 9px; /* Changed corner radius to 9px */
+    font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 9px;   /* Changed global font size to 9px */
+    min-height: 0;
+    transition: background-color .3s ease-out; /* Smooth transitions */
+}
+
+/* --- The Bar Itself --- */
+window#waybar {
+    background: @bar-bg;
+    color: @text-main;
+    transition: background-color .5s;
+}
+
+/* --- Module Group Styling --- */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: @module-bg;
+    margin: 2px 9px; /* Adjusted margin to use 9px horizontally */
+    padding: 0 5px; /* Kept small padding for the container */
+}
+
+.modules-left {
+    padding-left: 0;
+}
+
+.modules-right {
+    padding-right: 0;
+}
+
+/* --- General Module Styling --- */
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#language,
+#mpd,
+#custom-bluetooth,
+#custom-wallpaper,
+#custom-power,
+#hyprland-window {
+    padding: 0 9px; /* Changed module padding to 9px */
+}
+
+/* --- Hover Effects for Modules --- */
+#clock:hover,
+#battery:hover,
+#cpu:hover,
+#memory:hover,
+#disk:hover,
+#temperature:hover,
+#backlight:hover,
+#network:hover,
+#pulseaudio:hover,
+#wireplumber:hover,
+#custom-media:hover,
+#tray:hover,
+#mode:hover,
+#idle_inhibitor:hover,
+#scratchpad:hover,
+#power-profiles-daemon:hover,
+#language:hover,
+#mpd:hover,
+#custom-bluetooth:hover,
+#custom-wallpaper:hover,
+#custom-power:hover {
+    background: @module-hover-bg;
+}
+
+/* --- Workspace Styles --- */
+#workspaces {
+    background: transparent;
+    padding: 0 5px;
+}
+
+#workspaces button {
+  background: transparent;
+  font-weight: 900;
+  color: @text-main;
+  /* Font size is inherited from the global 9px setting */
+}
+
+#workspaces button.active {
+    background: @workspace-active-bg;
+}
+
+#workspaces button:hover {
+  background: @workspace-hover-bg;
+  color: @text-hover;
+  box-shadow: none;
+}
+
+/* --- Specific Module Styles --- */
+
+/* Arch Logo */
+#custom-logo {
+    margin-left: 5px;
+    padding: 0 9px; /* Changed padding to 9px */
+    font-size: 14px; /* Scaled down icon size to match smaller text */
+    transition: color .5s;
+    color: @text-main;
+}
+
+#custom-logo:hover {
+    color: @arch-icon-hover;
+}
+
+/* Separator - Hide it as the new style uses spacing */
+#custom-separator {
+    font-size: 1px;
+    padding: 0;
+    margin: 0;
+    color: transparent;
+}
+
+
+#battery.warning {
+    color: orange;
+}
+
+#battery.critical {
+    color: red;
+}
+
+#battery.charging {
+    color: green; /* Optional: You might want to keep your current charging color or define a new one */
+}
+
+#battery.plugged {
+    color: green; /* Optional: Color for when plugged in but not necessarily charging */
+}

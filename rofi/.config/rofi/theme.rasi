@@ -1,0 +1,122 @@
+/**
+ * Rofi theme to match the 'Monolith' Waybar design
+ *
+ * This file controls all visual aspects: colors, positioning, borders, etc.
+ * It is designed to work with the multi-mode setup defined in config.rasi.
+ */
+
+/* --- Import Pywal Colors --- */
+@import "/home/patata/.cache/wal/colors-rofi-dark.rasi"
+
+/* --- Global Variable Definitions --- */
+* {
+    /* Define a transparent color variable for all elements to use */
+    transparent: rgba(0, 0, 0, 0);
+
+    /* Set global background and text colors */
+    background-color: transparent;
+    text-color: @foreground; /* from pywal */
+}
+
+
+/* --- Main Window Styling --- */
+window {
+    /* Positioning */
+    location: north west; /* Anchor to the top-left of the screen */
+    x-offset: 3px;
+    y-offset: 3px;
+
+    /* Appearance (matches Waybar) */
+    background-color: @background; /* from pywal */
+    border: 1px;
+    border-color: @background;
+    border-radius: 5px;
+
+    /* Sizing */
+    width: 35%;
+    height: 42%;
+    padding: 0px;
+}
+
+
+/* --- Main Layout Box --- */
+mainbox {
+    /* Define the order of widgets: Input bar, then mode switcher, then list */
+    children: [ inputbar, mode-switcher, listview ];
+}
+
+
+/* --- Input Bar (where you type) --- */
+inputbar {
+    children: [ prompt, entry ];
+    padding: 5px;
+    border: 0 0 1px 0;
+    border-color: @foreground; /* Use foreground for a subtle separator */
+}
+
+prompt {
+    enabled: true;
+    padding: 0 15px 0 0;
+    text-color: @foreground;
+}
+
+entry {
+    placeholder: "Search...";
+    placeholder-color: @foreground;
+}
+
+
+/* --- NEW: Mode Switcher Styling --- */
+mode-switcher {
+    padding: 5px;
+    spacing: 10px;
+    border: 0 0 1px 0;
+    border-color: @foreground;
+}
+
+button {
+    padding: 4px 8px;
+    background-color: @background;
+    text-color: @foreground;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button selected {
+    /* Invert colors for the selected button to make it stand out */
+    background-color: @foreground;
+    text-color: @background;
+}
+
+
+/* --- List of Results --- */
+listview {
+    padding: 5px 0 0 0;
+    columns: 1;
+    lines: 8;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+}
+
+
+/* --- Individual Result Elements --- */
+element {
+    orientation: horizontal;
+    padding: 5px;
+}
+
+element-icon {
+    size: 1.5em;
+    padding: 0 10px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+}
+
+/* Style for the currently selected result */
+element.selected {
+    background-color: @foreground; /* Invert colors for selection */
+    text-color: @background;
+}

@@ -1,0 +1,33 @@
+/**
+ * Rofi - Main Configuration
+ *
+ * This file defines the behavior of Rofi:
+ * - Which modes are enabled (drun, run, window).
+ * - Global settings like font and icons.
+ * - The theme to use for the visual appearance.
+ */
+configuration {
+    /* --- List of active modes --- */
+    /* You can add/remove modes here, like "filebrowser" */
+    modi: "drun,run,window,filebrowser";
+
+    /* --- General settings --- */
+    font: "JetBrainsMono Nerd Font 10";
+    show-icons: true; /* Required for mode-switcher icons to display */
+    
+    /* --- Display names and icons for modes --- */
+    display-drun: " Apps";
+    display-run: " Run";
+    display-window: " Windows";
+    display-filebrowser: " Files";
+    
+    /* --- Formatting for list items --- */
+    drun-display-format: "{name}";
+    window-format: "{w} · {c} · {t}";
+}
+
+/* 
+ * This line imports your custom theme. 
+ * Rofi applies the settings from above, then the visuals from this file.
+ */
+@import "~/.config/rofi/theme.rasi"

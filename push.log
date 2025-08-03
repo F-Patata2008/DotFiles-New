@@ -31,3 +31,13 @@ Haciendo push...
 branch 'main' set up to track 'origin/main'.
 [2025-08-01 22:55:04]  Push exitoso
 ========== 2025-08-02 21:17:53 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 4fd7513] Patata: 2025-08-02 21:17:53
+ 9 files changed, 175 insertions(+), 461 deletions(-)
+ rename i3/.config/i3/scripts/{lock => lock.sh} (100%)
+ create mode 100755 i3/.config/i3/scripts/natscroll.sh
+ create mode 100644 picom/.config/picom/picom.conf
+ delete mode 100644 r.md
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 21:17:53]  Push exitoso

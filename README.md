@@ -8,8 +8,6 @@ Este repositorio contiene la configuración personal de mi entorno de escritorio
 - [Configuraciones Incluidas](#configuraciones-incluidas)
 - [Dependencias](#dependencias)
 - [Instalación](#instalación)
-- [Capturas de Pantalla](#capturas-de-pantalla) (Opcional)
-- [Agradecimientos](#agradecimientos) (Opcional)
 
 ---
 

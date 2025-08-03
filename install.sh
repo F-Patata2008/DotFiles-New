@@ -72,7 +72,6 @@ PACMAN_PACKAGES="
     biber
     nerd-fonts-jetbrains-mono
     gcc
-    g++
     zsh
 "
 
@@ -275,7 +274,7 @@ echo "--------------------------------------------------------"
 echo ""
 
 # La lista de paquetes de Stow ha sido modificada para incluir solo i3 y i3status, según tu solicitud.
-PACKAGES="i3 i3status"
+PACKAGES="i3 i3status picom"
 
 # Función para stowing seguro
 safe_stow() {

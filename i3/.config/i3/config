@@ -1,9 +1,25 @@
-[i3 config]
 # ~/.config/i3/config
 
 set $mod Mod4
 
 font pango:JetBrainsMono Nerd Font 9
+
+
+bar {
+        status_command i3blocks -c /home/$USER/Dotfiles/i3/.config/i3/i3blocks.conf
+	i3bar_command i3bar --transparency
+	tray_output none
+	font pango: JetBrainsMono Nerd Font 9
+	colors {
+		background $bar-color
+		separator #191919
+		#			border		background	text
+		focused_workspace	$focused-ws	$focused-ws	$text
+		inactive_workspace	$in-bgcolor	$in-bgcolor	$text
+		urgent_workspace	$u-bgcolor	$u-bgcolor	$text	
+
+	}
+}
 
 exec_always --no-startup-id ./scripts/natscroll.sh
 exec --no-startup-id dex --autostart --environment i3
@@ -128,5 +144,6 @@ mode "resize" {
   bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
-
+bindsym $mod+q mode "resize"
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"

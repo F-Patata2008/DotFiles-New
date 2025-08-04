@@ -71,3 +71,11 @@ Haciendo push...
 branch 'main' set up to track 'origin/main'.
 [2025-08-04 11:23:37]  Push exitoso
 ========== 2025-08-04 16:11:22 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9464bf5] Patata: 2025-08-04 16:11:22
+ 5 files changed, 45 insertions(+), 2 deletions(-)
+ create mode 100644 rofimoji/.config/rofimoji.rc
+ create mode 100755 waybar/.config/waybar/wifi.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:11:22]  Push exitoso

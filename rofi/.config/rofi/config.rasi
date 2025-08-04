@@ -9,7 +9,7 @@
 configuration {
     /* --- List of active modes --- */
     /* You can add/remove modes here, like "filebrowser" */
-    modi: "drun,run,window,filebrowser";
+    modi: "drun,run,window,filebrowser, emoji:rofimoji";
 
     /* --- General settings --- */
     font: "JetBrainsMono Nerd Font 10";
@@ -20,6 +20,7 @@ configuration {
     display-run: " Run";
     display-window: " Windows";
     display-filebrowser: " Files";
+    display-emoji: "󰞅 Emoji";
     
     /* --- Formatting for list items --- */
     drun-display-format: "{name}";

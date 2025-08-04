@@ -80,3 +80,10 @@ Haciendo push...
 branch 'main' set up to track 'origin/main'.
 [2025-08-04 16:11:22]  Push exitoso
 ========== 2025-08-04 16:17:56 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6673b8a] Patata: 2025-08-04 16:17:56
+ 3 files changed, 2 insertions(+), 1 deletion(-)
+ rename {waybar/.config/waybar => hypr/.config/hypr/scripts}/wifi.sh (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:17:56]  Push exitoso

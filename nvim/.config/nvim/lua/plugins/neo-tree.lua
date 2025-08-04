@@ -5,6 +5,15 @@ return {
                         "nvim-lua/plenary.nvim",
                         "nvim-tree/nvim-web-devicons",
                         "MunifTanjim/nui.nvim",},
-	config = function()	
+	config = function()
+        require("neo-tree").setup({
+            filesystem = {
+                filtered_items = {
+                visible = true,  -- Show filtered items (like dotfiles)
+                hide_dotfiles = false,  -- Do not hide dotfiles
+                hide_gitignored = true, -- Optional: Show gitignored files too
+                },
+            },
+        })
 	end
 }   

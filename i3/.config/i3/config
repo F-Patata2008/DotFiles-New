@@ -28,7 +28,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- $HOM/.config/i3/scripts/l
 exec --no-startup-id nm-applet
 exec --no-startup-id setxkbmap -layout latam
 exec_always xrandr --output eDP-1 --mode 1366x768 --rate 60
-exec_always feh --bg-fill $HOME/Wallpapers/Gundam/33.jpg
+exec feh --bg-fill $HOME/Wallpapers/Gundam/33.jpg
 exec_always picom --config $HOME/Dotfiles/picom/.config/picom/picom.conf
 exec --no-startup-id clipse -listen
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh

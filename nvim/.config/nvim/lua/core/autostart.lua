@@ -18,3 +18,11 @@ vim.diagnostic.config({
   update_in_insert = true,
   severity_sort = true,
 })
+
+
+vim.filetype.add({
+  pattern = {
+    [".*/hypr/.*%.conf"] = "hyprlang"
+  }
+})
+

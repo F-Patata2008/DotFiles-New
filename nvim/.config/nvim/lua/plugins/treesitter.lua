@@ -7,7 +7,7 @@ return {
       require('nvim-treesitter.configs').setup({
         -- A list of parser names, or "all"
         -- We'll start with C, Lua, and Vim script parsers.
-        ensure_installed = { "c", "lua", "vim", "vimdoc", "cpp", "latex" },
+        ensure_installed = { "c", "lua", "vim", "vimdoc", "cpp", "hyprlang", "latex" },
 
         -- Install parsers synchronously (useful for headless servers)
         sync_install = false,

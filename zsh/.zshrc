@@ -10,6 +10,8 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the Oh My Zsh theme to load.
 ZSH_THEME="powerlevel10k/powerlevel10k"
+export PATH=$HOME/.local/bin:$PATH
+
 
 # Zsh plugins to load.
 plugins=(

@@ -67,7 +67,7 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰤮",
         "tooltip-format-wifi": "{essid} ({bandwidthTotalBytes})",
-        "on-click": "sh ~/Dotfiles/waybar/.config/waybar/wifi.sh"
+        "on-click": "nm-connection-editor"
     },
 
     "battery": {

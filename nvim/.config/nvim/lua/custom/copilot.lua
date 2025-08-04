@@ -1,6 +1,6 @@
 
 return {
-    --[[
+--[[    
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
 		branch = "main",
@@ -18,8 +18,7 @@ return {
             })
         vim.keymap.set('n', '<C-c>', ':CopilotChat<CR>', {})
     end
-	}, 
-    ]]
+	}, ]]
 }
 
 

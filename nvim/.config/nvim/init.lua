@@ -1,3 +1,10 @@
+-- Load keybinds and autostart configurations
+require("core.keybinds")
+require("core.autostart")
+
+
+
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -16,9 +23,5 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins")
 
 
--- Load keybinds and autostart configurations
-require("core.keybinds")
-require("core.autostart")
-
 -- Setup lazy.nvim to load plugins from the lua/plugins/ directory
-require("init")
+--require("init")

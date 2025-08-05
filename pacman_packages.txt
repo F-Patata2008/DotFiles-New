@@ -34,6 +34,7 @@ feh # For i3 wallpaper
 
 # APPLICATIONS
 rofi
+rofimoji
 swaylock
 swaync
 swayosd

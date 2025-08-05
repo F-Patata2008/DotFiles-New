@@ -1,0 +1,9 @@
+# System & Drivers
+clipse
+libfprint-goodixtls-55x4
+
+# Applications & Theming
+i3lock-color
+modrinth-app-bin
+rofimoji
+spotify

@@ -1,0 +1,67 @@
+# WINDOW MANAGER & CORE
+hyprland
+i3
+stow
+git
+zsh
+wl-clipboard
+
+# SYSTEM & UTILITIES
+plymouth
+ufw
+brightnessctl
+power-profiles-daemon
+bluez
+bluez-utils
+usbutils
+fprintd
+xorg
+xorg-xinit
+gcc
+python-pip
+nodejs
+npm
+tree-sitter
+tree-sitter-cli
+autojump
+
+# SHELL & TERMINAL
+kitty
+neovim
+fastfetch
+nerd-fonts-jetbrains-mono
+feh # For i3 wallpaper
+
+# APPLICATIONS
+rofi
+swaylock
+swaync
+swayosd
+hyprland-polkit-agent
+hyprshot
+zathura
+zathura-pdf-mupdf
+nautilus
+eog
+evince
+gnome-system-monitor
+gnome-calendar
+gnome-calculator
+gimp
+discord
+steam
+kdeconnect
+
+# LATEX
+texlive
+texlive-langenglish
+texlive-langspanish
+biber
+
+# WAYLAND SCREENSHARING & CAPTURE
+pipewire
+wireplumber
+xdg-desktop-portal
+xdg-desktop-portal-hyprland
+grim
+slurp

@@ -1,357 +1,233 @@
 #!/bin/bash
 
-# ====================================================================
-# SCRIPT DE INSTALACIÓN DE DOTFILES PARA ARCH LINUX
+# ===================================================================================
+# DOTFILES INSTALLATION SCRIPT (REFACTORED)
 #
-# Este script se encarga de instalar todas las dependencias necesarias
-# (pacman y yay), configurar temas y repositorios personales, y luego
-# utiliza GNU Stow para crear enlaces simbólicos de tus archivos.
-# ====================================================================
+# This script is designed to be robust, configurable, and easy to maintain.
+# It sets up an Arch Linux environment by installing packages, themes, and
+# dotfiles using GNU Stow.
+#
+# Changes from original:
+#   - Fails on any error (`set -e`) to prevent partial installs.
+#   - Central configuration section for easy edits.
+#   - Package lists are read from external files for clarity.
+#   - Colored output and helper functions for readability.
+#   - Idempotency checks to make the script safely re-runnable.
+# ===================================================================================
 
-# --------------------------------------------------------------------
-# FASE 1: INSTALACIÓN DE DEPENDENCIAS DEL SISTEMA (PACMAN)
-# --------------------------------------------------------------------
+# --- SCRIPT CONFIGURATION AND SAFETY ---
 
-echo "--------------------------------------------------------"
-echo "FASE 1: Instalando dependencias del sistema (pacman)..."
-echo "--------------------------------------------------------"
-echo ""
+# Exit immediately if a command exits with a non-zero status.
+set -e
+# Treat unset variables as an error when substituting.
+set -u
+# Pipelines fail if any command in the pipeline fails, not just the last one.
+set -o pipefail
 
-# Lista de paquetes que se instalarán con pacman.
-# Se usa --needed para no reinstalar paquetes que ya existen.
-PACMAN_PACKAGES="
-    hyprland
-    swaync
-    swayosd
-    hyprland-polkit-agent
-    zathura
-    zathura-pdf-mupdf
-    ufw
-    brightnessctl
-    stow
-    power-profiles-daemon
-    plymouth
-    texlive
-    texlive-langenglish
-    texlive-langspanish
-    git
-    python-pip
-    opencv
-    strace
-    rofi
-    swayidle
-    kitty
-    neovim
-    gnome-calendar
-    gnome-calculator
-    kdeconnect
-    discord
-    bluez
-    bluez-utils
-    eog
-    evince
-    nautilus
-    gimp
-    spotify
-    steam
-    autojump
-    usbutils
-    tree-sitter
-    tree-sitter-cli
-    nodejs
-    npm
+# --- CONFIGURATION (EDIT THESE VALUES) ---
+
+# Your GitHub username for cloning personal repositories
+readonly GITHUB_USER="F-Patata2008"
+
+# List of all dotfile directories to be managed by GNU Stow
+readonly STOW_PACKAGES=(
+    fastfetch
+    hypr
     i3
     i3status
-    i3blocks
-    feh
-    xorg-xinit
-    xorg
-    gnome-system-monitor
-    hyprshot
-    fprintd
-    biber
-    nerd-fonts-jetbrains-mono
-    gcc
+    kitty
+    nvim
+    ohmyzsh
+    picom
+    polybar
+    rofi
+    rofimoji
+    swaylock
+    wal
+    waybar
     zsh
-"
+)
 
-echo "Instalando paquetes de pacman..."
-sudo pacman -Syu --needed $PACMAN_PACKAGES
+# Your personal repositories to clone into the home directory
+readonly PERSONAL_REPOS=(
+    "Apunte"
+    "Arduino-Codes"
+    "Progra"
+)
 
-# --------------------------------------------------------------------
-# FASE 2: INSTALACIÓN DE DEPENDENCIAS DEL AUR (YAY)
-# --------------------------------------------------------------------
+# --- HELPER FUNCTIONS AND COLORS ---
 
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 2: Instalando dependencias del AUR (yay)..."
-echo "--------------------------------------------------------"
-echo ""
+# Define color codes for script output
+readonly GREEN='\033[0;32m'
+readonly RED='\033[0;31m'
+readonly YELLOW='\033[1;33m'
+readonly NC='\033[0m' # No Color
 
-# Se añade 'yay' como gestor de paquetes de AUR para herramientas específicas.
-# Este paso es manual porque 'yay' no está en los repositorios de Arch.
-if ! command -v yay &> /dev/null
-then
-    echo "Para continuar, se necesita instalar yay. Sigue las instrucciones."
+# Prints a formatted header message.
+# Usage: print_header "My Header Message"
+print_header() {
+    echo -e "\n${YELLOW}=======================================================================${NC}"
+    echo -e "${YELLOW} $1 ${NC}"
+    echo -e "${YELLOW}=======================================================================${NC}\n"
+}
+
+# Checks if a command exists.
+# Usage: command_exists "git"
+command_exists() {
+    command -v "$1" &> /dev/null
+}
+
+# --- SCRIPT EXECUTION ---
+
+# Ask for the administrator password upfront
+sudo -v
+# Keep-alive: update existing `sudo` time stamp until the script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+print_header "STARTING ARCH LINUX DOTFILES INSTALLATION"
+echo "This script will install packages, clone repositories, and set up your dotfiles."
+echo "You will be prompted for input at several stages."
+
+# --- FASE 1: PACMAN DEPENDENCIES ---
+print_header "FASE 1: INSTALLING PACMAN PACKAGES"
+if [ ! -f "pacman_packages.txt" ]; then
+    echo -e "${RED}ERROR: 'pacman_packages.txt' not found. Please create it.${NC}"
+    exit 1
+fi
+echo "Updating system and installing packages from 'pacman_packages.txt'..."
+sudo pacman -Syu --needed --noconfirm - < pacman_packages.txt
+echo -e "${GREEN}✔️ Pacman packages installed successfully.${NC}"
+
+
+# --- FASE 2: AUR DEPENDENCIES (YAY) ---
+print_header "FASE 2: INSTALLING AUR PACKAGES WITH YAY"
+if ! command_exists yay; then
+    echo "'yay' not found. Installing..."
     git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si
-    cd ..
+    (cd yay && makepkg -si --noconfirm)
     rm -rf yay
+    echo -e "${GREEN}✔️ yay installed successfully.${NC}"
 else
-    echo "Yay ya está instalado. Continuando..."
+    echo "yay is already installed. Syncing packages..."
 fi
 
-# Lista de paquetes del AUR.
-# Se ha añadido i3lock-color a esta lista.
-AUR_PACKAGES="
-    clipse-git
-    swaync-git
-    modrinth-app-bin
-    libfprint-goodixtls-55x4
-    i3lock-color
-"
-
-if [ -n "$AUR_PACKAGES" ]; then
-    echo ""
-    echo "Instalando paquetes del AUR con yay..."
-    yay -S --needed $AUR_PACKAGES
-else
-    echo ""
-    echo "No hay paquetes del AUR para instalar. Omitiendo este paso."
+if [ ! -f "aur_packages.txt" ]; then
+    echo -e "${RED}ERROR: 'aur_packages.txt' not found. Please create it.${NC}"
+    exit 1
 fi
+echo "Installing AUR packages from 'aur_packages.txt'..."
+yay -S --needed --noconfirm - < aur_packages.txt
+echo -e "${GREEN}✔️ AUR packages installed successfully.${NC}"
 
-# --------------------------------------------------------------------
-# FASE 3: ACTUALIZAR SUBMÓDULOS DE GIT
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 3: Actualizando submódulos de Git (oh-my-zsh)..."
-echo "--------------------------------------------------------"
-echo ""
-
-# Este comando se debe ejecutar desde la raíz del repositorio de dotfiles
+# --- FASE 3: GIT SUBMODULES (OH-MY-ZSH) ---
+print_header "FASE 3: UPDATING GIT SUBMODULES"
+echo "Initializing and updating Git submodules (oh-my-zsh)..."
 git submodule update --init --recursive
-echo "  ✔️ Submódulos de Git actualizados."
+echo -e "${GREEN}✔️ Git submodules are up to date.${NC}"
 
-# --------------------------------------------------------------------
-# FASE 4: INSTALACIÓN DE POWERLEVEL10K (Siguiendo la instalación oficial)
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 4: Instalando el tema Powerlevel10k para Oh My Zsh..."
-echo "--------------------------------------------------------"
-echo ""
-
-# Crear el directorio para los temas personalizados si no existe
-P10K_DIR="ohmyzsh/.oh-my-zsh/custom/themes"
-mkdir -p "$P10K_DIR"
-
-# Clonar el repositorio de Powerlevel10k en el directorio de temas de Oh My Zsh
-# Se utiliza 'cd' para moverse al directorio de P10K antes de clonar
-if [ -d "$P10K_DIR/powerlevel10k" ]; then
-    echo "  -> El repositorio de Powerlevel10k ya existe. No se clonará de nuevo."
+# --- FASE 4: POWERLEVEL10K THEME ---
+print_header "FASE 4: INSTALLING POWERLEVEL10K THEME"
+P10K_DIR="ohmyzsh/.oh-my-zsh/custom/themes/powerlevel10k"
+if [ -d "$P10K_DIR" ]; then
+    echo "Powerlevel10k is already installed. Skipping."
 else
-    echo "  ➡️ Clonando repositorio de Powerlevel10k..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR/powerlevel10k"
-    echo "  ✔️ Powerlevel10k instalado correctamente."
+    echo "Cloning Powerlevel10k repository..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+    echo -e "${GREEN}✔️ Powerlevel10k installed successfully.${NC}"
 fi
 
-# --------------------------------------------------------------------
-# FASE 5: INSTALACIÓN DE TEMAS ADICIONALES
-# --------------------------------------------------------------------
+# --- FASE 5: OPTIONAL THEMES (PLYMOUTH & GRUB) ---
+print_header "FASE 5: INSTALLING EXTRA THEMES"
+read -p "Do you want to install the Minecraft Plymouth and GRUB themes? (y/n): " THEME_CHOICE
+if [[ "$THEME_CHOICE" =~ ^[Yy]$ ]]; then
+    echo "Installing Minecraft Plymouth theme..."
+    git clone https://github.com/nikp123/minecraft-plymouth-theme.git
+    (cd minecraft-plymouth-theme && sudo ./install.sh)
+    rm -rf minecraft-plymouth-theme
+    echo -e "${GREEN}✔️ Plymouth theme installed. Run 'sudo plymouth-set-default-theme -R minecraft-theme' to apply.${NC}"
 
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 5: Instalando temas adicionales (Plymouth y GRUB)"
-echo "--------------------------------------------------------"
-echo ""
+    echo "Installing Minegrub theme..."
+    git clone https://github.com/Lxtharia/minegrub-theme.git
+    (cd minegrub-theme && sudo ./install.sh)
+    rm -rf minegrub-theme
+    echo -e "${GREEN}✔️ GRUB theme installed. Remember to run 'sudo grub-mkconfig -o /boot/grub/grub.cfg'.${NC}"
+else
+    echo "Skipping optional theme installation."
+fi
 
-# Instalar tema de Plymouth
-echo "-> Instalando tema de Plymouth: Minecraft-Theme"
-git clone https://github.com/nikp123/minecraft-plymouth-theme.git
-cd minecraft-plymouth-theme
-sudo ./install.sh
-cd ..
-rm -rf minecraft-plymouth-theme
-echo "  ✔️ Tema de Plymouth instalado. Por favor, ejecuta 'sudo plymouth-set-default-theme -R minecraft-theme' para activarlo."
-echo ""
-
-# Instalar tema de GRUB
-echo "-> Instalando tema de GRUB: Minegrub-Theme"
-git clone https://github.com/Lxtharia/minegrub-theme.git
-cd minegrub-theme
-sudo ./install.sh
-cd ..
-rm -rf minegrub-theme
-echo "  ✔️ Tema de GRUB instalado. Por favor, revisa /etc/default/grub y ejecuta 'sudo grub-mkconfig -o /boot/grub/grub.cfg' si es necesario."
-echo ""
-
-# --------------------------------------------------------------------
-# FASE 6: INSTALACIÓN DEL FIRMWARE PARA LECTOR DE HUELLAS GOODIX
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 6: Instalación opcional del firmware para lector de huellas Goodix"
-echo "--------------------------------------------------------"
-echo ""
-
-read -p "¿Quieres instalar y configurar el firmware del lector de huellas Goodix? (y/n): " FINGERPRINT_CHOICE
-
+# --- FASE 6: OPTIONAL FINGERPRINT FIRMWARE ---
+print_header "FASE 6: OPTIONAL GOODIX FINGERPRINT FIRMWARE"
+read -p "Do you want to install the Goodix fingerprint firmware? (y/n): " FINGERPRINT_CHOICE
 if [[ "$FINGERPRINT_CHOICE" =~ ^[Yy]$ ]]; then
-    echo ""
-    echo "  ➡️ Iniciando instalación del firmware..."
-
-    # El script requiere Python 3.10 o superior.
-    PYTHON_VERSION=$(python3 --version 2>/dev/null | awk '{print $2}')
-    if [[ -z "$PYTHON_VERSION" || "$(echo -e "3.10\n$PYTHON_VERSION" | sort -V | head -n1)" != "3.10" ]]; then
-        echo "  ❌ ERROR: Se requiere Python 3.10 o superior. La versión detectada es: $PYTHON_VERSION"
-        echo "     Por favor, actualiza tu versión de Python y vuelve a ejecutar el script."
-        exit 1
-    fi
-
-    echo "  ✔️ Versión de Python (>= 3.10) detectada: $PYTHON_VERSION"
-
-    # Clonar el repositorio y configurar el entorno virtual
+    echo "Starting firmware installation..."
     git clone --recurse-submodules https://github.com/goodix-fp-linux-dev/goodix-fp-dump.git
     cd goodix-fp-dump
+    echo "Setting up Python virtual environment..."
     python3 -m venv .venv
     source .venv/bin/activate
     pip install -r requirements.txt
-
-    # Obtener la ID del dispositivo del usuario
-    echo ""
-    echo "  ❗ ATENCIÓN: Necesitamos la ID de tu lector de huellas."
-    echo "     A continuación, se listará la información de tu dispositivo."
-    echo "     Por favor, busca la línea que dice 'idProduct' y anota el valor."
-    echo "     Ejemplo: 'idProduct            0x55b4'"
-    echo ""
+    
+    echo -e "${YELLOW}Please find your device's idProduct below:${NC}"
     sudo lsusb -vd "27c6:" | grep "idProduct"
+    read -p "Enter the ID of your device (e.g., 55b4): " DEVICE_ID
 
-    read -p "Ingresa el ID de tu dispositivo (ej: 55b4): " DEVICE_ID
-
-    # Ejecutar el script para instalar el firmware
-    echo ""
-    echo "  ➡️ Ejecutando script para instalar el firmware (ingresa tu contraseña si se solicita)..."
-    sudo python3 run_5110.py --id $DEVICE_ID
-
-    # Limpiar el directorio temporal
-    echo ""
-    echo "  ✔️ Instalación del firmware completada."
+    echo "Running firmware installation script..."
+    sudo python3 run_5110.py --id "$DEVICE_ID"
+    
     deactivate
     cd ..
     rm -rf goodix-fp-dump
+    echo -e "${GREEN}✔️ Firmware installation complete.${NC}"
 else
-    echo "  -> Omitiendo la instalación del firmware para el lector de huellas."
+    echo "Skipping fingerprint firmware installation."
 fi
 
-# --------------------------------------------------------------------
-# FASE 7: CLONANDO REPOSITORIOS PERSONALES
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 7: Clonando repositorios personales"
-echo "--------------------------------------------------------"
-echo ""
-
-git clone https://github.com/F-Patata2008/Apunte.git ~/Apunte
-git clone https://github.com/F-Patata2008/Arduino-Codes.git ~/Arduino-Codes
-git clone https://github.com/F-Patata2008/Progra.git ~/Progra
-echo "  ✔️ Repositorios clonados correctamente en tu directorio personal."
-
-# --------------------------------------------------------------------
-# FASE 8: APLICANDO DOTFILES CON GNU STOW Y CONFIGURANDO PERMISOS
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 8: Aplicando dotfiles con GNU Stow y configurando permisos"
-echo "--------------------------------------------------------"
-echo ""
-
-# La lista de paquetes de Stow ha sido modificada para incluir solo i3 y i3status, según tu solicitud.
-PACKAGES="i3 i3status picom"
-
-# Función para stowing seguro
-safe_stow() {
-    package=$1
-    echo "Procesando paquete: $package"
-    stow "$package"
-    if [ $? -eq 0 ]; then
-        echo "  ✔️ Paquete '$package' stowed correctamente."
+# --- FASE 7: CLONE PERSONAL REPOS ---
+print_header "FASE 7: CLONING PERSONAL REPOSITORIES"
+for repo in "${PERSONAL_REPOS[@]}"; do
+    if [ -d "$HOME/$repo" ]; then
+        echo "Repository '$repo' already exists. Skipping."
     else
-        echo "  ❌ Error al stowing '$package'. Puede que haya conflictos."
-        echo "     Por favor, revisa manualmente el directorio de destino y elimina/mueve archivos conflictivos."
-        echo "     Ejemplo: mv ~/.config/$package ~/.config/$package.bak"
-        echo "     O usa 'stow --adopt $package' con precaución si sabes lo que haces."
-        exit 1
+        echo "Cloning $GITHUB_USER/$repo..."
+        git clone "https://github.com/$GITHUB_USER/$repo.git" "$HOME/$repo"
+        echo -e "${GREEN}✔️ Cloned '$repo' successfully.${NC}"
     fi
-}
-
-# Iterar sobre cada paquete y aplicar stow
-for p in $PACKAGES; do
-    safe_stow "$p"
 done
 
-# Configurar permisos para el usuario actual
-echo ""
-echo "-> Añadiendo el usuario actual al grupo 'input' para permisos de hardware..."
-sudo usermod -aG input $(whoami)
-echo "  ✔️ Usuario añadido al grupo 'input'."
-
-# --------------------------------------------------------------------
-# FASE 9: CONFIGURACIÓN DE ZSH COMO SHELL PREDETERMINADA
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 9: Configurando Zsh como shell predeterminada"
-echo "--------------------------------------------------------"
-echo ""
-
-# Verificar si el shell actual es Zsh
-if [ "$SHELL" != "/bin/zsh" ]; then
-    echo "-> El shell actual no es Zsh. Cambiando a Zsh..."
-    # Se utiliza 'chsh' para cambiar el shell del usuario actual
-    chsh -s /bin/zsh
-    echo "  ✔️ Shell cambiada a Zsh. Deberás cerrar sesión y volver a entrar para que el cambio surta efecto."
+# --- FASE 8: APPLY DOTFILES WITH STOW ---
+print_header "FASE 8: APPLYING DOTFILES WITH GNU STOW"
+echo "The following packages will be symlinked to your home directory:"
+printf "  %s\n" "${STOW_PACKAGES[@]}"
+read -p "Do you want to proceed? (y/n): " STOW_CHOICE
+if [[ "$STOW_CHOICE" =~ ^[Yy]$ ]]; then
+    for package in "${STOW_PACKAGES[@]}"; do
+        if [ -d "$package" ]; then
+            echo "Stowing '$package'..."
+            stow --restow --verbose "$package"
+            echo -e "${GREEN}✔️ '$package' stowed successfully.${NC}"
+        else
+            echo -e "${YELLOW}Warning: Directory for stow package '$package' not found. Skipping.${NC}"
+        fi
+    done
 else
-    echo "  ✔️ El shell predeterminado ya es Zsh. No se necesita hacer cambios."
+    echo "Stow process skipped."
 fi
 
-# --------------------------------------------------------------------
-# FASE 10: PASOS POST-INSTALACIÓN
-# --------------------------------------------------------------------
-
-echo ""
-echo "--------------------------------------------------------"
-echo "FASE 10: Pasos de configuración post-instalación"
-echo "--------------------------------------------------------"
-echo ""
-
-# Preguntar si el usuario quiere ejecutar los comandos
-read -p "¿Quieres ejecutar 'wal -R' para aplicar los colores del fondo de pantalla? (y/n): " wal_choice
-if [[ "$wal_choice" =~ ^[Yy]$ ]]; then
-    wal -R
-    echo "  ✔️ Colores de Pywal aplicados."
+# --- FASE 9: SET ZSH AS DEFAULT SHELL ---
+print_header "FASE 9: SETTING ZSH AS DEFAULT SHELL"
+if [[ "$SHELL" != "/bin/zsh" ]]; then
+    echo "Changing default shell to Zsh for user $(whoami)..."
+    chsh -s "$(which zsh)"
+    echo -e "${GREEN}✔️ Shell changed to Zsh. Please log out and log back in for this to take effect.${NC}"
 else
-    echo "  -> Omitiendo 'wal -R'."
+    echo "Zsh is already the default shell."
 fi
 
-echo ""
-echo "--------------------------------------------------------"
-echo "¡Instalación de dotfiles completada!"
-echo "--------------------------------------------------------"
-echo ""
-echo "Pasos adicionales importantes:"
-echo "1. **Reinicia tu sistema o cierra sesión** para que los cambios de los grupos y el entorno surtan efecto, y para que Zsh sea tu shell predeterminada."
-echo "2. Para configurar tu `prompt`, abre una nueva terminal Zsh y ejecuta 'p10k configure'."
-echo "3. Ejecuta 'sudo plymouth-set-default-theme -R minecraft-theme' para activar el tema de Plymouth."
-echo "4. Revisa /etc/default/grub y ejecuta 'sudo grub-mkconfig -o /boot/grub/grub.cfg' si es necesario."
-echo ""
-echo "¡Disfruta tu nuevo entorno!"
-
+# --- FASE 10: POST-INSTALLATION INSTRUCTIONS ---
+print_header "🎉 INSTALLATION COMPLETE! 🎉"
+echo "Your new environment is almost ready. Please complete these final steps:"
+echo "  1. ${YELLOW}REBOOT YOUR SYSTEM${NC} to apply all changes (especially for the shell and kernel modules)."
+echo "  2. After rebooting, open a new Zsh terminal and run ${GREEN}'p10k configure'${NC} to set up your prompt."
+echo "  3. To apply themes, remember to run the Plymouth and GRUB update commands mentioned earlier."
+echo "  4. Run ${GREEN}'wal -i /path/to/your/wallpaper.jpg'${NC} to set your wallpaper and initial color scheme."
+echo -e "\nEnjoy your new setup!"

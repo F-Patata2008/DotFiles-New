@@ -1,0 +1,13 @@
+/* ~/.config/eww/eww.scss */
+
+* {
+  all: unset;
+  font-family: "JetBrains Mono Nerd Font";
+}
+
+.test_window {
+  background-color: #333;
+  color: #eee;
+  border-radius: 10px;
+  border: 2px solid #555;
+}

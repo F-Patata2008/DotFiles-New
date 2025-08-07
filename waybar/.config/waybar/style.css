@@ -1,5 +1,5 @@
 /* Import the pywal color palette first */
-@import "/home/patata/.cache/wal/colors-waybar.css";
+@import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
 /* --- Define our color scheme --- */
 @define-color bar-bg rgba(26, 27, 38, 0.75);       /* Bar background with transparency */

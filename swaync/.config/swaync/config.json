@@ -1,0 +1,21 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "center",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "overlay",
+  "output": "eDP-1",
+  "control-center-margin-top": 35,
+  "notification-margin-top": 35,
+  "notification-window-width": 450,
+  "widgets": [
+    "mpris",
+    "title",
+    "dnd",
+    "notifications"
+  ],
+  "widget-mpris": {
+    "image-size": 96,
+    "image-radius": 12
+  }
+}

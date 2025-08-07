@@ -15,7 +15,7 @@ return {
       }
 
       require('nvim-treesitter.configs').setup({
-        ensure_installed = { "c", "lua", "vim", "vimdoc", "cpp", "hyprlang", "latex" },
+        ensure_installed = { "c", "lua", "vim", "vimdoc", "cpp", "hyprlang", "latex", "markdown", "markdown_inline" },
         sync_install = false,
         auto_install = true,
         highlight = {

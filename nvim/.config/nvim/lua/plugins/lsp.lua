@@ -51,7 +51,7 @@ return {
       -- The main setup function for mason-lspconfig
       require('mason-lspconfig').setup({
         -- A list of servers to automatically install if they're not already installed.
-        ensure_installed = {"lua_ls", "clangd", "texlab", "pyright", "hyprls"},
+        ensure_installed = {"lua_ls", "clangd", "texlab", "pyright", "hyprls", "marksman"},
         handlers = {
           -- The default handler.
           -- This will be called for all servers that don't have a specific handler.

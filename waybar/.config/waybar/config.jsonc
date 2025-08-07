@@ -15,8 +15,7 @@
         "custom/notification",
         "cpu",
         "memory",
-        "mpris",
-        "custom/mpris-controls"
+        "custom/media"
     ],
     "modules-right": [
         "power-profiles-daemon",
@@ -144,25 +143,17 @@
     	"tooltip": true,
         "on-click": "gnome-system-monitor"
     },
-    "mpris": {
-        "format": "{player_icon} {title} - {artist}",
-        "format-paused": "{player_icon} <i>{title} - {artist}</i>",
-        "ignored-players": ["firefox"],
+        "custom/media": {
+        "format": "{player_icon} {title} - {artist}  <span on-click='playerctl previous'>󰒮</span> <span on-click='playerctl play-pause'>󰐎</span> <span on-click='playerctl next'>󰒭</span>",
+        "format-paused": "{player_icon} <i>{title} - {artist}</i>  <span on-click='playerctl previous'>󰒮</span> <span on-click='playerctl play-pause'>󰐎</span> <span on-click='playerctl next'>󰒭</span>",
         "player-icons": {
             "default": "▶",
             "spotify": "",
             "mpv": "🎵"
         },
-        "status-icons": {
-            "paused": "⏸"
-        },
-        "max-length": 30
-    },
-    
-    "custom/mpris-controls": {
-        "format": "{}<span on-click='playerctl previous'>󰒮</span> <span on-click='playerctl play-pause'>󰐎</span> <span on-click='playerctl next'>󰒭</span>",
         "return-type": "json",
+        "max-length": 40,
         "exec-if": "playerctl status",
-        "exec": "echo '{}'",
-        "tooltip": false
-    }}
+        "exec": "playerctl metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(artist)}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F"
+    }
+}

@@ -125,3 +125,13 @@ Haciendo push...
 branch 'main' set up to track 'origin/main'.
 [2025-08-04 20:03:58]  Push exitoso
 ========== 2025-08-06 21:45:22 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main fac58f7] Patata: 2025-08-06 21:45:22
+ 7 files changed, 35 insertions(+), 4 deletions(-)
+ create mode 100644 eww/.config/eww/eww.css
+ create mode 100644 eww/.config/eww/eww.yuck
+ mode change 100644 => 100755 install.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:45:22]  Push exitoso
+========== 2025-08-06 21:53:02 ==========

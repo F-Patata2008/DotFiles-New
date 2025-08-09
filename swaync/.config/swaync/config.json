@@ -1,25 +1,3 @@
-{
-    "$schema": "/etc/xdg/swaync/configSchema.json",
-    "positionX": "center",
-    "positionY": "top",
-    "layer": "overlay",
-    "control-center-layer": "overlay",
-    "control-center-width": 500,
-    "notification-2fa-action": true,
-    "notification-window-width": 450,
-    "notification-margin-top": 35,
-    "fit-to-screen": false,
-
-    "hide-on-clear": true,
-    "hide-on-action": true,
-    
-    "widgets": [
-        "title",
-        "mpris",
-        "buttons-grid",
-        "dnd",
-        "notifications"
-    ],
     "widget-config": {
         "mpris": {
             "image-size": 48,
@@ -32,43 +10,35 @@
             "button-text": "Format All PCS"
         },
         "buttons-grid": {
-            "actions": [
-                {
+            "actions": [{
                     "label": "",
                     "command": "sh $HOME/Dotfiles/hypr/.config/hypr/scripts/wifi.sh",
                     "tooltip": "Network"
-                },
-                {
+                },{
                     "label": "",
                     "command": "blueman-manager",
                     "tooltip": "Bluetooth"
-                },
-                {
+                },{
                     "label": "󰈙",
                     "command": "nautilus",
                     "tooltip": "Files"
-                },
-                {
+                },{
                     "label": "󰻠",
                     "command": "gnome-system-monitor",
                     "tooltip": "System Monitor"
-                },
-                {
+                },{
                     "label": "",
                     "command": "swaylock",
                     "tooltip": "Lock"
-                },
-                {
+                },{
                     "label": "󰜉",
                     "command": "reboot",
                     "tooltip": "Reboot"
-                },
-                {
+                },{
                     "label": "⏻",
-                    "command": "shutdown now",
-                    "tooltip": "Power Off"
+                    "command": "systemctl hibernate", // <-- This is the corrected command
+                    "tooltip": "Hibernate PC"
                 }
             ]
         }
     }
-}

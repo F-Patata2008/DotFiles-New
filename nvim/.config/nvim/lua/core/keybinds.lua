@@ -26,3 +26,5 @@ map('n', '<C-l>', '<Cmd>VimtexCompile<CR>', {
 map("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Toggle Trouble List" })
 map("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Workspace Diagnostics" })
 map("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Document Diagnostics" })
+map("n", "<leader>mp", ":MarkdownPreview<CR>", { desc = "Preview Markdown" })
+

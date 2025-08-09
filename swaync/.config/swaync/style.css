@@ -70,6 +70,8 @@
     font-size: 18px;
     font-weight: bold;
     margin: 15px;
+    margin: 5px 15px 5px; /* Top, Right, Bottom, Left */
+    padding: 0; /* Ensure no extra internal padding */
 }
 
 .widget-title button {

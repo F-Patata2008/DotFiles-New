@@ -10,8 +10,16 @@
     "notification-margin-top": 35,
     "fit-to-screen": false,
 
-    "hide-on-clear": true,
     "hide-on-action": true,
+
+    "widgets": [
+        "title",
+        "mpris",
+        "buttons-grid",
+        "dnd",
+        "notifications"
+    ],
+
 
     "widget-config": {
             "mpris": {
@@ -51,7 +59,7 @@
                         "tooltip": "Reboot"
                     },{
                         "label": "⏻",
-                        "command": "systemctl hibernate", // <-- This is the corrected command
+                        "command": "systemctl hibernate",
                         "tooltip": "Hibernate PC"
                     }
                 ]

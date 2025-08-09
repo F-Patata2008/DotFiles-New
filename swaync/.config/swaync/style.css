@@ -1,0 +1,130 @@
+/* --- Import Pywal Colors & Define Custom Colors --- */
+@import "/home/F-Patata/.cache/wal/colors-waybar.css";
+
+@define-color bg-main rgba(26, 27, 38, 0.85);       /* Main background from your Waybar, slightly more opaque */
+@define-color bg-module rgba(0, 0, 8, .7);          /* Module background for individual notifications */
+@define-color bg-hover rgba(26, 27, 38, 0.9);      /* Hover background */
+@define-color bg-button rgba(30, 30, 46, 0.9);      /* A slightly different bg for buttons */
+@define-color text-main #c0caf5;                   /* Main text color */
+@define-color text-hover #cdd6f4;                  /* Hover text color */
+@define-color border-color rgba(192, 202, 245, 0.2); /* A faint border color */
+
+/* --- Global Settings --- */
+* {
+    font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    border: none;
+    font-size: 13px; /* A more readable default font size for notifications */
+}
+
+/* --- Main Control Center Window --- */
+#control-center {
+    background-color: @bg-main;
+    border-radius: 9px;
+    margin: 10px;
+}
+
+/* --- Individual Notification Pop-ups --- */
+.notification-popup {
+    margin: 0; /* Let the config file handle the top margin */
+}
+
+/* --- Styling for all Notification rows (in pop-ups and control-center) --- */
+.notification {
+    background-color: @bg-module;
+    border-radius: 9px;
+    margin: 9px 9px 0 9px; /* Spacing between notifications */
+    padding: 12px;
+    border: 1px solid @border-color;
+}
+.notification:hover {
+    background-color: @bg-hover;
+}
+
+/* --- Notification Content --- */
+.notification-content {
+    padding: 5px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: bold;
+    color: @text-main;
+}
+
+.body {
+    font-size: 14px;
+    color: @text-main;
+}
+
+.image {
+    border-radius: 9px;
+    margin-right: 12px;
+}
+
+
+/* --- Widget Styling --- */
+
+/* Title Widget ("Mundo Hola Patata") */
+.widget-title {
+    color: @text-main;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+.widget-title button {
+    background-color: @bg-button;
+    color: @text-main;
+    padding: 4px 10px;
+    border-radius: 9px;
+    font-size: 12px;
+}
+.widget-title button:hover {
+    background-color: @bg-hover;
+}
+
+/* Do Not Disturb (DND) Widget */
+.widget-dnd {
+    color: @text-main;
+    margin: 10px 15px;
+    font-size: 14px;
+}
+.widget-dnd > switch {
+    border-radius: 9px;
+    background-color: @bg-module;
+}
+
+/* MPRIS (Media Player) Widget */
+.widget-mpris {
+    background-color: @bg-module;
+    border: 1px solid @border-color;
+    border-radius: 9px;
+    margin: 9px;
+    padding: 10px;
+}
+.widget-mpris:hover {
+    background-color: @bg-hover;
+}
+.widget-mpris .image {
+    border-radius: 9px;
+}
+
+/* Buttons Grid Widget (for your WiFi button) */
+.widget-buttons-grid {
+    padding: 9px;
+    margin: 0 9px;
+    background-color: @bg-module;
+    border: 1px solid @border-color;
+    border-radius: 9px;
+}
+
+.widget-buttons-grid button {
+    background-color: @bg-button;
+    color: @text-main;
+    border-radius: 9px;
+    padding: 5px;
+    font-size: 18px; /* Make the icon larger */
+}
+.widget-buttons-grid button:hover {
+    background-color: @bg-hover;
+}

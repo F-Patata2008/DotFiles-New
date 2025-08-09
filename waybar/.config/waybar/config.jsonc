@@ -14,8 +14,7 @@
         //"custom/placeholder",
         "custom/notification",
         "cpu",
-        "memory",
-        "custom/media"
+        "memory"
     ],
     "modules-right": [
         "power-profiles-daemon",

@@ -20,3 +20,5 @@ require("lazy").setup("plugins")
 require("core.autostart")
 require("core.keybinds")
 
+require("init")
+require("custom.copilot")

@@ -18,6 +18,7 @@ require("plugins.themes")
 require("plugins.treesitter")
 require("plugins.trouble")
 
+require("custom.copilot")
 
 
 

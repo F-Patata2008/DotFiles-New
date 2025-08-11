@@ -14,7 +14,7 @@
     border: none;
     border-radius: 9px;
     font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 9px;
+    font-size: 11px;
     color: @text-main;
     transition: background-color .3s ease, color .3s ease;
 }

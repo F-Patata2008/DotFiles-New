@@ -14,11 +14,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Load plugins (esto activa todos los plugins de lua/plugins/*.lua)
-require("lazy").setup("plugins")
+-- Load plugins from both plugins/ and custom/
+require("lazy").setup({
+  { import = "plugins" },
+  { import = "custom" }
+})
 
 -- 🟢 AHORA SÍ: carga tus opciones y atajos
 require("core.autostart")
 require("core.keybinds")
 
 require("init")
-require("custom.copilot")
+

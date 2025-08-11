@@ -1,33 +1,23 @@
 return {
   {
-    -- Snippet Engine
     "L3MON4D3/LuaSnip",
-    dependencies = {
-      -- Provides a bunch of useful snippets
-      "rafamadriz/friendly-snippets",
-    },
-    -- Optional: lazy-load snippets for faster startup
+    dependencies = { "rafamadriz/friendly-snippets" },
     config = function()
       require("luasnip.loaders.from_vscode").lazy_load()
     end,
   },
   {
-    -- Autocompletion Engine
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter", -- Load nvim-cmp only when you enter insert mode
+    event = "InsertEnter",
     dependencies = {
-      -- Source for nvim-lsp completions
       "hrsh7th/cmp-nvim-lsp",
-      -- Source for buffer completions
       "hrsh7th/cmp-buffer",
-      -- Source for path completions (taken from your first config)
       "hrsh7th/cmp-path",
-      -- Source for command-line completions
       "hrsh7th/cmp-cmdline",
-      -- Source for LuaSnip snippets
       "saadparwaiz1/cmp_luasnip",
-      -- Adds nice icons to completion items
       "onsails/lspkind.nvim",
+      -- Copilot source for nvim-cmp
+      "zbirenbaum/copilot-cmp",
     },
     config = function()
       local cmp = require('cmp')
@@ -36,7 +26,6 @@ return {
 
       cmp.setup({
         snippet = {
-          -- REQUIRED - you must specify a snippet engine
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
@@ -50,9 +39,7 @@ return {
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Confirm selection with Enter
-
-          -- "Smart" Tab behavior
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -62,7 +49,6 @@ return {
               fallback()
             end
           end, { "i", "s" }),
-
           ['<S-Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
@@ -73,21 +59,21 @@ return {
             end
           end, { "i", "s" }),
         }),
-        -- The sources nvim-cmp will use for suggestions, in order of priority
         sources = cmp.config.sources({
+          { name = 'copilot', group_index = 2 }, -- copilot first
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
         }, {
           { name = 'buffer' },
         }),
-        -- Custom formatting with icons
         formatting = {
           format = lspkind.cmp_format({
-            mode = 'symbol_text', -- show symbol and text
+            mode = 'symbol_text',
             maxwidth = 50,
             ellipsis_char = '...',
             menu = {
+              copilot = "[Copilot]",
               nvim_lsp = "[LSP]",
               luasnip = "[Snippet]",
               buffer = "[Buffer]",
@@ -99,3 +85,4 @@ return {
     end
   }
 }
+

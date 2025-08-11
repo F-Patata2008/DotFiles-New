@@ -32,6 +32,7 @@
                 "clear-all-button": true,
                 "button-text": "Format All PCS"
             },
+            "dnd": {},
             "buttons-grid": {
                 "actions": [{
                         "label": "",

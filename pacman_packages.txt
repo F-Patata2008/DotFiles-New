@@ -42,6 +42,7 @@ hyprland-polkit-agent
 hyprshot
 hyprpaper
 hypridle
+hyprsunset
 hyprlock
 zathura
 zathura-pdf-mupdf

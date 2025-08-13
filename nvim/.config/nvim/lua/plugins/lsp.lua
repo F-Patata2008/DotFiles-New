@@ -67,12 +67,6 @@ return {
         },
       })
       
-      -- ADDED: Set up null-ls using lspconfig.
-      -- This is the key to making null-ls work with the rest of your LSP setup.
-      require('lspconfig')['null-ls'].setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-      })
-    end
+         end
   }
 }

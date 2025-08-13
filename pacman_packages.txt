@@ -40,6 +40,9 @@ swaync
 swayosd
 hyprland-polkit-agent
 hyprshot
+hyprpaper
+hypridle
+hyprlock
 zathura
 zathura-pdf-mupdf
 nautilus

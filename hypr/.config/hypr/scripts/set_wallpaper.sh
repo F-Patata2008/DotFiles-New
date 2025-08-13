@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# A script to update the system theme using Pywal and Hyprpaper
+
 # Check if a wallpaper path is provided
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
@@ -8,18 +10,22 @@ fi
 
 WALLPAPER_PATH="$1"
 
-# Run Pywal to generate and set the color scheme
-# -i specifies the input image
-# -n skips setting the wallpaper in the terminal (we use swaybg)
-# -q runs quietly
+# --- Pywal and Oomox ---
+# Run Pywal to generate the color scheme from the new wallpaper
 wal -q -n -i "$WALLPAPER_PATH"
 
-# Set the wallpaper using swaybg
-# -i specifies the input image
-# -m specifies the scaling mode (fill, fit, stretch, etc.)
-swaybg -i "$WALLPAPER_PATH" -m fill &
+# Apply the generated Pywal theme with oomox-cli
 oomox-cli -o pywal ~/.cache/wal/colors-oomox
-# Reload running applications to apply the new theme
+
+# --- Hyprpaper Integration ---
+# Preload the new wallpaper into hyprpaper's memory for a smooth transition
+hyprctl hyprpaper preload "$WALLPAPER_PATH"
+
+# Set the preloaded wallpaper as the active wallpaper for all monitors
+hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
+
+# --- Reload Applications ---
+# Reload Hyprland to apply theme changes like border colors
 hyprctl reload
 
 echo "Wallpaper and theme updated successfully!"

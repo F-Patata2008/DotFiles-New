@@ -1,10 +1,11 @@
+-- plugins/lsp.lua (or your equivalent file)
 return {
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: `config = true` calls `setup()`
+      { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
@@ -15,7 +16,6 @@ return {
     },
     config = function()
       -- This is the function that will be called when an LSP attaches to a buffer.
-      -- We will use this to set our keybindings.
       local on_attach = function(client, bufnr)
         local nmap = function(keys, func, desc)
           if desc then
@@ -39,8 +39,13 @@ return {
         nmap('gK', vim.lsp.buf.signature_help, 'Signature Documentation')
 
         nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        
-        -- Create a command `:Format` to format the current buffer
+
+        -- ADDED: Keymap for formatting. This will use null-ls or any other LSP that supports formatting.
+        if client.supports_method("textDocument/formatting") then
+            nmap('<leader>gf', vim.lsp.buf.format, '[G]o [F]ormat Buffer')
+        end
+
+        -- The original command is also great to have.
         vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
           vim.lsp.buf.format()
         end, { desc = 'Format current buffer with LSP' })
@@ -50,19 +55,23 @@ return {
 
       -- The main setup function for mason-lspconfig
       require('mason-lspconfig').setup({
-        -- A list of servers to automatically install if they're not already installed.
         ensure_installed = {"lua_ls", "clangd", "texlab", "pyright", "hyprls", "marksman"},
         handlers = {
           -- The default handler.
-          -- This will be called for all servers that don't have a specific handler.
           function(server_name)
             require('lspconfig')[server_name].setup({
               on_attach = on_attach,
-              -- This is the line you need to add for cmp to work with LSP
               capabilities = capabilities,
             })
           end,
         },
+      })
+      
+      -- ADDED: Set up null-ls using lspconfig.
+      -- This is the key to making null-ls work with the rest of your LSP setup.
+      require('lspconfig')['null-ls'].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
       })
     end
   }

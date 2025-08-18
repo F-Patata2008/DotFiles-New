@@ -11,7 +11,6 @@
         "hyprland/window"
     ],
     "modules-center": [
-        //"custom/placeholder",
         "custom/notification",
         "cpu",
         "memory"
@@ -45,11 +44,6 @@
         "persistent-workspaces": { "1": [], "2": [], "3": [] },
         "format": "{icon}",
         "format-icons": { "1": "1", "2": "2", "3": "3", "4": "4" }
-    },
-
-    "custom/placeholder": {
-        "format": "Mundo Hola",
-        "tooltip": false
     },
 
     "custom/separator": {
@@ -143,18 +137,5 @@
         "format": "  {}%    󰾷 {swapPercentage}%",
     	"tooltip": true,
         "on-click": "gnome-system-monitor"
-    },
-        "custom/media": {
-        "format": "{player_icon} {title} - {artist}  <span on-click='playerctl previous'>󰒮</span> <span on-click='playerctl play-pause'>󰐎</span> <span on-click='playerctl next'>󰒭</span>",
-        "format-paused": "{player_icon} <i>{title} - {artist}</i>  <span on-click='playerctl previous'>󰒮</span> <span on-click='playerctl play-pause'>󰐎</span> <span on-click='playerctl next'>󰒭</span>",
-        "player-icons": {
-            "default": "▶",
-            "spotify": "",
-            "mpv": "🎵"
-        },
-        "return-type": "json",
-        "max-length": 40,
-        "exec-if": "playerctl status",
-        "exec": "playerctl metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(artist)}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F"
     }
 }

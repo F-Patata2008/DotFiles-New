@@ -1,6 +1,5 @@
 local ls = require("luasnip")
 local s = ls.snippet
-local t = ls.text_node
 local i = ls.insert_node
 local fmt = require("luasnip.extras.fmt").fmt
 
@@ -12,8 +11,7 @@ return {
 \usepackage{{amsmath}}  % Math
 \usepackage{{amssymb}}  % Symbols
 \usepackage{{graphicx}} % Images
-\usepackage[spanish]{babel} % Spanish language support
-\graphicspath{{ {{./images/}}}}
+\graphicspath{{ {{./images/}} }}
 \usepackage[utf8]{{inputenc}}
 \usepackage[T1]{{fontenc}}
 \usepackage[margin=1in]{{geometry}}
@@ -29,7 +27,7 @@ return {
 {}
 
 \end{{document}}
-  ]], {
+]], {
     i(1, "Tu Título"),
     i(2, "Tu Nombre"),
     i(0, "Empieza a escribir aquí..."),

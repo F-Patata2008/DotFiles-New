@@ -12,6 +12,7 @@ return {
 \usepackage{{amsmath}}  % Math
 \usepackage{{amssymb}}  % Symbols
 \usepackage{{graphicx}} % Images
+\usepackage[spanish]{babel} % Spanish language support
 \graphicspath{{ {{./images/}}}}
 \usepackage[utf8]{{inputenc}}
 \usepackage[T1]{{fontenc}}

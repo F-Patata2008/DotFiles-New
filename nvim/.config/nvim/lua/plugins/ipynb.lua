@@ -1,28 +1,40 @@
 return {
+  -- For transparently editing ipynb files as text
   {
-    "anuvyklack/ipynb.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    -- lazy-load on .ipynb files
-    ft = "ipynb",
+    "goerz/jupytext.nvim",
+    -- Load it on ipynb files
+    ft = { "ipynb" },
+    -- You can also use :Jupytext toggle to start editing a .py file
+    -- as a notebook.
+  },
+
+  -- For running cells and interacting with the kernel
+  {
+    "benlubas/molten-nvim",
+    -- This is a dependency for the UI
+    dependencies = { "nvim-lua/plenary.nvim" },
+    -- Load molten on jupytext buffers
+    ft = { "python", "ipynb" },
     config = function()
-      require("ipynb").setup({
-        kernel = {
-          display = {
-            image = {
-              -- Use the kitty backend for native image support in Kitty
-              backend = "kitty",
-            },
-          },
+      require("molten").setup({
+        -- Where to place the output window
+        output_panel = {
+          position = "bottom",
         },
+        -- Automatically open the output panel when running code
+        auto_open_output = true,
       })
 
-      -- Add some useful keymaps
+      -- Keymaps
       local map = vim.keymap.set
-      map("n", "<leader>kc", "<cmd>IPythonCellRun<cr>", { desc = "[K]ernel [C]ell Run" })
-      map("n", "<leader>ka", "<cmd>IPythonCellRunAll<cr>", { desc = "[K]ernel [A]ll Cells Run" })
-      map("n", "<leader>kd", "<cmd>IPythonCellDelete<cr>", { desc = "[K]ernel [D]elete Cell" })
-      map("n", "<leader>ki", "<cmd>IPythonInterrupt<cr>", { desc = "[K]ernel [I]nterrupt" })
-      map("n", "<leader>kr", "<cmd>IPythonRestart<cr>", { desc = "[K]ernel [R]estart" })
+      -- Initialize the kernel. You must run this first.
+      map("n", "<leader>mi", "<cmd>MoltenInit<cr>", { desc = "[M]olten [I]nit" })
+      -- Run the current cell
+      map("n", "<leader>mr", "<cmd>MoltenRunCell<cr>", { desc = "[M]olten [R]un Cell" })
+      -- Run the line under the cursor
+      map("n", "<leader>ml", "<cmd>MoltenRunLine<cr>", { desc = "[M]olten [L]ine" })
+      -- Run a visual selection
+      map("v", "<leader>mr", "<cmd>MoltenRunVisual<cr>", { desc = "[M]olten [R]un Visual" })
     end,
   },
 }

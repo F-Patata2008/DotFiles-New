@@ -24,5 +24,4 @@ require("lazy").setup({
 require("core.autostart")
 require("core.keybinds")
 
-require("init")
 

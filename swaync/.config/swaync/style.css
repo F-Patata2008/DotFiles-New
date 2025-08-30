@@ -19,27 +19,23 @@
     transition: background-color .3s ease, color .3s ease;
 }
 
-/* === Notification Popups === */
+/* === Notification Popups (Unchanged) === */
 .notification {
     background: @module-bg;
     padding: 8px;
     margin: 5px;
     border-radius: 9px;
 }
-
 .notification:hover {
     background: @module-hover-bg;
 }
-
 .notification .summary {
     font-weight: bold;
     color: @text-main;
 }
-
 .notification .body {
     color: @text-hover;
 }
-
 .notification .icon {
     border-radius: 9px;
 }
@@ -51,24 +47,14 @@
     border-radius: 9px;
 }
 
-/* Widgets with tighter spacing */
-.control-center .widget {
-    background: @module-bg;
-    margin: 2px 0; /* Reduced vertical gap */
-    padding: 5px;
-    border-radius: 9px;
-}
-
-.control-center .widget:hover {
-    background: @module-hover-bg;
-}
+/* --- NEW: Direct Widget Margin Control --- */
 
 /* Title widget */
 .title {
     background: transparent;
     font-weight: bold;
     color: @text-main;
-    margin-bottom: 2px; /* Small gap below title */
+    margin-bottom: 3px; /* Gap below title */
 }
 
 /* Mpris widget */
@@ -76,23 +62,34 @@
     background: @module-bg;
     padding: 6px;
     border-radius: 9px;
-    margin-bottom: 2px; /* Small gap below mpris */
+    margin-top: 0;
+    margin-bottom: 3px; /* Gap below mpris player */
 }
-
 .mpris:hover {
     background: @module-hover-bg;
 }
 
-/* Buttons grid */
-.buttons-grid button {
+/* Buttons grid container */
+.buttons-grid {
     background: @module-bg;
+    padding: 3px; /* Add some padding to the container */
     border-radius: 9px;
-    margin: 3px;
+    margin-top: 0;
+    margin-bottom: 3px; /* Gap below buttons grid */
+}
+.buttons-grid:hover {
+    background: @module-hover-bg;
+}
+
+/* Buttons inside the grid (Internal spacing) */
+.buttons-grid button {
+    background: transparent; /* Make buttons transparent to show container background */
+    border-radius: 9px;
+    margin: 2px; /* Spacing between individual buttons */
     padding: 6px;
     font-size: 12px;
     color: @text-main;
 }
-
 .buttons-grid button:hover {
     background: @module-hover-bg;
     color: @text-hover;
@@ -103,8 +100,8 @@
     background: @module-bg;
     padding: 5px;
     border-radius: 9px;
+    margin-top: 0; /* Remove top margin to stick to the widget above */
 }
-
 .dnd:hover {
     background: @module-hover-bg;
 }
@@ -113,7 +110,6 @@
 scrollbar {
     background: transparent;
 }
-
 scrollbar slider {
     background: @module-hover-bg;
     border-radius: 5px;
@@ -124,4 +120,3 @@ button:focus,
 button:active {
     color: @accent-color;
 }
-

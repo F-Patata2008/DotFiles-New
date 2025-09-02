@@ -25,7 +25,7 @@ if [ -n "$SELECTED_RELATIVE_PATH" ]; then
     # Construct the full path with explicit quoting for the shell.
     # This is more robust if SELECTED_RELATIVE_PATH has tricky characters.
     FULL_PROJECT_PATH="$(printf '%q' "$BASE_PROJECTS_DIR")/$SELECTED_RELATIVE_PATH"
-    
+
     # Execute env.sh, ensuring the path is passed as a single, quoted argument.
     # We can even try executing env.sh with bash -c to be very explicit about quoting.
     bash -c "~/.config/hypr/scripts/env.sh $(printf '%q' \"$BASE_PROJECTS_DIR/$SELECTED_RELATIVE_PATH\")"

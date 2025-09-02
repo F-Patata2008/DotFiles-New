@@ -8,17 +8,25 @@ fi
 
 PROJECT_PATH="$1"
 
-# Launch Kitty windows with specific titles and classes
-# Workspace 5 is specified in Hyprland rules
+# --- Tiling Layout Script ---
 
-# Main Code Window (nvim .): ~2/3 width, left side
-kitty --title code --class code_window --working-directory "$PROJECT_PATH" nvim . &
+# 1. Launch the main code window first. It will occupy the entire workspace.
+#    We use --class to identify it in hyprland.conf.
+kitty --class code_window --working-directory "$PROJECT_PATH" nvim . &
+sleep 0.5 # Wait for the window to open and be focused
 
-# Input Window (nvim input): 1/4 of the remaining vertical space on the right
-kitty --title input --class input_window --working-directory "$PROJECT_PATH" nvim input &
+# 2. Set the split ratio for the NEXT window.
+#    A value of 0.34 means the new window will take 34% of the space,
+#    leaving the current 'code_window' with 66%.
+hyprctl dispatch splitratio 0.34
 
-# Compile Window (cd ...): next 1/4 vertical space
-kitty --title compile --class compile_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
+# 3. Launch the first of the smaller windows. This will create the split.
+kitty --class input_window --working-directory "$PROJECT_PATH" nvim input &
+sleep 0.3 # Wait a moment
 
-# Exec Window (cd ...): remaining 1/2 vertical space
-kitty --title exec --class exec_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
+# 4. Launch the remaining windows. The dwindle layout will automatically
+#    stack them vertically in the smaller pane.
+kitty --class compile_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
+sleep 0.3 # Wait a moment
+
+kitty --class exec_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &

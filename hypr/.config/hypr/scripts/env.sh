@@ -22,7 +22,7 @@ hyprctl dispatch splitratio 0.34
 
 # 3. Launch the first of the smaller windows. This will create the split.
 kitty --class input_window --working-directory "$PROJECT_PATH" nvim input &
-sleep 0.3 # Wait a moment
+sleep 0.5 # Wait a moment
 
 # 4. Launch the remaining windows. The dwindle layout will automatically
 #    stack them vertically in the smaller pane.

@@ -5,6 +5,8 @@
     "layer": "overlay",
     "control-center-layer": "overlay",
     "control-center-width": 500,
+    "control-center-margin-top": 8,
+    "control-center-margin-bottom": 8,
     "notification-2fa-action": true,
     "notification-window-width": 450,
     "notification-margin-top": 35,

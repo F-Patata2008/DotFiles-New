@@ -1,0 +1,102 @@
+/* Import the pywal color palette if you want to use it */
+@import "/home/F-Patata/.cache/wal/colors-waybar.css";
+
+/* --- Define our color scheme --- */
+@define-color bar-bg rgba(26, 27, 38, 0.85); /* Main window background */
+@define-color module-bg rgba(0, 0, 8, .7); /* Widget background */
+@define-color text-main #c0caf5; /* Main text color */
+@define-color border-color rgba(192, 202, 245, 0.1); /* A subtle border color */
+@define-color button-hover-bg #11111b; /* Hover color for buttons */
+
+/* --- Global Settings --- */
+* {
+  font-family:
+    "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 11px; /* Slightly larger for readability in a notification center */
+}
+
+/* --- Main Window (Control Center) --- */
+.control-center {
+  background-color: @bar-bg;
+  border-radius: 9px;
+  border: 1px solid @border-color;
+  padding: 9px; /* Add some padding around the entire window */
+}
+
+/* --- General Widget Styling --- */
+.widget {
+  background-color: @module-bg;
+  color: @text-main;
+  border-radius: 9px;
+  margin: 5px; /* This is the key to resizing the distance between modules */
+}
+
+/* Remove margin from the first and last widgets to align with the window padding */
+.widget:first-child {
+  margin-top: 0;
+}
+
+.widget:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Specific Widget Styling --- */
+
+/* Title widget */
+.widget-title {
+  padding: 10px;
+  font-weight: bold;
+}
+
+.widget-title button {
+  font-size: 12px;
+}
+
+.widget-title button:hover {
+  background-color: @button-hover-bg;
+}
+
+/* DND (Do Not Disturb) widget */
+.widget-dnd {
+  padding: 10px;
+}
+
+/* MPRIS (Media Player) widget */
+.widget-mpris {
+  padding: 15px;
+}
+
+/* Buttons Grid widget */
+.widget-buttons-grid {
+  padding: 10px;
+}
+
+.widget-buttons-grid button {
+  background-color: transparent;
+  border: none;
+  font-size: 18px; /* Make icons larger */
+  padding: 10px;
+  border-radius: 9px;
+  transition: background-color 0.3s ease;
+}
+
+.widget-buttons-grid button:hover {
+  background-color: @button-hover-bg;
+}
+
+/* Notifications Area */
+.widget-notifications {
+  padding: 0;
+  margin: 9px; /* Keep margin for spacing */
+}
+
+.notification {
+  background-color: @module-bg;
+  border-radius: 9px;
+  padding: 10px;
+  margin-bottom: 9px; /* Space between individual notifications */
+}
+
+.notification:last-child {
+  margin-bottom: 0;
+}

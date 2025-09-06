@@ -1,18 +1,22 @@
 {
     "$schema": "/etc/xdg/swaync/configSchema.json",
     "cssPriority": "user",
+    
     "positionX": "center",
     "positionY": "top",
+    
     "layer": "overlay",
     "control-center-layer": "overlay",
-    "control-center-width": 500,
+    
     "control-center-margin-top": 8,
-    "control-center-margin-bottom": 8,
+
+    "control-center-width": 500,
+    "fit-to-screen": false,
+    
+    "hide-on-action": true,
     "notification-2fa-action": true,
     "notification-window-width": 450,
-    "notification-margin-top": 35,
-    "fit-to-screen": false,
-    "hide-on-action": true,
+
     "widgets": [
         "title",
         "mpris",

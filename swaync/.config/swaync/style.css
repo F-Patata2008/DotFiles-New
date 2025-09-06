@@ -23,20 +23,21 @@
 }
 
 /* --- General Widget Styling --- */
-.widget {
+/* Use a highly specific selector to override defaults */
+.control-center > .widget-container > .widget {
   background-color: @module-bg;
   color: @text-main;
   border-radius: 9px;
   
-  /* THIS IS THE FIX: Forcefully remove any default margins */
+  /* Forcefully remove any and all default margins */
   margin: 0;
   
-  /* Now, add our own 3px spacer using the reliable border method */
+  /* Add our own 3px spacer */
   border-top: 3px solid transparent;
 }
 
 /* Remove the top border from the VERY FIRST widget */
-.widget-container > .widget:first-child {
+.control-center > .widget-container > .widget:first-child {
   border-top: none;
 }
 
@@ -45,7 +46,6 @@
 .widget-dnd,
 .widget-mpris,
 .widget-buttons-grid {
-  /* This padding is for INSIDE the widget, which is fine */
   padding: 10px;
 }
 

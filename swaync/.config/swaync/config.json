@@ -1,22 +1,14 @@
 {
     "$schema": "/etc/xdg/swaync/configSchema.json",
     "cssPriority": "user",
-    
     "positionX": "center",
     "positionY": "top",
-    
     "layer": "overlay",
     "control-center-layer": "overlay",
-    
-    "control-center-margin-top": 8,
-
     "control-center-width": 500,
+    "control-center-margin-top": 8,
     "fit-to-screen": false,
-    
     "hide-on-action": true,
-    "notification-2fa-action": true,
-    "notification-window-width": 450,
-
     "widgets": [
         "title",
         "mpris",
@@ -25,15 +17,15 @@
         "notifications"
     ],
     "widget-config": {
-        "mpris": {
-            "image-size": 48,
-            "image-radius": 12,
-            "autohide": true
-        },
         "title": {
             "text": "Mundo Hola Patata",
             "clear-all-button": true,
             "button-text": "Format All PCS"
+        },
+        "mpris": {
+            "image-size": 48,
+            "image-radius": 12,
+            "autohide": true
         },
         "dnd": {},
         "buttons-grid": {

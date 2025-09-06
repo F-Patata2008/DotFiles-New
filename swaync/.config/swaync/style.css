@@ -8,61 +8,66 @@
 @define-color border-color rgba(192, 202, 245, 0.1);
 @define-color button-hover-bg #11111b;
 
-/* --- Global Settings --- */
-* {
-  font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-  font-size: 11px;
-}
-
 /* --- Main Window (Control Center) --- */
 .control-center {
   background-color: @bar-bg;
   border-radius: 9px;
   border: 1px solid @border-color;
-  padding: 9px;
+  padding: 8px;
 }
 
-/* --- General Widget Styling --- */
-/* Use a highly specific selector to override defaults */
-.control-center > .widget-container > .widget {
-  background-color: @module-bg;
-  color: @text-main;
-  border-radius: 9px;
-  
-  /* Forcefully remove any and all default margins */
-  margin: 0;
-  
-  /* Add our own 3px spacer */
-  border-top: 3px solid transparent;
-}
-
-/* Remove the top border from the VERY FIRST widget */
-.control-center > .widget-container > .widget:first-child {
-  border-top: none;
-}
-
-/* --- Specific Widget Styling --- */
+/*
+ * --- THE DEFINITIVE FIX ---
+ * The default theme adds `margin: 8px` to every specific widget class.
+ * We must override each of them to reset the spacing.
+*/
 .widget-title,
 .widget-dnd,
 .widget-mpris,
-.widget-buttons-grid {
-  padding: 10px;
+.widget-buttons-grid,
+.widget-volume,
+.widget-backlight,
+.widget-slider,
+.widget-inhibitors,
+.widget-label {
+    /* 1. Forcefully remove the default 8px margin */
+    margin: 0;
+    /* 2. Apply our theme's background and padding */
+    background-color: @module-bg;
+    padding: 6px 10px;
+    border-radius: 9px;
+    /* 3. Add our desired 3px space only at the bottom */
+    margin-bottom: 3px;
 }
 
-.widget-buttons-grid button {
+/* Remove the margin from the VERY LAST widget so there's no extra space */
+.widget-container > .widget:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Specific Widget Tweaks for a Tighter Look --- */
+.widget-buttons-grid {
+    padding: 4px; /* Make the button grid container a bit tighter */
+}
+
+.widget-buttons-grid flowboxchild > button {
+  border-radius: 9px;
+  padding: 4px 8px;
   background-color: transparent;
   border: none;
-  font-size: 18px;
-  padding: 10px;
-  border-radius: 9px;
-  transition: background-color 0.3s ease;
 }
 
-.widget-buttons-grid button:hover {
+.widget-buttons-grid flowboxchild > button:hover {
   background-color: @button-hover-bg;
 }
 
-/* Notifications Area */
+/* Reset internal MPRIS player margin */
+.widget-mpris .widget-mpris-player {
+    margin: 0;
+    padding: 8px;
+}
+
+/* --- Notifications Area --- */
 .widget-notifications {
   background-color: transparent;
   padding: 0;
@@ -71,6 +76,6 @@
 .notification {
   background-color: @module-bg;
   border-radius: 9px;
-  padding: 12px;
+  padding: 10px;
   margin-top: 3px;
 }

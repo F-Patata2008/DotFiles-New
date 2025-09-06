@@ -1,5 +1,6 @@
 {
     "$schema": "/etc/xdg/swaync/configSchema.json",
+    "cssPriority": "user",
     "positionX": "center",
     "positionY": "top",
     "layer": "overlay",
@@ -11,9 +12,7 @@
     "notification-window-width": 450,
     "notification-margin-top": 35,
     "fit-to-screen": false,
-
     "hide-on-action": true,
-
     "widgets": [
         "title",
         "mpris",
@@ -21,51 +20,28 @@
         "dnd",
         "notifications"
     ],
-
-
     "widget-config": {
-            "mpris": {
-                "image-size": 48,
-                "image-radius": 12,
-                "autohide": true
-            },
-            "title": {
-                "text": "Mundo Hola Patata",
-                "clear-all-button": true,
-                "button-text": "Format All PCS"
-            },
-            "dnd": {},
-            "buttons-grid": {
-                "actions": [{
-                        "label": "",
-                        "command": "sh $HOME/Dotfiles/hypr/.config/hypr/scripts/wifi.sh",
-                        "tooltip": "Network"
-                    },{
-                        "label": "",
-                        "command": "blueman-manager",
-                        "tooltip": "Bluetooth"
-                    },{
-                        "label": "󰈙",
-                        "command": "nautilus",
-                        "tooltip": "Files"
-                    },{
-                        "label": "󰻠",
-                        "command": "gnome-system-monitor",
-                        "tooltip": "System Monitor"
-                    },{
-                        "label": "",
-                        "command": "swaylock",
-                        "tooltip": "Lock"
-                    },{
-                        "label": "󰜉",
-                        "command": "reboot",
-                        "tooltip": "Reboot"
-                    },{
-                        "label": "⏻",
-                        "command": "systemctl hibernate",
-                        "tooltip": "Hibernate PC"
-                    }
-                ]
-            }
+        "mpris": {
+            "image-size": 48,
+            "image-radius": 12,
+            "autohide": true
+        },
+        "title": {
+            "text": "Mundo Hola Patata",
+            "clear-all-button": true,
+            "button-text": "Format All PCS"
+        },
+        "dnd": {},
+        "buttons-grid": {
+            "actions": [
+                { "label": "", "command": "sh $HOME/Dotfiles/hypr/.config/hypr/scripts/wifi.sh", "tooltip": "Network" },
+                { "label": "", "command": "blueman-manager", "tooltip": "Bluetooth" },
+                { "label": "󰈙", "command": "nautilus", "tooltip": "Files" },
+                { "label": "󰻠", "command": "gnome-system-monitor", "tooltip": "System Monitor" },
+                { "label": "", "command": "swaylock", "tooltip": "Lock" },
+                { "label": "󰜉", "command": "reboot", "tooltip": "Reboot" },
+                { "label": "⏻", "command": "systemctl hibernate", "tooltip": "Hibernate PC" }
+            ]
         }
+    }
 }

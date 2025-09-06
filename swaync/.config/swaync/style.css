@@ -1,18 +1,17 @@
-/* Import the pywal color palette if you want to use it */
+/* Import pywal colors */
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
 /* --- Define our color scheme --- */
-@define-color bar-bg rgba(26, 27, 38, 0.85); /* Main window background */
-@define-color module-bg rgba(0, 0, 8, .7); /* Widget background */
-@define-color text-main #c0caf5; /* Main text color */
-@define-color border-color rgba(192, 202, 245, 0.1); /* A subtle border color */
-@define-color button-hover-bg #11111b; /* Hover color for buttons */
+@define-color bar-bg rgba(26, 27, 38, 0.85);
+@define-color module-bg rgba(0, 0, 8, .7);
+@define-color text-main #c0caf5;
+@define-color border-color rgba(192, 202, 245, 0.1);
+@define-color button-hover-bg #11111b;
 
 /* --- Global Settings --- */
 * {
-  font-family:
-    "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-  font-size: 11px; /* Slightly larger for readability in a notification center */
+  font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 11px;
 }
 
 /* --- Main Window (Control Center) --- */
@@ -20,7 +19,7 @@
   background-color: @bar-bg;
   border-radius: 9px;
   border: 1px solid @border-color;
-  padding: 9px; /* Add some padding around the entire window */
+  padding: 9px;
 }
 
 /* --- General Widget Styling --- */
@@ -28,53 +27,32 @@
   background-color: @module-bg;
   color: @text-main;
   border-radius: 9px;
-  margin: 5px; /* This is the key to resizing the distance between modules */
+  
+  /* THIS IS THE FIX: Forcefully remove any default margins */
+  margin: 0;
+  
+  /* Now, add our own 3px spacer using the reliable border method */
+  border-top: 3px solid transparent;
 }
 
-/* Remove margin from the first and last widgets to align with the window padding */
-.widget:first-child {
-  margin-top: 0;
-}
-
-.widget:last-child {
-  margin-bottom: 0;
+/* Remove the top border from the VERY FIRST widget */
+.widget-container > .widget:first-child {
+  border-top: none;
 }
 
 /* --- Specific Widget Styling --- */
-
-/* Title widget */
-.widget-title {
-  padding: 10px;
-  font-weight: bold;
-}
-
-.widget-title button {
-  font-size: 12px;
-}
-
-.widget-title button:hover {
-  background-color: @button-hover-bg;
-}
-
-/* DND (Do Not Disturb) widget */
-.widget-dnd {
-  padding: 10px;
-}
-
-/* MPRIS (Media Player) widget */
-.widget-mpris {
-  padding: 15px;
-}
-
-/* Buttons Grid widget */
+.widget-title,
+.widget-dnd,
+.widget-mpris,
 .widget-buttons-grid {
+  /* This padding is for INSIDE the widget, which is fine */
   padding: 10px;
 }
 
 .widget-buttons-grid button {
   background-color: transparent;
   border: none;
-  font-size: 18px; /* Make icons larger */
+  font-size: 18px;
   padding: 10px;
   border-radius: 9px;
   transition: background-color 0.3s ease;
@@ -86,17 +64,13 @@
 
 /* Notifications Area */
 .widget-notifications {
+  background-color: transparent;
   padding: 0;
-  margin: 9px; /* Keep margin for spacing */
 }
 
 .notification {
   background-color: @module-bg;
   border-radius: 9px;
-  padding: 10px;
-  margin-bottom: 9px; /* Space between individual notifications */
-}
-
-.notification:last-child {
-  margin-bottom: 0;
+  padding: 12px;
+  margin-top: 3px;
 }

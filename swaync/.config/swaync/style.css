@@ -17,37 +17,33 @@
 }
 
 /*
- * --- THE DEFINITIVE FIX ---
- * The default theme adds `margin: 8px` to every specific widget class.
- * We must override each of them to reset the spacing.
+ * --- THE REAL, FINAL FIX ---
+ * Target the anonymous GTK "box" element that holds each widget.
+ * This is the element that controls the layout spacing.
 */
-.widget-title,
-.widget-dnd,
-.widget-mpris,
-.widget-buttons-grid,
-.widget-volume,
-.widget-backlight,
-.widget-slider,
-.widget-inhibitors,
-.widget-label {
-    /* 1. Forcefully remove the default 8px margin */
-    margin: 0;
-    /* 2. Apply our theme's background and padding */
-    background-color: @module-bg;
-    padding: 6px 10px;
-    border-radius: 9px;
-    /* 3. Add our desired 3px space only at the bottom */
-    margin-bottom: 3px;
+.widget-container > box {
+  margin-bottom: 3px;
 }
 
-/* Remove the margin from the VERY LAST widget so there's no extra space */
-.widget-container > .widget:last-child {
+/* Remove the margin from the very last box to prevent extra space */
+.widget-container > box:last-child {
   margin-bottom: 0;
 }
 
-/* --- Specific Widget Tweaks for a Tighter Look --- */
+/* --- General Widget Theming --- */
+/* Now we can style the .widget class for looks, not for layout */
+.widget {
+    background-color: @module-bg;
+    color: @text-main;
+    border-radius: 9px;
+    padding: 6px 10px;
+    /* Remove any margins we tried before, as they are not needed */
+    margin: 0;
+}
+
+/* --- Specifics for a Tighter Look --- */
 .widget-buttons-grid {
-    padding: 4px; /* Make the button grid container a bit tighter */
+    padding: 4px;
 }
 
 .widget-buttons-grid flowboxchild > button {
@@ -61,7 +57,7 @@
   background-color: @button-hover-bg;
 }
 
-/* Reset internal MPRIS player margin */
+/* Reset internal MPRIS player margin from default theme */
 .widget-mpris .widget-mpris-player {
     margin: 0;
     padding: 8px;

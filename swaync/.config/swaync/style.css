@@ -1,96 +1,90 @@
-/* --- Global defaults --- */
+/* Import pywal colors */
+@import "/home/F-Patata/.cache/wal/colors-waybar.css";
+
+/* --- Define our color scheme --- */
+@define-color main-bg rgba(26, 27, 38, 0.85);
+@define-color module-bg rgba(10, 12, 20, 0.9);
+@define-color text-main #c0caf5;
+@define-color border-color rgba(192, 202, 45, 0.1);
+@define-color button-hover-bg rgba(17, 17, 27, 1);
+
+/* --- STEP 1: Reset ALL Fonts --- */
 * {
     font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 9px;
-    color: #c0caf5;        /* texto principal (igual al foreground de waybar) */
-    background: none;
-    border: none;
-    border-radius: 9px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 10px; /* A base font size */
 }
 
-/* --- Colores sólidos --- */
-@define-color bar-bg        rgba(26, 27, 38, 1.0);   /* fondo notificaciones */
-@define-color module-bg     rgba(0, 0, 8, 1.0);      /* botones */
-@define-color module-hover-bg rgba(36, 37, 48, 1.0); /* hover */
-@define-color text-main     #c0caf5;                 /* texto */
-@define-color text-muted    #7c818c;                 /* texto apagado */
-@define-color urgent        #f7768e;                 /* notificaciones urgentes */
-@define-color success       #9ece6a;
-@define-color warning       #e0af68;
-@define-color border        #414868;
-
-/* --- Control center --- */
-#control-center {
-    background-color: @bar-bg;
+/* --- Main Window (Control Center) --- */
+.control-center {
+    background-color: @main-bg;
     border-radius: 9px;
+    border: 1px solid @border-color;
     padding: 8px;
 }
 
-/* --- Notificaciones --- */
-.notification {
+/* --- STEP 2: The Widget Container --- */
+.widget-container > box {
+    padding: 0;
+    margin: 0;
+    /* This is the most balanced spacing we were able to achieve */
+    margin-bottom: 5px;
+}
+.widget-container > box:last-child {
+    margin-bottom: 0;
+}
+
+/* --- STEP 3: Reset ALL Widgets to Zero --- */
+.widget, .widget-title, .widget-dnd, .widget-mpris, .widget-buttons-grid {
+    margin: 0;
+    padding: 0;
     background-color: @module-bg;
+    color: @text-main;
     border-radius: 9px;
-    padding: 6px;
-    margin: 4px 0;
-    border: 1px solid @border;
 }
 
-.notification:hover {
-    background-color: @module-hover-bg;
+/* --- STEP 4: Reset ALL Internal Elements to Zero --- */
+.widget-title > label, .widget-title > button,
+.widget-dnd > box > label, .widget-dnd > box > switch,
+.widget-mpris .widget-mpris-player,
+.widget-buttons-grid > flowbox {
+    margin: 0;
+    padding: 0;
 }
 
-/* --- Header (apps, título, close) --- */
-.notification-header {
-    font-weight: bold;
-    margin-bottom: 4px;
-    color: @text-main;
+/* --- STEP 5: Reset Internal Font Sizes --- */
+.widget-title > label,
+.widget-dnd > box > label,
+.widget-mpris .widget-mpris-title,
+.widget-mpris .widget-mpris-subtitle {
+    font-size: 11px;
+}
+.widget-title > button {
+    font-size: 10px;
+}
+.widget-buttons-grid flowboxchild > button {
+    font-size: 14px;
 }
 
-.notification .close-button {
-    color: @text-muted;
-}
-.notification .close-button:hover {
-    color: @urgent;
-}
 
-/* --- Botones --- */
-button {
-    background-color: @module-bg;
-    color: @text-main;
-    padding: 4px 8px;
-    border-radius: 7px;
+/* --- STEP 6: Rebuild Padding Carefully --- */
+.widget-title {
+    padding: 4px 10px;
 }
-
-button:hover {
-    background-color: @module-hover-bg;
+.widget-mpris {
+    padding: 6px 10px;
 }
-
-/* --- Sliders (brillo, volumen, etc.) --- */
-slider {
-    min-width: 0;
-    min-height: 0;
-    background-color: @module-bg;
-    border-radius: 7px;
+.widget-buttons-grid {
+    padding: 4px;
 }
-
-slider highlight {
-    background-color: @success;
+.widget-buttons-grid flowboxchild > button {
+    border-radius: 9px;
+    padding: 2px 6px;
+    background-color: transparent;
+    border: none;
 }
-
-/* --- Progress bar (ej: descargas) --- */
-progressbar {
-    background-color: @module-bg;
-    border-radius: 7px;
+.widget-buttons-grid flowboxchild > button:hover {
+    background-color: @button-hover-bg;
 }
-progressbar progress {
-    background-color: @success;
-    border-radius: 7px;
+.widget-dnd {
+    padding: 4px 10px;
 }
-
-/* --- Urgente --- */
-.notification.critical {
-    border: 1px solid @urgent;
-    background-color: shade(@urgent, 0.25);
-}
-

@@ -8,12 +8,13 @@
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
 /* --- Define our color scheme based on your Waybar --- */
-@define-color bar-bg rgba(26, 27, 38, 0.75);       /* Bar background with transparency */
-@define-color module-bg rgba(0, 0, 8, 0.7);          /* Module group background */
-@define-color module-hover-bg rgba(26, 27, 38, 0.9); /* Module background on hover */
-@define-color text-main #c0caf5;                  /* Main text color */
-@define-color text-hover #cdd6f4;                 /* Text color on hover */
-@define-color workspace-active-bg #13131d;       /* Active workspace background */
+/* ADJUSTED: Changed to a softer, lighter color for the main background */
+@define-color bar-bg rgba(40, 41, 58, 0.8);
+@define-color module-bg rgba(0, 0, 8, 0.7);
+@define-color module-hover-bg rgba(26, 27, 38, 0.9);
+@define-color text-main #c0caf5;
+@define-color text-hover #cdd6f4;
+@define-color workspace-active-bg #13131d;
 
 /* --- General --- */
 * {
@@ -22,11 +23,10 @@
     font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
     font-size: 9px;
     min-height: 0;
-    transition: background-color .3s ease-out;
 }
 
-/* --- Main Window --- */
-.notification-center {
+/* --- Main Window (Control Center) --- */
+.notification-center, .control-center {
     background-color: @bar-bg;
     color: @text-main;
 }
@@ -36,6 +36,7 @@
     background-color: @module-bg;
     margin: 9px;
     padding: 5px;
+    transition: background-color 0.3s ease-out;
 }
 
 .widget:hover {
@@ -72,6 +73,11 @@
 .widget-buttons-grid button:hover {
     background-color: @module-hover-bg;
     color: @text-hover;
+}
+
+/* --- Do Not Disturb Widget --- */
+.widget-dnd {
+    padding: 9px;
 }
 
 /* --- Notifications --- */

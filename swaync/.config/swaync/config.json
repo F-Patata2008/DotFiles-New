@@ -1,33 +1,47 @@
 {
-  "$schema": "/etc/xdg/swaync/configSchema.json",
-  "cssPriority": "user",
-  "positionX": "center",
-  "positionY": "top",
-  "layer": "overlay",
-  "control-center-layer": "overlay",
-  "control-center-width": 500,
-  "control-center-margin-top": 2,
-  "fit-to-screen": false,
-  "hide-on-action": true,
-  "widgets": [
-    "title",
-    "mpris",
-    "buttons-grid",
-    "dnd",
-    "notifications"
-  ],
-  "widget-config": {
-    "title": {
-      "text": "Mundo Hola Patata",
-      "clear-all-button": true,
-      "button-text": "Format All PCS"
-    },
-    "mpris": {
-      "image-size": 48,
-      "image-radius": 12,
-      "autohide": true
-    },
-    "dnd": {},
+    "$schema": "/etc/xdg/swaync/configSchema.json",
+    "cssPriority": "user",
+    "positionX": "center",
+    "positionY": "top",
+    "layer": "overlay",
+    "control-center-layer": "overlay",
+    "control-center-width": 500,
+    "control-center-margin-top": 2,
+    "fit-to-screen": false,
+    "hide-on-action": true,
+    "widgets": [
+        "title",
+        "mpris",
+        "buttons-grid",
+        "dnd",
+        "notifications"
+    ],
+    "widget-config": {
+        "title": {
+            "text": "Mundo Hola Patata",
+            "clear-all-button": true,
+            "button-text": "Format All PCS"
+        },
+        "mpris": {
+            "image-size": 48,
+            "image-radius": 12,
+            "autohide": true
+        },
+        "dnd": {},
+        "buttons-grid": {
+            "actions": [
+                { "label": "", "command": "sh $HOME/Dotfiles/hypr/.config/hypr/scripts/wifi.sh", "tooltip": "Network" },
+                { "label": "", "command": "blueman-manager", "tooltip": "Bluetooth" },
+                { "label": "󰈙", "command": "nautilus", "tooltip": "Files" },
+                { "label": "󰻠", "command": "gnome-system-monitor", "tooltip": "System Monitor" },
+                { "label": "", "command": "swaylock", "tooltip": "Lock" },
+                { "label": "󰜉", "command": "reboot", "tooltip": "Reboot" },
+                { "label": "⏻", "command": "systemctl hibernate", "tooltip": "Hibernate PC" }
+            ]
+        },
+        "notifications": {}
+    }
+}    "dnd": {},
     "buttons-grid": {
       "actions": [
         {

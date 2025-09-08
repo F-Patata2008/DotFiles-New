@@ -1,90 +1,117 @@
-/* Import pywal colors */
+/**
+ * Sway Notification Center CSS
+ *
+ * Based on your Waybar theme
+ */
+
+/* --- Import your pywal color palette --- */
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
-/* --- Define our color scheme --- */
-@define-color main-bg rgba(26, 27, 38, 0.85);
-@define-color module-bg rgba(10, 12, 20, 0.9);
-@define-color text-main #c0caf5;
-@define-color border-color rgba(192, 202, 45, 0.1);
-@define-color button-hover-bg rgba(17, 17, 27, 1);
+/* --- Define our color scheme based on your Waybar --- */
+@define-color bar-bg rgba(26, 27, 38, 0.75);       /* Bar background with transparency */
+@define-color module-bg rgba(0, 0, 8, 0.7);          /* Module group background */
+@define-color module-hover-bg rgba(26, 27, 38, 0.9); /* Module background on hover */
+@define-color text-main #c0caf5;                  /* Main text color */
+@define-color text-hover #cdd6f4;                 /* Text color on hover */
+@define-color workspace-active-bg #13131d;       /* Active workspace background */
 
-/* --- STEP 1: Reset ALL Fonts --- */
+/* --- General --- */
 * {
-    font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 10px; /* A base font size */
-}
-
-/* --- Main Window (Control Center) --- */
-.control-center {
-    background-color: @main-bg;
+    border: none;
     border-radius: 9px;
-    border: 1px solid @border-color;
-    padding: 8px;
+    font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    min-height: 0;
+    transition: background-color .3s ease-out;
 }
 
-/* --- STEP 2: The Widget Container --- */
-.widget-container > box {
-    padding: 0;
-    margin: 0;
-    /* This is the most balanced spacing we were able to achieve */
+/* --- Main Window --- */
+.notification-center {
+    background-color: @bar-bg;
+    color: @text-main;
+}
+
+/* --- Widgets --- */
+.widget {
+    background-color: @module-bg;
+    margin: 9px;
+    padding: 5px;
+}
+
+.widget:hover {
+    background-color: @module-hover-bg;
+}
+
+/* --- Title --- */
+.widget-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: @text-main;
     margin-bottom: 5px;
 }
-.widget-container > box:last-child {
-    margin-bottom: 0;
+
+.widget-title button {
+    background-color: transparent;
+    color: @text-main;
+    text-shadow: none;
 }
 
-/* --- STEP 3: Reset ALL Widgets to Zero --- */
-.widget, .widget-title, .widget-dnd, .widget-mpris, .widget-buttons-grid {
-    margin: 0;
-    padding: 0;
+.widget-title button:hover {
+    background-color: @module-hover-bg;
+    color: @text-hover;
+}
+
+/* --- Buttons Grid --- */
+.widget-buttons-grid button {
     background-color: @module-bg;
     color: @text-main;
-    border-radius: 9px;
-}
-
-/* --- STEP 4: Reset ALL Internal Elements to Zero --- */
-.widget-title > label, .widget-title > button,
-.widget-dnd > box > label, .widget-dnd > box > switch,
-.widget-mpris .widget-mpris-player,
-.widget-buttons-grid > flowbox {
-    margin: 0;
-    padding: 0;
-}
-
-/* --- STEP 5: Reset Internal Font Sizes --- */
-.widget-title > label,
-.widget-dnd > box > label,
-.widget-mpris .widget-mpris-title,
-.widget-mpris .widget-mpris-subtitle {
-    font-size: 11px;
-}
-.widget-title > button {
-    font-size: 10px;
-}
-.widget-buttons-grid flowboxchild > button {
     font-size: 14px;
+    padding: 9px;
 }
 
-/*F-Patata */
-/* --- STEP 6: Rebuild Padding Carefully --- */
-.widget-title {
-    padding: 4px 10px;
+.widget-buttons-grid button:hover {
+    background-color: @module-hover-bg;
+    color: @text-hover;
 }
-.widget-mpris {
-    padding: 6px 10px;
-}
-.widget-buttons-grid {
-    padding: 4px;
-}
-.widget-buttons-grid flowboxchild > button {
+
+/* --- Notifications --- */
+.notification {
+    background-color: @module-bg;
     border-radius: 9px;
-    padding: 2px 6px;
-    background-color: transparent;
-    border: none;
+    margin: 9px;
 }
-.widget-buttons-grid flowboxchild > button:hover {
-    background-color: @button-hover-bg;
+
+.notification-content {
+    padding: 9px;
 }
-.widget-dnd {
-    padding: 4px 10px;
+
+.summary {
+    font-weight: bold;
+    color: @text-main;
+}
+
+.body {
+    color: @text-main;
+}
+
+.notification-action {
+    background-color: @workspace-active-bg;
+    color: @text-main;
+    border-radius: 9px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.notification-action:hover {
+    background-color: @module-hover-bg;
+    color: @text-hover;
+}
+
+/* --- MPRIS (Media Player) --- */
+.widget-mpris {
+    padding: 9px;
+}
+
+.widget-mpris image {
+    border-radius: 12px;
 }

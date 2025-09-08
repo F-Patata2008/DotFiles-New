@@ -41,46 +41,4 @@
         },
         "notifications": {}
     }
-}    "dnd": {},
-    "buttons-grid": {
-      "actions": [
-        {
-          "label": "",
-          "command": "sh $HOME/Dotfiles/hypr/.config/hypr/scripts/wifi.sh",
-          "tooltip": "Network"
-        },
-        {
-          "label": "",
-          "command": "blueman-manager",
-          "tooltip": "Bluetooth"
-        },
-        {
-          "label": "󰈙",
-          "command": "nautilus",
-          "tooltip": "Files"
-        },
-        {
-          "label": "󰻠",
-          "command": "gnome-system-monitor",
-          "tooltip": "System Monitor"
-        },
-        {
-          "label": "",
-          "command": "swaylock",
-          "tooltip": "Lock"
-        },
-        {
-          "label": "󰜉",
-          "command": "reboot",
-          "tooltip": "Reboot"
-        },
-        {
-          "label": "⏻",
-          "command": "systemctl hibernate",
-          "tooltip": "Hibernate PC"
-        }
-      ]
-    }
-  }
 }
-

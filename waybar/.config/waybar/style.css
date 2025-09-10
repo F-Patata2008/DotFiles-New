@@ -143,18 +143,15 @@ window#waybar {
 }
 
 
+/* This is the NEW section to replace the old one */
 #battery.warning {
-    color: orange;
+    background-color: #F39C12; /* A nice orange color */
 }
 
 #battery.critical {
-    color: red;
+    background-color: #E74C3C; /* A solid red color */
 }
 
-#battery.charging {
-    color: green; /* Optional: You might want to keep your current charging color or define a new one */
-}
-
-#battery.plugged {
-    color: green; /* Optional: Color for when plugged in but not necessarily charging */
+#battery.charging, #battery.plugged {
+    background-color: #26A65B; /* A pleasant green color */
 }

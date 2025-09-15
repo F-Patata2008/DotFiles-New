@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# This script toggles hyprsunset by checking its current state
-# NOTE: This requires `jq` to be installed (sudo pacman -S jq)
+# This is the compatible version that works on all Hyprland versions
 
-CURRENT_STATE=$(hyprctl getoption misc:hyprsunset -j | jq -r '.str')
-
-if [[ "$CURRENT_STATE" == "on" ]]; then
-    hyprctl dispatch hyprsunset off
-    notify-send "Night Light Disabled"
+if pgrep -x "hyprsunset" > /dev/null
+then
+    # If hyprsunset is running, kill it and notify
+    killall hyprsunset
+    notify-send "Night Light Disabled" -h string:x-canonical-private-synchronous:nightlight-toggle
 else
-    hyprctl dispatch hyprsunset on
-    notify-send "Night Light Enabled"
+    # If hyprsunset is not running, start it and notify
+    hyprsunset &
+    notify-send "Night Light Enabled" -h string:x-canonical-private-synchronous:nightlight-toggle
 fi

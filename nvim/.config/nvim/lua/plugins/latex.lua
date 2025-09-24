@@ -1,9 +1,13 @@
+-- Tu archivo de configuración de vimtex
 return { 
     {
         "lervag/vimtex",
         ft = { "tex", "latex", "bib" },
         init = function()
             vim.g.vimtex_compiler_method = "latexmk"
+            -- ESTA LÍNEA ES LA SOLUCIÓN CORRECTA --
+            vim.g.vimtex_compiler_latexmk = { pdflatex = 'lualatex -interaction=nonstopmode %O %S' }
+
             vim.g.vimtex_view_zathura = {
                 wayland = 1,
                 nvim_instance = vim.v.servername,

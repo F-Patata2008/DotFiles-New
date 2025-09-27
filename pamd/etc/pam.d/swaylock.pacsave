@@ -1,0 +1,9 @@
+#
+# PAM configuration for swaylock
+#
+
+# Try to authenticate with fingerprint first.
+auth       sufficient   pam_fprintd.so
+
+# If that fails, fall back to password authentication.
+auth       include      system-login

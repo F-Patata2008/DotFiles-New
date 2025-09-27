@@ -1,0 +1,11 @@
+#
+# /etc/pam.d/swaylock - Bulletproof configuration
+#
+
+# 1. Try fingerprint authentication first.
+#    - If it succeeds (`success=done`), unlock immediately.
+#    - If it fails for any reason (`default=ignore`), just cleanly move to the next rule.
+auth      [success=done default=ignore] pam_fprintd.so timeout=5000
+
+# 2. If fingerprint was not successful, use the standard system password prompt.
+auth      include   system-login

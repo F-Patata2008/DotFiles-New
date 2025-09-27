@@ -1,0 +1,14 @@
+#
+# /etc/pam.d/sudo - Bulletproof configuration
+#
+
+# 1. Try fingerprint authentication first.
+#    - If it succeeds (`success=done`), allow sudo immediately.
+#    - If it fails for any reason (`default=ignore`), just cleanly move to the next rule.
+#auth      sufficient      pam_fprintd.so
+# 2. If fingerprint was not used, fall back to the standard password check.
+
+auth      include   system-auth
+account      include   system-auth
+password      include   system-auth
+session      include   system-auth

@@ -1,0 +1,15 @@
+# PAM configuration file for hyprlock
+# the 'login' configuration file (see /etc/pam.d/login)
+
+#%PAM-1.0
+
+# 1. Try fingerprint authentication. If successful, grant access immediately.
+auth      sufficient  pam_fprintd.so
+
+# 2. If fingerprint fails or is not used, fall back to standard password authentication.
+auth      include     system-login
+
+# These lines are also important for a fully functional PAM stack.
+account   include     system-login
+password  include     system-login
+session   include     system-login

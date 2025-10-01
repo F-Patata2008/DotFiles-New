@@ -38,9 +38,16 @@ source $ZSH/oh-my-zsh.sh
 # Preferred editor
 export EDITOR='nvim'
 
-# Custom aliases
-# Add your Arch-specific aliases from the archlinux plugin here if you want to override them
-# alias pacupg='sudo pacman -Syu'
+# +++ ADD THIS BLOCK +++
+# Load all custom .zsh files (like aliases.zsh and shortcuts.zsh)
+# The path ~/.zsh/custom works because 'stow' symlinks ~/Dotfiles/zsh to ~/.zsh
+for file in ~/.zsh/custom/*.zsh; do
+  if [ -r "$file" ]; then
+    source "$file"
+  fi
+done
+# +++ END OF BLOCK +++
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # This should be at the end.

@@ -1,0 +1,1227 @@
+=========================================
+File: chekcr.sh
+=========================================
+
+#!/bin/bash
+
+# Define the directory to check and the output file
+DOTFILES_DIR="$HOME/Dotfiles" # Assumes your Dotfiles are in the home directory
+OUTPUT_FILE="dotfiles_content.txt"
+
+# Check if the Dotfiles directory exists
+if [ ! -d "$DOTFILES_DIR" ]; then
+  echo "Error: Directory $DOTFILES_DIR does not exist."
+  exit 1
+fi
+
+# Clear the output file if it already exists
+> "$OUTPUT_FILE"
+
+# Loop through every file in the Dotfiles directory
+for file in "$DOTFILES_DIR"/*
+do
+  # Check if the current item is a regular file
+  if [ -f "$file" ]; then
+    # Get just the filename from the full path
+    filename=$(basename "$file")
+
+    # Append the filename to the output file
+    echo "=========================================" >> "$OUTPUT_FILE"
+    echo "File: $filename" >> "$OUTPUT_FILE"
+    echo "=========================================" >> "$OUTPUT_FILE"
+    echo "" >> "$OUTPUT_FILE"
+
+    # Append the content of the file to the output file
+    cat "$file" >> "$OUTPUT_FILE"
+
+    # Add a newline for spacing between file contents
+    echo "" >> "$OUTPUT_FILE"
+    echo "" >> "$OUTPUT_FILE"
+  fi
+done
+
+echo "Process complete. The contents of all files have been saved to $OUTPUT_FILE"
+
+
+=========================================
+File: dotfiles_content.txt
+=========================================
+
+
+
+=========================================
+File: push.log
+=========================================
+
+========== 2025-08-01 21:28:02 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 7fce75f] Auto-commit: 2025-08-01 21:28:02
+ 2 files changed, 1 insertion(+)
+ create mode 100644 push.log
+ mode change 100644 => 100755 push.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 21:28:02] ✅ Push exitoso
+========== 2025-08-01 22:44:03 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9fefae3] Patata: 2025-08-01 22:44:03
+ 11 files changed, 710 insertions(+), 25 deletions(-)
+ create mode 100644 i3/.config/i3/config
+ create mode 100644 i3/.config/i3/i3blocks.conf
+ create mode 100644 i3/.config/i3/scripts/disk
+ create mode 100755 i3/.config/i3/scripts/lock
+ create mode 100644 i3/.config/i3/scripts/memory
+ create mode 100644 i3/.config/i3/scripts/spotify.py
+ create mode 100644 i3/.config/i3/scripts/volume
+ create mode 100644 i3status/.config/i3status/i3status.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 22:44:03]  Push exitoso
+========== 2025-08-01 22:55:04 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main ee95259] Patata: 2025-08-01 22:55:04
+ 4 files changed, 52 insertions(+), 37 deletions(-)
+ rename {i3/.config/i3 => i3status/.config/i3status}/i3blocks.conf (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 22:55:04]  Push exitoso
+========== 2025-08-02 21:17:53 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 4fd7513] Patata: 2025-08-02 21:17:53
+ 9 files changed, 175 insertions(+), 461 deletions(-)
+ rename i3/.config/i3/scripts/{lock => lock.sh} (100%)
+ create mode 100755 i3/.config/i3/scripts/natscroll.sh
+ create mode 100644 picom/.config/picom/picom.conf
+ delete mode 100644 r.md
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 21:17:53]  Push exitoso
+========== 2025-08-02 22:56:44 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 4db0ebc] Patata: 2025-08-02 22:56:44
+ 4 files changed, 23 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 22:56:44]  Push exitoso
+========== 2025-08-02 23:31:40 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main eaa4e5a] Patata: 2025-08-02 23:31:40
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 23:31:40]  Push exitoso
+========== 2025-08-03 22:34:16 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 54704d7] Patata: 2025-08-03 22:34:16
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-03 22:34:16]  Push exitoso
+========== 2025-08-04 11:23:37 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 325a214] Patata: 2025-08-04 11:23:37
+ 3 files changed, 224 insertions(+), 34 deletions(-)
+ create mode 100644 polybar/.config/polybar/config.ini
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 11:23:37]  Push exitoso
+========== 2025-08-04 16:11:22 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9464bf5] Patata: 2025-08-04 16:11:22
+ 5 files changed, 45 insertions(+), 2 deletions(-)
+ create mode 100644 rofimoji/.config/rofimoji.rc
+ create mode 100755 waybar/.config/waybar/wifi.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:11:22]  Push exitoso
+========== 2025-08-04 16:17:56 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6673b8a] Patata: 2025-08-04 16:17:56
+ 3 files changed, 2 insertions(+), 1 deletion(-)
+ rename {waybar/.config/waybar => hypr/.config/hypr/scripts}/wifi.sh (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:17:56]  Push exitoso
+========== 2025-08-04 16:29:18 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 09e460d] Patata: 2025-08-04 16:29:18
+ 3 files changed, 11 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:29:18]  Push exitoso
+========== 2025-08-04 16:53:39 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main c7ed183] Patata: 2025-08-04 16:53:39
+ 6 files changed, 15 insertions(+), 21 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:53:39]  Push exitoso
+========== 2025-08-04 17:13:59 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 81c646e] Patata: 2025-08-04 17:13:59
+ 4 files changed, 23 insertions(+), 11 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 17:13:59]  Push exitoso
+========== 2025-08-04 20:01:20 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 10cb831] Patata: 2025-08-04 20:01:20
+ 4 files changed, 263 insertions(+), 310 deletions(-)
+ create mode 100644 aur_packages.txt
+ create mode 100644 pacman_packages.txt
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 20:01:20]  Push exitoso
+========== 2025-08-04 20:03:58 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 00df169] Patata: 2025-08-04 20:03:58
+ 2 files changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 20:03:58]  Push exitoso
+========== 2025-08-06 21:45:22 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main fac58f7] Patata: 2025-08-06 21:45:22
+ 7 files changed, 35 insertions(+), 4 deletions(-)
+ create mode 100644 eww/.config/eww/eww.css
+ create mode 100644 eww/.config/eww/eww.yuck
+ mode change 100644 => 100755 install.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:45:22]  Push exitoso
+========== 2025-08-06 21:53:02 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 99a85aa] Patata: 2025-08-06 21:53:02
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+ create mode 100644 .gitignore
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:53:02]  Push exitoso
+========== 2025-08-06 21:53:19 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e1456b3] Patata: 2025-08-06 21:53:19
+ 1 file changed, 137 deletions(-)
+ delete mode 100644 push.log
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:53:19]  Push exitoso
+========== 2025-08-06 22:18:04 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6f1a72e] Añadiendo config de swaync
+ 1 file changed, 21 insertions(+)
+ create mode 100644 swaync/.config/swaync/config.json
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 22:18:04]  Push exitoso
+========== 2025-08-07 08:55:16 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 27b3e52] Patata: 2025-08-07 08:55:16
+ 1 file changed, 26 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 08:55:16]  Push exitoso
+========== 2025-08-07 10:39:19 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 0194320] Patata: 2025-08-07 10:39:19
+ 1 file changed, 8 insertions(+), 17 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 10:39:19]  Push exitoso
+========== 2025-08-07 11:29:39 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 7a87c55] Añadiendo compatibilidad de Markdown
+ 7 files changed, 248 insertions(+), 12 deletions(-)
+ create mode 100644 InstallArch.md
+ create mode 100644 InstallArch.md.pdf
+ create mode 100644 InstallArch.pdf
+ create mode 100644 nvim/.config/nvim/lua/plugins/markdown.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 11:29:39]  Push exitoso
+========== 2025-08-07 17:50:31 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main bae815e] Configurando swaync
+ 1 file changed, 25 insertions(+), 19 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 17:50:31]  Push exitoso
+========== 2025-08-08 22:13:41 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 1cbe56b] Added buttons to sway nc
+ 5 files changed, 183 insertions(+), 7 deletions(-)
+ delete mode 100644 InstallArch.pdf
+ create mode 100644 swaync/.config/swaync/style.css
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:13:41]  Push exitoso
+========== 2025-08-08 22:19:50 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 2f2fa50] Patata: 2025-08-08 22:19:50
+ 1 file changed, 9 insertions(+), 39 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:19:50]  Push exitoso
+========== 2025-08-08 22:22:05 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main db03d82] Patata: 2025-08-08 22:22:05
+ 1 file changed, 58 insertions(+), 42 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:22:05]  Push exitoso
+========== 2025-08-08 22:47:15 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 2359d7f] Better MD support
+ 5 files changed, 23 insertions(+), 51 deletions(-)
+ delete mode 100644 InstallArch.md.pdf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:47:15]  Push exitoso
+========== 2025-08-08 23:24:30 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9d925b2] Patata: 2025-08-08 23:24:30
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 23:24:30]  Push exitoso
+========== 2025-08-10 22:40:31 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 02cf940] Patata: 2025-08-10 22:40:31
+ 2 files changed, 84 insertions(+), 88 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-10 22:40:31]  Push exitoso
+========== 2025-08-11 12:39:30 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 01b3fa4] Patata: 2025-08-11 12:39:30
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 12:39:30]  Push exitoso
+========== 2025-08-11 15:24:27 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main afd4204] Patata: 2025-08-11 15:24:27
+ 5 files changed, 19 insertions(+), 21 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 15:24:27]  Push exitoso
+========== 2025-08-11 15:44:21 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b3ab51b] Added Copilot fucntuanily, but only in the compeltiton format, no inline text
+ 4 files changed, 48 insertions(+), 38 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 15:44:21]  Push exitoso
+========== 2025-08-11 22:24:18 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e765d06] Patata: 2025-08-11 22:24:18
+ 1 file changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 22:24:18]  Push exitoso
+========== 2025-08-12 11:51:49 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 62cae2c] Patata: 2025-08-12 11:51:49
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-12 11:51:49]  Push exitoso
+========== 2025-08-13 11:18:00 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main c46e068] Elimnando sugerencias de copilot
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 11:18:00]  Push exitoso
+========== 2025-08-13 15:16:16 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 90958a0] Added Hyprlock config
+ 3 files changed, 113 insertions(+)
+ create mode 100644 hypr/.config/hypr/hyprlock.conf
+ create mode 100644 hypr/.config/hypr/monitors.conf
+ create mode 100644 hypr/.config/hypr/workspaces.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:16:16]  Push exitoso
+========== 2025-08-13 15:29:06 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main da610e4] Agregando Hyprpaper, hypridle
+ 4 files changed, 83 insertions(+), 13 deletions(-)
+ create mode 100644 hypr/.config/hypr/hypridle.conf
+ create mode 100644 hypr/.config/hypr/hyprpaper.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:29:06]  Push exitoso
+========== 2025-08-13 15:30:59 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main d0b7a5f] added hyr ecosystem funcinality
+ 1 file changed, 3 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:30:59]  Push exitoso
+========== 2025-08-13 15:42:42 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 0034b2e] agerando
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:42:42]  Push exitoso
+========== 2025-08-13 15:47:17 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 1847c6e] Ageragando Hyprsunset
+ 3 files changed, 15 insertions(+)
+ create mode 100644 hypr/.config/hypr/hyprsunset.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:47:17]  Push exitoso
+========== 2025-08-13 16:18:10 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e75ac3f] Added sources to tressiter
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:18:10]  Push exitoso
+========== 2025-08-13 16:37:58 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e2d379f] Adde none-ls
+ 2 files changed, 44 insertions(+), 7 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/none-ls.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:37:58]  Push exitoso
+========== 2025-08-13 16:47:46 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e3d1c23] Patata: 2025-08-13 16:47:46
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:47:46]  Push exitoso
+========== 2025-08-13 17:15:51 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b40f35a] Addes basic debugging
+ 3 files changed, 21 insertions(+), 15 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/debugging.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 17:15:51]  Push exitoso
+========== 2025-08-13 17:17:51 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 101fa23] Elimando suspendion de hypridle
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 17:17:51]  Push exitoso
+========== 2025-08-13 21:27:01 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main d39e537] Agragando busqueda en vivo
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 21:27:01]  Push exitoso
+========== 2025-08-14 21:47:17 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 972bd2c] Fixed Wallpaper isuue
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-14 21:47:17]  Push exitoso
+========== 2025-08-15 14:30:08 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 946d564] Patata: 2025-08-15 14:30:08
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-15 14:30:08]  Push exitoso
+========== 2025-08-16 20:34:30 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main c6aff09] Cmabio de none-ls a formatter.nvim
+ 3 files changed, 62 insertions(+), 29 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/formatter.lua
+ delete mode 100644 nvim/.config/nvim/lua/plugins/none-ls.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-16 20:34:30]  Push exitoso
+========== 2025-08-16 21:32:33 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e4139d4] agregando formatter para latex
+ 1 file changed, 50 insertions(+), 58 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-16 21:32:33]  Push exitoso
+========== 2025-08-17 22:52:21 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 85cf0e2] Fixed Formatter errors
+ 1 file changed, 44 insertions(+), 48 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-17 22:52:21]  Push exitoso
+========== 2025-08-17 23:39:20 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 35fcfcf] Elimanado modulos sobrante waybar
+ 1 file changed, 19 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-17 23:39:20]  Push exitoso
+========== 2025-08-18 20:43:11 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main a742cda] Mejorando la config
+ 4 files changed, 0 insertions(+), 0 deletions(-)
+ rename InstallArch.md => Install/InstallArch.md (100%)
+ rename aur_packages.txt => Install/aur_packages.txt (100%)
+ rename install.sh => Install/install.sh (100%)
+ rename pacman_packages.txt => Install/pacman_packages.txt (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-18 20:43:11]  Push exitoso
+========== 2025-08-18 22:11:03 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 44cc02a] Corrected lock porblemns
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-18 22:11:03]  Push exitoso
+========== 2025-08-19 08:53:11 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 787e3e7] Patata: 2025-08-19 08:53:11
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 08:53:11]  Push exitoso
+========== 2025-08-19 09:43:38 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main d238a38] Patata: 2025-08-19 09:43:38
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 09:43:38]  Push exitoso
+========== 2025-08-19 10:03:18 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6d1dea9] Agragando wlogour
+ 2 files changed, 36 insertions(+)
+ create mode 100644 fastfetch/.config/fastfetch/Saviour.png
+ create mode 100644 wlogout/.config/wlogout/layout
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 10:03:18]  Push exitoso
+========== 2025-08-19 14:02:52 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 4d89e24] Cambiando soporte markdon
+ 4 files changed, 61 insertions(+), 52 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 14:02:52]  Push exitoso
+========== 2025-08-20 22:06:12 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 5c4175b] Arregalndo hypidle y hyprsunset
+ 3 files changed, 79 insertions(+), 77 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-20 22:06:12]  Push exitoso
+========== 2025-08-21 08:01:08 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 8bca09a] Agregando soporte Español Latex
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-21 08:01:08]  Push exitoso
+========== 2025-08-21 19:10:14 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 2829b8d] Solved LAtex sninnpet error
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-21 19:10:14]  Push exitoso
+========== 2025-08-24 10:46:41 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 107fa83] Agregando al snippet de latex soprte para derechos de autor
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-24 10:46:41]  Push exitoso
+========== 2025-08-24 23:03:35 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 40c2012] added ipynb support
+ 1 file changed, 28 insertions(+)
+ create mode 100644 nvim/.config/nvim/lua/plugins/ipynb.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-24 23:03:35]  Push exitoso
+========== 2025-08-25 14:37:22 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main df09c1d] Resolved Ipynb error
+ 2 files changed, 32 insertions(+), 18 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-25 14:37:22]  Push exitoso
+========== 2025-08-26 10:55:14 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main f71ecb1] Patata: 2025-08-26 10:55:14
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-26 10:55:14]  Push exitoso
+========== 2025-08-29 21:20:13 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 5c80f43] Patata: 2025-08-29 21:20:13
+ 5 files changed, 69 insertions(+), 79 deletions(-)
+ delete mode 100644 nvim/.config/nvim/lua/plugins/ipynb.lua
+ create mode 100644 nvim/.config/nvim/lua/plugins/jupyter.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-29 21:20:13]  Push exitoso
+========== 2025-08-29 21:39:47 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 1b159f9] Patata: 2025-08-29 21:39:47
+ 1 file changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-29 21:39:47]  Push exitoso
+========== 2025-08-31 16:29:44 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main bf6adda] Patata: 2025-08-31 16:29:44
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-31 16:29:44]  Push exitoso
+========== 2025-09-01 20:03:33 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 8e3c891] Patata: 2025-09-01 20:03:33
+ 3 files changed, 87 insertions(+)
+ create mode 100755 hypr/.config/hypr/scripts/env.sh
+ create mode 100755 hypr/.config/hypr/scripts/selector.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:03:33]  Push exitoso
+========== 2025-09-01 20:09:47 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 71cd574] Patata: 2025-09-01 20:09:47
+ 1 file changed, 20 insertions(+), 11 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:09:47]  Push exitoso
+========== 2025-09-01 20:29:26 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 88ab8ed] Configurando activaodr de ambiente
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:29:26]  Push exitoso
+========== 2025-09-01 21:39:13 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b564bc9] Patata: 2025-09-01 21:39:13
+ 2 files changed, 24 insertions(+), 16 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:39:13]  Push exitoso
+========== 2025-09-01 21:42:09 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 929f618] Patata: 2025-09-01 21:42:09
+ 2 files changed, 8 insertions(+), 16 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:42:09]  Push exitoso
+========== 2025-09-01 21:42:20 ==========
+[2025-09-01 21:42:20] No hay cambios para commitear.
+========== 2025-09-01 21:42:29 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main a1a1b90] Patata: 2025-09-01 21:42:29
+ 1 file changed, 36 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:42:29]  Push exitoso
+========== 2025-09-01 21:44:56 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main ff8cfca] Patata: 2025-09-01 21:44:56
+ 1 file changed, 36 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:44:56]  Push exitoso
+========== 2025-09-01 21:45:54 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main a7a7f40] Patata: 2025-09-01 21:45:54
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:45:54]  Push exitoso
+========== 2025-09-01 21:54:15 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 22989d6] Patata: 2025-09-01 21:54:15
+ 2 files changed, 27 insertions(+), 36 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:54:15]  Push exitoso
+========== 2025-09-01 21:55:39 ==========
+[2025-09-01 21:55:39] No hay cambios para commitear.
+========== 2025-09-02 21:47:38 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 3af687b] Patata: 2025-09-02 21:47:38
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-02 21:47:38]  Push exitoso
+========== 2025-09-02 21:58:17 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 20e4f30] Patata: 2025-09-02 21:58:17
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-02 21:58:17]  Push exitoso
+========== 2025-09-04 14:51:08 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6cc14d6] Reconfiguardo swaync
+ 1 file changed, 122 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-04 14:51:08]  Push exitoso
+========== 2025-09-04 15:12:30 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 4b0bec7] Patata: 2025-09-04 15:12:30
+ 2 files changed, 104 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-04 15:12:30]  Push exitoso
+========== 2025-09-06 15:44:42 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 918fdfc] Patata: 2025-09-06 15:44:42
+ 2 files changed, 49 insertions(+), 99 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 15:44:42]  Push exitoso
+========== 2025-09-06 16:39:57 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 8dd7383] Patata: 2025-09-06 16:39:57
+ 2 files changed, 14 insertions(+), 10 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 16:39:57]  Push exitoso
+========== 2025-09-06 17:39:09 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b6ae40a] Patata: 2025-09-06 17:39:09
+ 2 files changed, 46 insertions(+), 49 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 17:39:09]  Push exitoso
+========== 2025-09-06 20:02:24 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main bb5fa10] cant seem to finish the sway nc theme
+ 1 file changed, 21 insertions(+), 25 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:02:24]  Push exitoso
+========== 2025-09-06 20:02:58 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b23cd4f] Patata: 2025-09-06 20:02:58
+ 1 file changed, 77 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:02:58]  Push exitoso
+========== 2025-09-06 20:34:26 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 174c28a] Patata: 2025-09-06 20:34:26
+ 2 files changed, 162 insertions(+), 37 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:34:26]  Push exitoso
+========== 2025-09-06 23:39:36 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 885dc0b] Patata: 2025-09-06 23:39:36
+ 1 file changed, 65 insertions(+), 71 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 23:39:36]  Push exitoso
+========== 2025-09-07 01:19:13 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 72c32bd] Patata: 2025-09-07 01:19:13
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-07 01:19:13]  Push exitoso
+========== 2025-09-08 16:37:10 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9f60895] Patata: 2025-09-08 16:37:10
+ 1 file changed, 89 insertions(+), 62 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:37:10]  Push exitoso
+========== 2025-09-08 16:39:29 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main ecc902e] Patata: 2025-09-08 16:39:29
+ 1 file changed, 43 insertions(+), 29 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:39:29]  Push exitoso
+========== 2025-09-08 16:41:55 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main ddf21ec] Patata: 2025-09-08 16:41:55
+ 1 file changed, 42 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:41:55]  Push exitoso
+========== 2025-09-08 16:42:25 ==========
+[2025-09-08 16:42:25] No hay cambios para commitear.
+========== 2025-09-08 16:45:25 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 1a0cda2] Patata: 2025-09-08 16:45:25
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:45:25]  Push exitoso
+========== 2025-09-08 16:50:24 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main e501a1b] Patata: 2025-09-08 16:50:24
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:50:24]  Push exitoso
+========== 2025-09-08 16:53:59 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 5716559] Patata: 2025-09-08 16:53:59
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:53:59]  Push exitoso
+========== 2025-09-09 22:32:20 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 022fc51] Agrgar config a waybar
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-09 22:32:20]  Push exitoso
+========== 2025-09-10 23:30:09 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main b1ec128] Patata: 2025-09-10 23:30:09
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-10 23:30:09]  Push exitoso
+========== 2025-09-12 19:57:48 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main d353f84] solved workspace swipe gesture not working after hyprland upgrade to 0.51
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-12 19:57:48]  Push exitoso
+========== 2025-09-14 18:43:31 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main f3e4af3] Patata: 2025-09-14 18:43:31
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:43:31]  Push exitoso
+========== 2025-09-14 18:50:00 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 7734971] mejorando colores del hyprsunset
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+ create mode 100755 hypr/.config/hypr/scripts/nigthligth.sh
+ create mode 100755 hypr/.config/hypr/scripts/resetsunset.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:50:00]  Push exitoso
+========== 2025-09-14 18:56:25 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main dbda0dd] Patata: 2025-09-14 18:56:25
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:56:25]  Push exitoso
+========== 2025-09-15 20:41:51 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main edbcb77] Romved reset hypraunset script
+ 3 files changed, 10 insertions(+), 15 deletions(-)
+ delete mode 100755 hypr/.config/hypr/scripts/resetsunset.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-15 20:41:51]  Push exitoso
+========== 2025-09-16 22:23:59 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 8b258ab] Patata: 2025-09-16 22:23:59
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-16 22:23:59]  Push exitoso
+========== 2025-09-21 21:30:55 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main c52a6fd] Devolviedno el hyprsusnet
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-21 21:30:55]  Push exitoso
+========== 2025-09-23 19:08:54 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main f84fa17] Mejorando la eficiancia ne bateria
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+Haciendo push...
+[2025-09-23 19:08:54] ❌ Error al hacer push
+========== 2025-09-23 23:13:29 ==========
+[2025-09-23 23:13:29] No hay cambios para commitear.
+========== 2025-09-24 09:59:11 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 22f2738] cmabiando config de neovim para compliar un poquito mejor documentos
+ 1 file changed, 4 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 09:59:11]  Push exitoso
+========== 2025-09-24 10:04:21 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 32b8f9e] devolvioedo a como era
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 10:04:21]  Push exitoso
+========== 2025-09-24 22:03:13 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 3800ba1] addes the hyprexpo plugin
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 22:03:13]  Push exitoso
+========== 2025-09-25 08:47:49 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9c848a4] solved hyprexpo not loading
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-25 08:47:49]  Push exitoso
+========== 2025-09-26 15:24:16 ==========
+[2025-09-26 15:24:16] No hay cambios para commitear.
+========== 2025-09-26 21:19:28 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 30c504a] Added my pamd files
+ 35 files changed, 332 insertions(+)
+ create mode 100644 pamd/etc/pam.d/chfn
+ create mode 100644 pamd/etc/pam.d/chpasswd
+ create mode 100644 pamd/etc/pam.d/chsh
+ create mode 100644 pamd/etc/pam.d/crond
+ create mode 100644 pamd/etc/pam.d/cups
+ create mode 100644 pamd/etc/pam.d/gdm-autologin
+ create mode 100644 pamd/etc/pam.d/gdm-fingerprint
+ create mode 100644 pamd/etc/pam.d/gdm-launch-environment
+ create mode 100644 pamd/etc/pam.d/gdm-password
+ create mode 100644 pamd/etc/pam.d/gdm-smartcard
+ create mode 100644 pamd/etc/pam.d/greetd
+ create mode 100644 pamd/etc/pam.d/groupmems
+ create mode 100644 pamd/etc/pam.d/gtklock
+ create mode 100644 pamd/etc/pam.d/hyprlock
+ create mode 100644 pamd/etc/pam.d/i3lock
+ create mode 100644 pamd/etc/pam.d/login
+ create mode 100644 pamd/etc/pam.d/newusers
+ create mode 100644 pamd/etc/pam.d/other
+ create mode 100644 pamd/etc/pam.d/passwd
+ create mode 100644 pamd/etc/pam.d/polkit-1
+ create mode 100644 pamd/etc/pam.d/remote
+ create mode 100644 pamd/etc/pam.d/runuser
+ create mode 100644 pamd/etc/pam.d/runuser-l
+ create mode 100644 pamd/etc/pam.d/sshd
+ create mode 100644 pamd/etc/pam.d/su
+ create mode 100644 pamd/etc/pam.d/su-l
+ create mode 100644 pamd/etc/pam.d/sudo
+ create mode 100644 pamd/etc/pam.d/swaylock
+ create mode 100644 pamd/etc/pam.d/swaylock.pacsave
+ create mode 100644 pamd/etc/pam.d/system-auth
+ create mode 100644 pamd/etc/pam.d/system-local-login
+ create mode 100644 pamd/etc/pam.d/system-login
+ create mode 100644 pamd/etc/pam.d/system-remote-login
+ create mode 100644 pamd/etc/pam.d/system-services
+ create mode 100644 pamd/etc/pam.d/vlock
+Haciendo push...
+[2025-09-26 21:19:28] ❌ Error al hacer push
+========== 2025-09-30 19:17:45 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 6bb4d31] Adede update sh
+ 1 file changed, 6 insertions(+)
+ create mode 100755 hypr/.config/hypr/scripts/update.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 19:17:45]  Push exitoso
+========== 2025-09-30 19:25:52 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 64b16c7] mad ebetter the uopdate script
+ 1 file changed, 53 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 19:25:52]  Push exitoso
+========== 2025-09-30 21:27:54 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 2f14bf3] Patatas
+ 1 file changed, 3 insertions(+)
+ create mode 100644 hypr/.config/hypr/scripts/.gitignore
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 21:27:54]  Push exitoso
+========== 2025-09-30 21:36:06 ==========
+[2025-09-30 21:36:06] No hay cambios para commitear.
+========== 2025-10-01 16:45:29 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 9677739] moviendo alias y shorcuts para q funionen
+ 2 files changed, 33 insertions(+)
+ create mode 100644 zsh/custom/aliases.zsh
+ create mode 100644 zsh/custom/shorcuts.zsh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:45:29]  Push exitoso
+========== 2025-10-01 16:46:42 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 08f785b] mejorando
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:46:42]  Push exitoso
+========== 2025-10-01 16:57:49 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 61702fa] Ahora si
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+ rename zsh/{ => .zsh}/custom/aliases.zsh (100%)
+ rename zsh/{ => .zsh}/custom/shorcuts.zsh (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:57:49]  Push exitoso
+========== 2025-10-01 17:05:03 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 1721f23] Patata: 2025-10-01 17:05:03
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:05:03]  Push exitoso
+========== 2025-10-01 17:07:15 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 844edf5] Patata: 2025-10-01 17:07:15
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:07:15]  Push exitoso
+========== 2025-10-01 17:08:45 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 436bf95] Patata: 2025-10-01 17:08:45
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:08:45]  Push exitoso
+========== 2025-10-02 20:01:19 ==========
+Mensaje de commit (dejar vacío para 'Auto-commit'): Haciendo commit...
+[main 138e3d3] Patata: 2025-10-02 20:01:19
+ 35 files changed, 332 deletions(-)
+ delete mode 100644 pamd/etc/pam.d/chfn
+ delete mode 100644 pamd/etc/pam.d/chpasswd
+ delete mode 100644 pamd/etc/pam.d/chsh
+ delete mode 100644 pamd/etc/pam.d/crond
+ delete mode 100644 pamd/etc/pam.d/cups
+ delete mode 100644 pamd/etc/pam.d/gdm-autologin
+ delete mode 100644 pamd/etc/pam.d/gdm-fingerprint
+ delete mode 100644 pamd/etc/pam.d/gdm-launch-environment
+ delete mode 100644 pamd/etc/pam.d/gdm-password
+ delete mode 100644 pamd/etc/pam.d/gdm-smartcard
+ delete mode 100644 pamd/etc/pam.d/greetd
+ delete mode 100644 pamd/etc/pam.d/groupmems
+ delete mode 100644 pamd/etc/pam.d/gtklock
+ delete mode 100644 pamd/etc/pam.d/hyprlock
+ delete mode 100644 pamd/etc/pam.d/i3lock
+ delete mode 100644 pamd/etc/pam.d/login
+ delete mode 100644 pamd/etc/pam.d/newusers
+ delete mode 100644 pamd/etc/pam.d/other
+ delete mode 100644 pamd/etc/pam.d/passwd
+ delete mode 100644 pamd/etc/pam.d/polkit-1
+ delete mode 100644 pamd/etc/pam.d/remote
+ delete mode 100644 pamd/etc/pam.d/runuser
+ delete mode 100644 pamd/etc/pam.d/runuser-l
+ delete mode 100644 pamd/etc/pam.d/sshd
+ delete mode 100644 pamd/etc/pam.d/su
+ delete mode 100644 pamd/etc/pam.d/su-l
+ delete mode 100644 pamd/etc/pam.d/sudo
+ delete mode 100644 pamd/etc/pam.d/swaylock
+ delete mode 100644 pamd/etc/pam.d/swaylock.pacsave
+ delete mode 100644 pamd/etc/pam.d/system-auth
+ delete mode 100644 pamd/etc/pam.d/system-local-login
+ delete mode 100644 pamd/etc/pam.d/system-login
+ delete mode 100644 pamd/etc/pam.d/system-remote-login
+ delete mode 100644 pamd/etc/pam.d/system-services
+ delete mode 100644 pamd/etc/pam.d/vlock
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-02 20:01:19]  Push exitoso
+
+
+=========================================
+File: push.sh
+=========================================
+
+#!/bin/zsh
+
+cd "$(dirname "$0")"  # Ir al directorio donde está el script
+
+log_file="$PWD/push.log"
+timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+
+{
+  echo "========== $timestamp =========="
+
+  git add .
+
+  if git diff --cached --quiet; then
+    echo "[$timestamp] No hay cambios para commitear."
+    notify-send "Git Auto Push" "No hay cambios para commitear."
+    exit 0
+  fi
+
+  echo -n "Mensaje de commit (dejar vacío para 'Auto-commit'): "
+  read commit_message
+
+  if [[ -z "$commit_message" ]]; then
+    commit_message="Patata: $timestamp"
+  fi
+
+  echo "Haciendo commit..."
+  git commit -m "$commit_message"
+
+  echo "Haciendo push..."
+  if git push -u origin main; then
+    echo "[$timestamp]  Push exitoso"
+    notify-send "Git Auto Push" "✅ Push realizado con éxito"
+  else
+    echo "[$timestamp] ❌ Error al hacer push"
+    notify-send "Git Auto Push" "❌ Error al hacer push"
+    exit 1
+  fi
+
+} | tee -a "$log_file"
+git status > /dev/null
+
+
+
+
+
+
+=========================================
+File: README.md
+=========================================
+
+# Mis Dotfiles de Hyprland
+
+Este repositorio contiene la configuración personal de mi entorno de escritorio en Arch Linux, utilizando el compositor Hyprland. Todas las configuraciones están gestionadas eficientemente con [GNU Stow](https://www.gnu.org/software/stow/), lo que facilita su despliegue y mantenimiento.
+
+## Tabla de Contenidos
+
+- [Características Destacadas](#características-destacadas)
+- [Configuraciones Incluidas](#configuraciones-incluidas)
+- [Dependencias](#dependencias)
+- [Instalación](#instalación)
+
+---
+
+## Características Destacadas
+
+Mi setup se enfoca en una experiencia de usuario limpia, rápida y visualmente atractiva, con un fuerte énfasis en la productividad y la personalización.
+
+- **Hyprland**: Compositor Wayland altamente configurado con atajos de teclado personalizados, animaciones fluidas y efectos visuales sutiles.
+  - **Swaylock**: Bloqueador de pantalla integrado para seguridad.
+  - **Swayidle**: Gestión de inactividad para ahorro de energía y bloqueo automático.
+  - **Hyprshot**: Herramienta sencilla para capturas de pantalla rápidas.
+- **Waybar**: Barra superior altamente personalizada y dinámica que muestra información esencial del sistema (CPU, RAM, batería, red, audio, etc.), gestión de perfiles de energía, y notificaciones.
+- **Zsh con Powerlevel10k**: Un potente y visualmente impresionante entorno de línea de comandos, optimizado para la velocidad y la información.
+- **Neovim**: Mi editor de texto principal, configurado con un entorno de desarrollo moderno y eficiente.
+- **Kitty**: Un emulador de terminal rápido y rico en funciones.
+- **Rofi**: Lanzador de aplicaciones y selector de comandos multifuncional.
+- **Pywal (Wal)**: Integración de temas dinámicos que extraen los colores del fondo de pantalla para aplicar a las aplicaciones compatibles y la barra.
+- **Utilidades de Escritorio**: Integración de herramientas para gestión de notificaciones (swaync), control de portapapeles (clipse), y control de volumen/brillo (swayosd).
+
+## Configuraciones Incluidas
+
+Cada uno de estos directorios representa un "paquete" de Stow que gestiona configuraciones en su ubicación estándar (`~/.config/` o `~/`):
+
+- **`fastfetch/`**: Configuración para Fastfetch, la herramienta de información del sistema.
+  - _Ubicación:_ `~/.config/fastfetch/`
+- **`hypr/`**: Toda la configuración de Hyprland (archivos `.conf` y scripts auxiliares).
+  - _Ubicación:_ `~/.config/hypr/`
+- **`kitty/`**: Configuración del emulador de terminal Kitty.
+  - _Ubicación:_ `~/.config/kitty/`
+- **`nvim/`**: Configuración de Neovim.
+  - _Ubicación:_ `~/.config/nvim/`
+- **`ohmyzsh/`**: Instalación de Oh My Zsh (gestionado como un submódulo de Git).
+  - _Ubicación:_ `~/.oh-my-zsh/`
+- **`rofi/`**: Configuración de Rofi, el lanzador de aplicaciones.
+  - _Ubicación:_ `~/.config/rofi/`
+- **`swaylock/`**: Configuración del bloqueador de pantalla Swaylock.
+  - _Ubicación:_ `~/.config/swaylock/`
+- **`swaync/`**: Configuración del gestor de notificaciones SwayNC.
+  - _Ubicación:_ `~/.config/swaync/`
+- **`wal/`**: Configuraciones personalizadas para Pywal (si existen, p.ej. plantillas).
+  - _Ubicación:_ `~/.config/wal/` (si aplica)
+- **`waybar/`**: Configuración de la barra de estado Waybar (`config.jsonc`, `style.css`).
+  - _Ubicación:_ `~/.config/waybar/`
+- **`zsh/`**: Configuración de Zsh (`.zshrc`) y Powerlevel10k (`.p10k.zsh`).
+  - _Ubicación:_ `~/.zshrc`, `~/.p10k.zsh`
+
+## Dependencias
+
+Para que estas configuraciones funcionen correctamente, necesitarás instalar los siguientes programas y herramientas en tu sistema Arch Linux. La mayoría se instalarán automáticamente al ejecutar el script de instalación.
+
+- **Compositor Wayland**: `hyprland`
+- **Barra de Estado**: `waybar`
+- **Lanzador de Aplicaciones**: `rofi`
+- **Emulador de Terminal**: `kitty`
+- **Editor de Texto**: `neovim`
+- **Shell**: `zsh`
+- **Framework para Zsh**: `oh-my-zsh` (gestionado como submódulo)
+- **Tema Zsh Prompt**: `powerlevel10k-git` (se instala desde el AUR)
+- **Bloqueador de Pantalla**: `swaylock`
+- **Herramienta de Información del Sistema**: `fastfetch`
+- **Gestor de Notificaciones**: `swaync`
+- **Herramienta de Theming**: `pywal` (`python-pywal`)
+- **Utilidades de Sistema**:
+  - `nm-applet` (Applet de NetworkManager)
+  - `swayosd` (Para OSD de volumen/brillo)
+  - `brightnessctl` (Control de brillo)
+  - `playerctl` (Control de medios)
+  - `wlogout` (Menú de logout/apagado)
+  - `hyprshot` (Herramienta de captura de pantalla)
+  - `clipse` (Gestor de portapapeles)
+  - `pavucontrol` (Control de volumen de PulseAudio)
+  - `gnome-system-monitor` (Monitor de sistema GNOME, opcional para clics en Waybar)
+  - `polkit-gnome` (o un agente polkit similar)
+  - `swayidle` (Gestión de inactividad)
+  - `libnotify` (para `notify-send`)
+  - `git` (para clonar el repositorio)
+  - `gnome-keyring` (para guardar credenciales si usas nm-applet)
+- **Gestor de Dotfiles**: `stow`
+- **Compiladores**: `gcc` y `g++`
+- **Fuentes**: `nerd-fonts-fira-code`
+- **LaTeX**: `biber`, `texlive`
+
+## Instalación
+
+Sigue estos pasos para desplegar los dotfiles en tu sistema. El script **`install.sh`** automatizará la mayor parte del proceso.
+
+1.  **Clonar el Repositorio (con Submódulos):**
+    Abre una terminal y clona el repositorio. El flag `--recursive` es crucial para descargar el submódulo de Oh My Zsh.
+
+    ```bash
+    git clone --recursive git@github.com:F-Patata2008/DotFiles-New.git ~/Dotfiles
+    ```
+
+2.  **Navegar al Directorio de Dotfiles:**
+
+    ```bash
+    cd ~/Dotfiles
+    ```
+
+3.  **Ejecutar el Script de Instalación:**
+    Haz el script ejecutable y luego ejecútalo. El script se encargará de instalar las dependencias de `pacman`, `yay`, temas, repositorios personales y de configurar tus dotfiles con `stow`.
+
+    ```bash
+    chmod +x install.sh
+    ./install.sh
+    ```
+
+    **Importante**: El script te hará algunas preguntas interactivas, como la ID de tu lector de huellas y si quieres ejecutar los pasos de post-instalación de inmediato. Presta atención a las instrucciones en la terminal.
+
+4.  **Pasos Post-Instalación (Manuales):**
+    Una vez que el script finalice, deberás realizar algunas acciones manuales para que todo funcione correctamente.
+    - **Reiniciar el sistema**: Para que los cambios de grupos de usuario (como `input`) y la configuración del entorno surtan efecto.
+    - **Activar el tema de Plymouth**:
+      ```bash
+      sudo plymouth-set-default-theme -R minecraft-theme
+      ```
+    - **Reconstruir la configuración de GRUB**: Si no lo hiciste durante la instalación.
+      ```bash
+      sudo grub-mkconfig -o /boot/grub/grub.cfg
+      ```
+
+

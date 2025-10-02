@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Define the directory to check and the output file
-DOTFILES_DIR="$HOME/Dotfiles" # Assumes your Dotfiles are in the home directory
-OUTPUT_FILE="dotfiles_content.txt"
+DOTFILES_DIR="$HOME/Dotfiles"
+# --- CHANGE IS HERE ---
+# Create the output file in the home directory to avoid conflicts
+OUTPUT_FILE="$HOME/dotfiles_content.txt"
 
 # Check if the Dotfiles directory exists
 if [ ! -d "$DOTFILES_DIR" ]; then

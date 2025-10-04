@@ -32,6 +32,7 @@ Esta guía es para el modo UEFI. Confirma que has arrancado en este modo con el 
 Sincroniza el reloj para evitar problemas con la verificación de paquetes.
 `timedatectl set-ntp true`
 
+
 ### **2. Particionado del Disco con `cfdisk`**
 
 Crearemos solo dos particiones: una para el arranque EFI y otra grande que contendrá toda nuestra configuración LVM.

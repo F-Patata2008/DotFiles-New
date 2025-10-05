@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get battery percentage and status
+BATTERY_INFO=$(acpi -b)
+BATTERY_LEVEL=$(echo "$BATTERY_INFO" | grep -P -o '[0-9]+(?=%)')
+BATTERY_STATUS=$(echo "$BATTERY_INFO" | grep -P -o 'Discharging')
+
+# Suspend if battery is discharging and level is 5% or less
+if [[ "$BATTERY_STATUS" == "Discharging" && "$BATTERY_LEVEL" -le 5 ]]; then
+    systemctl hibernate
+fi

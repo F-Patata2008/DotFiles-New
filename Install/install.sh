@@ -108,5 +108,40 @@ if [[ "$SHELL" != "/bin/zsh" ]]; then
     echo -e "${GREEN}✔️ Shell changed to Zsh. Please log out and log back in for this to take effect.${NC}"
 fi
 
+# --- FASE 8: INSTALL HYPRLAND PLUGINS (via hyprpm) ---
+print_header "FASE 8: INSTALLING HYPRLAND PLUGINS (HYPREXPO)"
+
+if ! command -v hyprpm &> /dev/null; then
+    echo -e "${RED}ERROR: hyprpm command not found. Is Hyprland installed correctly?${NC}"
+    exit 1
+fi
+
+# Step 1: Create the hyprpm configuration file if it doesn't exist.
+# This makes the script robust.
+HYPR_CONFIG_DIR="$HOME/.config/hypr"
+HYPRPM_CONFIG="$HYPR_CONFIG_DIR/hyprpm.toml"
+echo "Ensuring hyprpm configuration exists at $HYPRPM_CONFIG..."
+mkdir -p "$HYPR_CONFIG_DIR" # Create the directory if it doesn't exist
+
+# Use a "here document" to safely create the file with the correct content.
+# This will not overwrite the file if it already exists from your dotfiles.
+tee "$HYPRPM_CONFIG" > /dev/null <<'EOF'
+[hyprexpo]
+source = "https://github.com/hyprwm/hyprland-plugins/tree/main/hyprexpo"
+EOF
+
+# Step 2: Update and build the plugins
+# hyprpm will read the .toml file and download/build what's needed.
+echo "Running hyprpm to update and build plugins..."
+hyprpm update
+
+echo -e "${GREEN}✔️ Hyprland plugins updated successfully.${NC}"
+echo -e "${YELLOW}IMPORTANT: Ensure your hyprland.conf contains 'exec-once = hyprpm enable hyprexpo' for the plugin to load!${NC}"
+
+
+
+
+
+
 print_header "🎉 INSTALLATION COMPLETE! 🎉"
 echo "It is highly recommended to REBOOT NOW to apply all changes."

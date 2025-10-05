@@ -1,9 +1,51 @@
-# System & Drivers
-clipse
-libfprint-goodixtls-55x4
 
 # Applications & Theming
+arduino-ide
+arduino-ide-debug
+brave-bin
+ckan
+clipse
+debtap
+electron30-bin
+electron30-bin-debug
+extension-manager-debug
+flat-remix-gtk
+gdm-settings
+google-chrome
+http-parser
+hyprsysteminfo
+hyprsysteminfo-debug
 i3lock-color
+i3lock-color-debug
+libfprint-goodixtls-55x4
+libfprint-goodixtls-55x4-debug
 modrinth-app-bin
+modrinth-app-bin-debug
+nordic-theme
+opera
+opera-ffmpeg-codecs-bin
+python-jupytext
+python-pywal16
 rofimoji
+spicetify-cli
+spicetify-cli-debug
 spotify
+swaylock-effects
+swaylock-effects-debug
+# System & Drivers
+themix-export-spotify-git
+themix-full-git
+themix-gui-git
+themix-icons-archdroid-git
+themix-icons-gnome-colors-git
+themix-icons-numix-git
+themix-icons-papirus-git
+themix-icons-suru-plus-aspromauros-git
+themix-icons-suru-plus-git
+themix-import-images-git
+themix-plugin-base16-git
+themix-theme-oomox-git
+wlogout
+yay
+yay-debug
+zoom

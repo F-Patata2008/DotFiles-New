@@ -51,4 +51,9 @@ for file in ~/.zsh/custom/*.zsh; do
 done
 # +++ END OF BLOCK +++
 
-#sleep 0.1; fastfetch
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+sleep 0.1; fastfetch
+

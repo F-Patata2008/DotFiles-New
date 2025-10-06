@@ -38,6 +38,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor
 export EDITOR='nvim'
+export BROWSER='opera'
+
 
 # +++ ADD THIS BLOCK +++
 # Load all custom .zsh files (like aliases.zsh and shortcuts.zsh)

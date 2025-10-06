@@ -51,4 +51,4 @@ for file in ~/.zsh/custom/*.zsh; do
 done
 # +++ END OF BLOCK +++
 
-(sleep 0.1 && fastfetch) &
+#sleep 0.1; fastfetch

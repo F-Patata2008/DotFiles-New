@@ -10,7 +10,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the Oh My Zsh theme to load.
 ZSH_THEME="powerlevel10k/powerlevel10k"
-# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet  # <-- REMOVE THIS LINE
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off  # <-- REMOVE THIS LINE
 export PATH=$HOME/.local/bin:$PATH
 
 

@@ -51,19 +51,4 @@ for file in ~/.zsh/custom/*.zsh; do
 done
 # +++ END OF BLOCK +++
 
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# This should be at the end.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# --- Display fastfetch after the prompt is ready ---
-# This function runs fastfetch and then removes itself so it only runs once.
-_p10k_fastfetch() {
-  fastfetch
-  # Unregister this function so it doesn't run on every prompt.
-  precmd_functions=(${precmd_functions:#_p10k_fastfetch})
-}
-
-# Add the function to the list of commands to run before the prompt.
-precmd_functions+=(_p10k_fastfetch)
-# REMOVE fastfetch from the very end if it's still there.
+(sleep 0.1 && fastfetch) &

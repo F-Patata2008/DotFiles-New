@@ -18,6 +18,7 @@ readonly SERVICES_TO_ENABLE=(
     tlp.service
     fprintd.service
     cups.service
+    bluetooth.service
 )
 
 # --- HELPER FUNCTIONS AND COLORS ---

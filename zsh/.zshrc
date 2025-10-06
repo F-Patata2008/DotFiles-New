@@ -1,4 +1,4 @@
-#fastfetch
+#fastfetch  # <-- REMOVE THIS, IT'S JUST A COMMENT
 
 # Enable Powerlevel10k instant prompt. Should stay at the very top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -10,7 +10,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the Oh My Zsh theme to load.
 ZSH_THEME="powerlevel10k/powerlevel10k"
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet  # <-- ADD THIS LINE
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet  # <-- REMOVE THIS LINE
 export PATH=$HOME/.local/bin:$PATH
 
 
@@ -56,4 +56,7 @@ done
 # This should be at the end.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-fastfetch
+# --- Display fastfetch after the prompt is ready ---
+fastfetch # <-- MOVE fastfetch HERE
+
+# REMOVE fastfetch from the very end if it's still there.

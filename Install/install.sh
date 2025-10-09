@@ -18,7 +18,8 @@ readonly SERVICES_TO_ENABLE=(
     tlp.service
     fprintd.service
     cups.service
-    bluetooth.service
+    powertop.service
+    swayosd-libinput-backend.service # The new, crucial addition
 )
 
 # --- HELPER FUNCTIONS AND COLORS ---

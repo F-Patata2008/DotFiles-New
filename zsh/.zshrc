@@ -1,4 +1,4 @@
-#fastfetch  # <-- REMOVE THIS, IT'S JUST A COMMENT
+fastfetch  # <-- REMOVE THIS, IT'S JUST A COMMENT
 
 # Enable Powerlevel10k instant prompt. Should stay at the very top of ~/.zshrc.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -55,5 +55,11 @@ done
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-sleep 0.1; fastfetch
 
+# Run fastfetch once, right before the first prompt is drawn
+run_fastfetch_once() {
+  fastfetch
+  # Unregister this function so it only runs once per session
+  precmd_functions=(${precmd_functions[@]/run_fastfetch_once})
+}
+#precmd_functions+=(run_fastfetch_once)

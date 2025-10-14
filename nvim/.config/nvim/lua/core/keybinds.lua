@@ -28,3 +28,13 @@ map("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = 
 map("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Document Diagnostics" })
 
 map("n", "<leader>mp", "<cmd>RenderMarkdownToggle<CR>", { desc = "Toggle Markdown Render" })
+
+
+
+
+-- Arduino keymaps
+map("n", "<leader>ac", "<cmd>ArduinoCompile<cr>", { desc = "Arduino Compile" })
+map("n", "<leader>au", "<cmd>ArduinoUpload<cr>", { desc = "Arduino Upload" })
+map("n", "<leader>as", "<cmd>ArduinoUploadAndSerial<cr>", { desc = "Arduino Upload and Serial" })
+map("n", "<leader>ab", "<cmd>ArduinoChooseBoard<cr>", { desc = "Arduino Choose Board" })
+map("n", "<leader>ap", "<cmd>ArduinoChoosePort<cr>", { desc = "Arduino Choose Port" })

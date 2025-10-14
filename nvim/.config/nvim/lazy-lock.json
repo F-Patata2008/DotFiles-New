@@ -1,4 +1,5 @@
 {
+  "Arduino-Nvim": { "branch": "main", "commit": "8d1dff82d1c2a248155c9234bddb2c9a82d07a25" },
   "CopilotChat.nvim": { "branch": "main", "commit": "ae2f5932983f42d54bee9ff803b5ab157b145787" },
   "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
   "alpha-nvim": { "branch": "main", "commit": "2b3cbcdd980cae1e022409289245053f62fb50f6" },

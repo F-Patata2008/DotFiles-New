@@ -2,17 +2,16 @@
 return {
   {
     "yuukiflow/Arduino-Nvim",
-    ft = { "ino", "cpp" }, -- Triggers on Arduino and C++ files
+    ft = { "ino" },
     dependencies = {
-      "nvim-telescope/telescope.nvim", -- It uses Telescope for pickers
+      "nvim-telescope/telescope.nvim",
     },
     config = function()
-      require("arduino").setup({
-        -- You can leave this empty to use the defaults,
-        -- or configure it as needed.
-        -- For example:
+      require("Arduino-Nvim.lsp").setup()
+
+      require("Arduino-Nvim").setup({
         default_fqbn = "arduino:avr:uno",
-        default_port = "/dev/ttyACM0", -- Change this to your board's port
+        -- default_port = "/dev/ttyUSB0",
       })
     end,
   }

@@ -32,9 +32,10 @@ map("n", "<leader>mp", "<cmd>RenderMarkdownToggle<CR>", { desc = "Toggle Markdow
 
 
 
--- Arduino keymaps
-map("n", "<leader>ac", "<cmd>ArduinoCompile<cr>", { desc = "Arduino Compile" })
-map("n", "<leader>au", "<cmd>ArduinoUpload<cr>", { desc = "Arduino Upload" })
-map("n", "<leader>as", "<cmd>ArduinoUploadAndSerial<cr>", { desc = "Arduino Upload and Serial" })
-map("n", "<leader>ab", "<cmd>ArduinoChooseBoard<cr>", { desc = "Arduino Choose Board" })
-map("n", "<leader>ap", "<cmd>ArduinoChoosePort<cr>", { desc = "Arduino Choose Port" })
+local opts = { desc = "Arduino" }
+map("n", "<leader>ab", "<cmd>ArduinoSelectBoard<cr>", { desc = "[A]rduino Select [B]oard", opts })
+map("n", "<leader>ap", "<cmd>ArduinoSelectPort<cr>", { desc = "[A]rduino Select [P]ort", opts })
+map("n", "<leader>ac", "<cmd>ArduinoVerify<cr>", { desc = "[A]rduino Verify/[C]ompile", opts })
+map("n", "<leader>au", "<cmd>ArduinoUpload<cr>", { desc = "[A]rduino [U]pload", opts })
+map("n", "<leader>as", "<cmd>ArduinoUploadAndSerial<cr>", { desc = "[A]rduino Upload and [S]erial Monitor", opts })
+map("n", "<leader>al", "<cmd>ArduinoLibInstall<cr>", { desc = "[A]rduino [L]ibrary Install", opts })

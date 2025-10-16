@@ -55,7 +55,7 @@ return {
 
       -- The main setup function for mason-lspconfig
       require('mason-lspconfig').setup({
-        ensure_installed = {"lua_ls", "clangd", "texlab", "pyright", "hyprls", "marksman"},
+        ensure_installed = {"lua_ls", "clangd", "arduino_language_server", "texlab", "pyright", "hyprls", "marksman"},
         handlers = {
           -- The default handler.
           function(server_name)

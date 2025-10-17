@@ -12,7 +12,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=off  # <-- REMOVE THIS LINE
 export PATH=$HOME/.local/bin:$PATH
-
+export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Zsh plugins to load.
 plugins=(

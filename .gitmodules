@@ -1,3 +1,6 @@
 [submodule "ohmyzsh/.oh-my-zsh"]
 	path = ohmyzsh/.oh-my-zsh
 	url = https://github.com/ohmyzsh/ohmyzsh.git
+[submodule "nvim/.config/nvim/lua/Arduino-Nvim"]
+	path = nvim/.config/nvim/lua/Arduino-Nvim
+	url = https://github.com/yuukiflow/Arduino-Nvim.git

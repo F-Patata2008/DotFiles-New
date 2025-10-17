@@ -25,13 +25,24 @@ require("core.autostart")
 require("core.keybinds")
 
 
--- Load LSP configuration first
-require("Arduino-Nvim.lsp").setup()
+-- Defer Arduino-Nvim setup until all plugins are loaded
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = "*",
+  group = vim.api.nvim_create_augroup("ArduinoNvimManualSetup", { clear = true }),
+  callback = function()
+    -- This code runs AFTER lazy.nvim has loaded your plugins.
+    -- Now it's safe to set up Arduino-Nvim.
+    pcall(function()
+      -- Load LSP configuration first
+      require("Arduino-Nvim.lsp").setup()
 
--- Set up Arduino file type detection
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "arduino",
-    callback = function()
-        require("Arduino-Nvim")
-    end
+      -- Set up Arduino file type detection
+      vim.api.nvim_create_autocmd("FileType", {
+          pattern = "arduino",
+          callback = function()
+              require("Arduino-Nvim")
+          end
+      })
+    end)
+  end,
 })

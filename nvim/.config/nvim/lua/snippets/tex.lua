@@ -1,17 +1,31 @@
 local ls = require("luasnip")
 local s = ls.snippet
 local i = ls.insert_node
+local t = ls.text_node
+local f = ls.function_node
 local fmt = require("luasnip.extras.fmt").fmt
 
+-- Function to create the symbolic link.
+-- It will only run if an 'images' directory or link doesn't already exist.
+local function create_symlink()
+  -- The command to be executed.
+  -- It checks if 'images' exists, and if not, creates the symlink.
+  local cmd = "test -e images || ln -s ~/Apunte/images/ ./images"
+  -- Execute the command silently.
+  os.execute(cmd)
+  -- This function should not insert any text, so return an empty string.
+  return ""
+end
+
 return {
-  -- Snippet 1: Basic LaTeX article in Spanish with Copyright
   s("Documento", fmt([[
 \documentclass[11pt]{{article}}
 \usepackage[spanish]{{babel}}
 \usepackage{{amsmath}}  % Math
 \usepackage{{amssymb}}  % Symbols
 \usepackage{{graphicx}} % Images
-\graphicspath{{ {{./images/}} }}
+% Updated graphicspath to search local './images/' first, then the central library.
+\graphicspath{{ {{./images/}}, {{~/Apunte/images/}} }}
 \usepackage[utf8]{{inputenc}}
 \usepackage[T1]{{fontenc}}
 \usepackage[margin=1in]{{geometry}}
@@ -46,6 +60,7 @@ return {
 {}
 
 \end{{document}}
+{}
 ]], {
     -- Nodos para fmt, en orden de aparición en el texto de arriba:
     i(1, "Tu Título"),      -- 1. Usado para pdftitle
@@ -53,5 +68,6 @@ return {
     i(1, "Tu Título"),      -- 3. Usado para \title (reutiliza el nodo 1)
     i(2, "Felipe Colli Olea"),      -- 4. Usado para \author (reutiliza el nodo 2)
     i(0, "Empieza a escribir aquí..."), -- 5. Posición final del cursor
+    f(create_symlink) -- 6. This is the new node that runs our function
   })),
 }

@@ -8,24 +8,30 @@ local fmt = require("luasnip.extras.fmt").fmt
 -- ===== HELPER FUNCTIONS (reusable for multiple snippets) =====
 
 -- Function to create the symbolic link to the central images folder.
--- It only runs if an 'images' directory or link doesn't already exist.
 local function create_symlink()
   os.execute("test -e images || ln -s ~/Apunte/images/ ./images")
   return "" -- This function inserts no text
 end
 
 -- Function to create an empty bibliography file.
--- It only runs if 'bibliografia.bib' doesn't already exist.
 local function create_bib_file()
   os.execute("test -e bibliografia.bib || touch bibliografia.bib")
   return "" -- This function inserts no text
+end
+
+-- NEW: A single function to call both setup functions.
+-- This solves the "Unused argument" error.
+local function setup_project_files()
+  create_symlink()
+  create_bib_file()
+  return ""
 end
 
 
 -- ===== SNIPPETS =====
 
 return {
-  -- Snippet 1: Your original "Documento" snippet (modified from our last conversation)
+  -- Snippet 1: Your original "Documento" snippet (corrected)
   s("Documento", fmt([[
 \documentclass[11pt]{{article}}
 \usepackage[spanish]{{babel}}
@@ -69,13 +75,13 @@ return {
 ]], {
     i(1, "Tu Título"),
     i(2, "Felipe Colli Olea"),
-    i(1, "Tu Título"), -- Reuses node 1
-    i(2, "Felipe Colli Olea"), -- Reuses node 2
+    i(1), -- Reuses node 1
+    i(2), -- Reuses node 2
     i(0, "Empieza a escribir aquí..."),
-    f(create_symlink), -- Automatically create symlink
+    f(create_symlink), -- Only one function, so it's fine here
   })),
 
-  -- Snippet 2: The new, powerful "Informe" snippet
+  -- Snippet 2: The "Informe" snippet (corrected)
   s("Informe", fmt([[
 \documentclass[12pt, letterpaper]{{article}}
 
@@ -92,10 +98,10 @@ return {
 \usepackage{{microtype}}
 \graphicspath{{ {{./images/}}, {{~/Apunte/images/}} }}
 
-% ----- PAQUETE DE CITAS Y BIBLIOGRAFÍA (MODIFICADO) -----
-\usepackage{{csquotes}} % Recomendado por biblatex
+% ----- PAQUETE DE CITAS Y BIBLIOGRAFÍA -----
+\usepackage{{csquotes}}
 \usepackage[style=verbose-trad1, bibstyle=numeric, backend=biber]{{biblatex}}
-\addbibresource{{bibliografia.bib}} % Llama a tu archivo de bibliografía
+\addbibresource{{bibliografia.bib}}
 
 % ----- CONFIGURACIÓN DE LA PÁGINA -----
 \geometry{{
@@ -107,7 +113,7 @@ return {
 }}
 \setstretch{{1.5}}
 
-% ----- PAQUETES Y CONFIGURACIÓN DE PIE DE PÁGINA E HIPERVÍNCULOS -----
+% ----- HIPERVÍNCULOS -----
 \usepackage{{fancyhdr}}
 \usepackage{{hyperref}}
 \hypersetup{{
@@ -163,32 +169,19 @@ return {
 \newpage
 \tableofcontents
 \newpage
-
-% --- CUERPO DEL ENSAYO ---
-
 \section*{{Introducción}}
 \thispagestyle{{fancy}}
-% ... (texto pre-escrito) ...
 {}
 
 \newpage
 \section*{{Desarrollo}}
-
 \subsection*{{China: Un Pacto de Prosperidad a Cambio de Lealtad}}
-% ... (texto pre-escrito) ...
-
 \subsection*{{Vietnam: Renovación Económica bajo Control Político}}
-% ... (texto pre-escrito) ...
-
 \subsection*{{Kerala: Comunismo Democrático y Desarrollo Social}}
-% ... (texto pre-escrito) ...
-
 \subsection*{{Experiencias cercanas al comunismo en las regiones de China, Vietnam y Kerala}}
-% ... (texto pre-escrito) ...
 
 \newpage
 \section*{{Conclusión}}
-% ... (texto pre-escrito) ...
 
 \newpage
 \printbibliography[title=Bibliografía]
@@ -196,31 +189,26 @@ return {
 \end{{document}}
 {}
 ]], {
-    -- Nodes for the metadata and title page
-    i(1, "Título del Informe"),      -- pdftitle
-    i(2, "Rodrigo Martinez"),      -- pdfauthor
-    i(3, "Nicolás Aguilera"),      -- pdfauthor
-    i(4, "Lautaro Palma"),         -- pdfauthor
-    i(5, "Isaias Vivanco"),         -- pdfauthor
-    i(6, "Asignatura"),             -- pdfsubject and footer
+    -- Nodes for metadata and title page
+    i(1, "Título del Informe"),
+    i(2, "Otro Autor 1"),
+    i(3, "Otro Autor 2"),
+    i(4, "Otro Autor 3"),
+    i(5, "Otro Autor 4"),
+    i(6, "Asignatura"),
     i(6),                          -- Re-use for footer
-    i(1),                          -- Re-use for main title on cover
-    i(6),                          -- Re-use for subtitle on cover
-
-    -- Nodes for the author list on the cover (re-uses author names)
-    i(2),
-    i(3),
-    i(4),
-    i(5),
-
-    -- Node for the professor's name
+    i(1),                          -- Re-use for main title
+    i(6),                          -- Re-use for subtitle
+    i(2),                          -- Re-use author
+    i(3),                          -- Re-use author
+    i(4),                          -- Re-use author
+    i(5),                          -- Re-use author
     i(7, "Nombre de la Profesora"),
-
+    
     -- Final cursor position
     i(0, "% Empieza a escribir aquí..."),
 
-    -- Function nodes to run automatically
-    f(create_symlink),
-    f(create_bib_file),
+    -- A SINGLE function node that runs all setup tasks
+    f(setup_project_files),
   })),
 }

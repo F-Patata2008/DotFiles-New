@@ -64,6 +64,9 @@ return {
               capabilities = capabilities,
             })
           end,
+            ["arduino_language_server"] = function ()
+            -- Intentionally left empty
+            end,
         },
       })
       

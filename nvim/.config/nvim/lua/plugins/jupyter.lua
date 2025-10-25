@@ -1,9 +1,10 @@
 return {
   -- For transparently editing ipynb files as text
   {
-    "goerz/jupytext.nvim",
-    ft = { "ipynb" },
-    opts = {}, -- You can add jupytext options here if needed
+     "GCBallesteros/jupytext.nvim",
+  config = true,
+  -- Depending on your nvim distro or config you may need to make the loading not lazy
+  -- lazy=false,
   },
 
   -- For running cells and interacting with the kernel

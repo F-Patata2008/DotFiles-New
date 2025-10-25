@@ -37,3 +37,12 @@ vim.api.nvim_create_autocmd("FileType", {
         require("Arduino-Nvim")
     end
 })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = "*.ipynb",
+  callback = function()
+    vim.bo.filetype = "ipynb"
+  end,
+})
+
+

@@ -1,4 +1,4 @@
-alias nv='nvim'
+#alias nv='nvim'
 
 
 alias clases='cd ~/Apunte/'

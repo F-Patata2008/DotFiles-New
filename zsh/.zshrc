@@ -14,6 +14,18 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=off  # <-- REMOVE THIS LINE
 export PATH=$HOME/.local/bin:$PATH
 export PATH="$PATH:$(go env GOPATH)/bin"
 
+# Function to open nvim with current directory if no arguments are given
+nv() {
+  if [ $# -eq 0 ]; then
+    # No arguments were provided, so run nvim in the current directory
+    nvim .
+  else
+    # Arguments were provided, so pass them all to nvim
+    nvim "$@"
+  fi
+}
+
+
 # Zsh plugins to load.
 plugins=(
     git
@@ -63,3 +75,4 @@ run_fastfetch_once() {
   precmd_functions=(${precmd_functions[@]/run_fastfetch_once})
 }
 #precmd_functions+=(run_fastfetch_once)
+#

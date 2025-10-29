@@ -18,6 +18,8 @@
     "modules-right": [
         "power-profiles-daemon",
         "custom/separator",
+        "custom/suspend",
+        "custom/separator",
         "pulseaudio",
         "custom/separator",
         "network",
@@ -32,6 +34,13 @@
         "custom/separator",
         "custom/power",
     ],
+    "custom/suspend": {
+        "return-type": "json",
+        "format": "{icon}",
+        "exec": "~/.config/hypr/scripts/power_mode_status.sh",
+        "interval": 1,
+        "on-click": "~/.config/hypr/scripts/power.sh"
+    },
 
     "custom/logo": {
         "format": "",

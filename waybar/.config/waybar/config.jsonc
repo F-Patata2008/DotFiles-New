@@ -17,8 +17,8 @@
     ],
     "modules-right": [
         "power-profiles-daemon",
-        "custom/separator",
-        "custom/suspend",
+        //"custom/separator",
+        //"custom/suspend",
         "custom/separator",
         "pulseaudio",
         "custom/separator",

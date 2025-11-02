@@ -1,0 +1,2 @@
+# Update Arch package lists for F-Patata's dotfiles backup every 2 days at 3 PM
+    0 15 */2 * *   F-Patata   /home/F-Patata/Dotfiles/Install/update_packages.sh

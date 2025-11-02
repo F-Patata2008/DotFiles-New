@@ -4,6 +4,8 @@
 
 # Ensure the script runs from its own directory to find the package files
 cd "$(dirname "$0")"
+rm aur_packages.txt
+rm pacman_packages.txt
 
 echo "Updating Pacman package list..."
 pacman -Qenq > pacman_packages.txt

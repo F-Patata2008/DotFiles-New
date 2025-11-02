@@ -19,6 +19,7 @@ cups
 decibels
 discord
 dmenu
+dolphin
 efibootmgr
 endeavour
 eog

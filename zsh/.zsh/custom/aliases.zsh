@@ -1,6 +1,5 @@
 #alias nv='nvim'
 
-
 alias clases='cd ~/Apunte/'
 alias PE='nvim ~/Apunte/Probabilidad\ y\ Estadistica/Apunte/Apunte.tex'
 alias prob='cd ~/Apunte//Probabilidad\ y\ Estadistica/'
@@ -18,6 +17,7 @@ alias arduino='sudo chmod a+rw /dev/ttyACM0'
 alias wifi='nmcli dev wifi list --rescan yes'
 alias celu='nmcli dev wifi connect "Doxiado" --ask'
 alias papo="nmcli dev wifi connect \"Alvaro's A53\" --ask"
+alias movil="nmcli dev wifi connect WHATSAPP-COLLI --ask"
 
 # My custom power profiles for TLP
 alias set-powersave="echo powersave | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor && echo power | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference"

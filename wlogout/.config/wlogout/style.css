@@ -4,15 +4,15 @@
 }
 
 window {
-    background-color: rgba(29, 31, 44, 0.9); /* Background */
+    background-color: rgba(26, 27, 38, 0.9); /* bg */
 }
 
 button {
     border-radius: 0;
-    border-color: #1d1f2c; /* Background */
-    text-decoration-color: #f8f8f2; /* Foreground */
-    color: #f8f8f2; /* Foreground */
-    background-color: #282a36; /* Current Line */
+    border-color: #1a1b26; /* bg */
+    text-decoration-color: #a9b1d6; /* fg */
+    color: #a9b1d6; /* fg */
+    background-color: #1f2335; /* bg_dark */
     border-style: solid;
     border-width: 1px;
     background-repeat: no-repeat;
@@ -21,8 +21,8 @@ button {
 }
 
 button:focus, button:active, button:hover {
-    background-color: #ff79c6; /* Pink */
-    color: #282a36; /* Current Line */
+    background-color: #7aa2f7; /* blue */
+    color: #1a1b26; /* bg */
     outline-style: none;
 }
 

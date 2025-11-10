@@ -29,7 +29,7 @@ require("core.keybinds")
 
 -- Load LSP configuration first
 require("Arduino-Nvim.lsp").setup()
-
+--[[
 -- Set up Arduino file type detection
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "arduino",
@@ -37,12 +37,11 @@ vim.api.nvim_create_autocmd("FileType", {
         require("Arduino-Nvim")
     end
 })
-
+]]
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "*.ipynb",
   callback = function()
     vim.bo.filetype = "ipynb"
   end,
 })
-
 

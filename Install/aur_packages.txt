@@ -33,6 +33,7 @@ themix-plugin-base16-git
 themix-theme-oomox-git
 thinkfan
 tty-clock
+visual-studio-code-bin
 wlogout
 yay
 yay-debug

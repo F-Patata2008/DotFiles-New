@@ -1,50 +1,60 @@
 * {
-	background-image: none;
-	box-shadow: none;
+    background-image: none;
+    box-shadow: none;
 }
 
 window {
-	background-color: rgba(12, 12, 12, 0.9);
+    background-color: rgba(26, 27, 38, 0.5); /* Tokyo Night background with transparency */
 }
 
 button {
-    border-radius: 0;
-    border-color: black;
-	text-decoration-color: #FFFFFF;
-    color: #FFFFFF;
-	background-color: #1E1E1E;
-	border-style: solid;
-	border-width: 1px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 25%;
+    color: #c0caf5; /* Tokyo Night foreground */
+    background-color: #1a1b26; /* Tokyo Night background */
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 15px;
+    border-color: #414868; /* Tokyo Night comment color */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 25%;
+    transition: all 0.3s ease; /* Animation */
+
+    /* Add initial padding to the buttons */
+    padding: 10px;
+    margin: 10px;
 }
 
 button:focus, button:active, button:hover {
-	background-color: #3700B3;
-	outline-style: none;
+    background-color: #414868; /* Tokyo Night comment color */
+    border-color: #7aa2f7; /* Tokyo Night blue */
+
+    /* Increase padding on hover to make the button appear larger */
+    padding: 12px;
+    margin: 8px; /* Adjust margin to keep spacing consistent */
+
+    outline-style: none;
 }
 
 #lock {
-    background-image: image(url("/usr/share/wlogout/icons/lock.png"), url("/usr/local/share/wlogout/icons/lock.png"));
+    background-image: image(url("/usr/share/wlogout/icons/lock.png"));
 }
 
 #logout {
-    background-image: image(url("/usr/share/wlogout/icons/logout.png"), url("/usr/local/share/wlogout/icons/logout.png"));
+    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
 }
 
 #suspend {
-    background-image: image(url("/usr/share/wlogout/icons/suspend.png"), url("/usr/local/share/wlogout/icons/suspend.png"));
+    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
 }
 
 #hibernate {
-    background-image: image(url("/usr/share/wlogout/icons/hibernate.png"), url("/usr/local/share/wlogout/icons/hibernate.png"));
+    background-image: image(url("/usr/share/wlogout/icons/hibernate.png"));
 }
 
 #shutdown {
-    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"), url("/usr/local/share/wlogout/icons/shutdown.png"));
+    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
 }
 
 #reboot {
-    background-image: image(url("/usr/share/wlogout/icons/reboot.png"), url("/usr/local/share/wlogout/icons/reboot.png"));
+    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
 }

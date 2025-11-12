@@ -19,22 +19,26 @@ button {
     background-size: 35%;
 }
 
-/* --- Hover & Focus State --- */
-button:hover,
-button:focus {
+/* --- Frost Effect on Hover --- */
+/* This ONLY changes the color. It does not grow. */
+button:hover {
     background-color: rgba(65, 72, 104, 0.85); /* Lighter, frosted color */
+}
+
+/* --- Grow Effect on Focus --- */
+/* This changes the color AND the margins, making the selected button bigger. */
+button:focus {
+    background-color: rgba(80, 88, 129, 0.9); /* A slightly more active/focused color */
     background-size: 40%;
 }
 
-/* --- Positioning Logic --- */
-/* Default State Margins (top right bottom left) */
-/* This is the key: Huge vertical margins (${mgn}) and ZERO horizontal margins between buttons */
+/* --- Default Positioning (Seamless Bar) --- */
 #lock {
     margin: ${mgn}px 0px ${mgn}px ${mgn}px;
     border-radius: 25px 0 0 25px;
 }
 #logout, #suspend, #shutdown, #hibernate {
-    margin: ${mgn}px 0px ${mgn}px 0px;
+    margin: ${mgn}px 0px;
     border-radius: 0;
 }
 #reboot {
@@ -42,19 +46,20 @@ button:focus {
     border-radius: 0 25px 25px 0;
 }
 
-/* Hover & Focus State Margins (This creates the "grow" effect) */
-/* ${hvr} is smaller than ${mgn}, so the vertical margin shrinks and the button expands. */
-button:hover#lock, button:focus#lock {
-    margin: ${hvr}px 0px ${hvr}px ${mgn}px;
+/* --- Focus State Margins (The "Grow" effect) --- */
+button:focus#lock {
+    margin: ${hvr}px -5px ${hvr}px ${mgn}px; /* Negative margin pulls neighbors closer */
     border-radius: 25px;
 }
-button:hover#logout, button:hover#suspend, button:hover#shutdown, button:hover#hibernate,
-button:focus#logout, button:focus#suspend, button:focus#shutdown, button:focus#hibernate {
-    margin: ${hvr}px 0px ${hvr}px 0px;
+button:focus#logout,
+button:focus#suspend,
+button:focus#shutdown,
+button:focus#hibernate {
+    margin: ${hvr}px -5px; /* Negative margin on both sides */
     border-radius: 25px;
 }
-button:hover#reboot, button:focus#reboot {
-    margin: ${hvr}px ${mgn}px ${hvr}px 0px;
+button:focus#reboot {
+    margin: ${hvr}px ${mgn}px ${hvr}px -5px;
     border-radius: 25px;
 }
 

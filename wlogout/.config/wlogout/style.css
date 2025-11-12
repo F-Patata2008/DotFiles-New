@@ -1,61 +1,43 @@
 * {
     background-image: none;
     box-shadow: none;
+    border: none;
+    transition: all 0.2s ease-in-out;
 }
 
 window {
-    background-color: rgba(26, 27, 38, 0.5); /* Tokyo Night background with transparency */
+    /* This is the magic: it uses the script's variables to create huge margins,
+       centering the visible buttons in the middle of the screen. */
+    margin: ${mgn}px ${hvr}px;
+    background-color: transparent;
 }
 
 button {
-    color: #c0caf5; /* Tokyo Night foreground */
-    background-color: #1a1b26; /* Tokyo Night background */
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 15px;
-    border-color: #414868; /* Tokyo Night comment color */
+    color: #c0caf5;
+    background-color: rgba(26, 27, 38, 0.8); /* Slightly transparent background */
+    border-radius: 25px;
+    margin: 10px;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 25%;
-    transition: all 0.3s ease; /* Animation */
-
-    /* Add initial padding to the buttons */
-    padding: 10px;
-    margin: 10px;
+    background-size: 40%;
 }
 
-button:focus, button:active, button:hover {
-    background-color: #414868; /* Tokyo Night comment color */
-    border-color: #7aa2f7; /* Tokyo Night blue */
-
-    /* Increase padding on hover to make the button appear larger */
-    padding: 12px;
-    margin: 8px; /* Adjust margin to keep spacing consistent */
-
-    outline-style: none;
+/* Stable hover effect */
+button:hover {
+    background-color: rgba(46, 48, 64, 0.9);
 }
 
-#lock {
-    background-image: image(url("/usr/share/wlogout/icons/lock.png"));
+/* Grow effect ONLY on keyboard focus */
+button:focus {
+    background-color: #414868;
+    color: #7aa2f7;
+    padding: 20px 0px; /* Increase vertical padding */
+    margin: 10px 0px; /* Reduce horizontal margin to compensate */
 }
 
-#logout {
-    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
-}
-
-#suspend {
-    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
-}
-
-#hibernate {
-    background-image: image(url("/usr/share/wlogout/icons/hibernate.png"));
-}
-
-#shutdown {
-    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
-}
-
-#reboot {
-    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
-}
-
+#lock { background-image: image(url("/usr/share/wlogout/icons/lock.png")); }
+#logout { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
+#suspend { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
+#hibernate { background-image: image(url("/usr/share/wlogout/icons/hibernate.png")); }
+#shutdown { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
+#reboot { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }

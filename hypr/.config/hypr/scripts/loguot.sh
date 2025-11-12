@@ -37,3 +37,5 @@ wlStyle="$(envsubst <"${wlTmplt}")"
 
 #// Launch wlogout
 wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlStyle}") --protocol layer-shell
+
+

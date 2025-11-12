@@ -1,43 +1,69 @@
 * {
     background-image: none;
-    box-shadow: none;
-    border: none;
+    font-size: 16px; /* Set a base font size */
     transition: all 0.2s ease-in-out;
 }
 
 window {
-    /* This is the magic: it uses the script's variables to create huge margins,
-       centering the visible buttons in the middle of the screen. */
-    margin: ${mgn}px ${hvr}px;
     background-color: transparent;
 }
 
 button {
     color: #c0caf5;
-    background-color: rgba(26, 27, 38, 0.8); /* Slightly transparent background */
-    border-radius: 25px;
-    margin: 10px;
+    background-color: #1a1b26;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 40%;
+    background-size: 35%;
+    border: none;
+    box-shadow: none;
 }
 
-/* Stable hover effect */
-button:hover {
-    background-color: rgba(46, 48, 64, 0.9);
-}
-
-/* Grow effect ONLY on keyboard focus */
-button:focus {
+/* --- The Hover/Focus "Grow" Effect --- */
+/* This is the key: we change the margins on hover to make the button taller */
+button:hover, button:focus {
     background-color: #414868;
-    color: #7aa2f7;
-    padding: 20px 0px; /* Increase vertical padding */
-    margin: 10px 0px; /* Reduce horizontal margin to compensate */
+    background-size: 40%;
+    /* Use the smaller margin value from the script to make the button taller */
+    margin: ${hvr}px 5px;
+    border-radius: 25px;
 }
 
-#lock { background-image: image(url("/usr/share/wlogout/icons/lock.png")); }
-#logout { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
-#suspend { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
-#hibernate { background-image: image(url("/usr/share/wlogout/icons/hibernate.png")); }
-#shutdown { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
-#reboot { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }
+/* --- Default Button Positions (The Centering Magic) --- */
+/* The script calculates ${mgn} to be a large vertical margin. */
+/* We apply it to each button to push them into the middle of the screen. */
+
+#lock {
+    margin: ${mgn}px 5px ${mgn}px ${mgn}px;
+    border-radius: 25px 0 0 25px;
+    background-image: image(url("/usr/share/wlogout/icons/lock.png"));
+}
+
+#logout {
+    margin: ${mgn}px 5px;
+    border-radius: 0;
+    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
+}
+
+#suspend {
+    margin: ${mgn}px 5px;
+    border-radius: 0;
+    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
+}
+
+#shutdown {
+    margin: ${mgn}px 5px;
+    border-radius: 0;
+    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
+}
+
+#hibernate {
+    margin: ${mgn}px 5px;
+    border-radius: 0;
+    background-image: image(url("/usr/share/wlogout/icons/hibernate.png"));
+}
+
+#reboot {
+    margin: ${mgn}px ${mgn}px ${mgn}px 5px;
+    border-radius: 0 25px 25px 0;
+    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
+}

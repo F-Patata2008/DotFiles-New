@@ -1,20 +1,22 @@
 #!/bin/zsh
 
-# Find the first connected device ID
-DEVICE_ID=$(kdeconnect-cli -l --id-only)
+# Find the specific ID for the "Galaxy S8"
+DEVICE_ID=$(kdeconnect-cli -a | grep "Galaxy S8" | awk -F': ' '{print $2}' | awk '{print $1}')
+
+ICON="" # Nerd Font icon for phone
 
 if [ -n "$DEVICE_ID" ]; then
-    # Get the battery percentage for the device
-    BATTERY_LEVEL=$(kdeconnect-cli -d "$DEVICE_ID" --battery-charge)
-    ICON="  " # Nerd Font icon for phone
+    # Use qdbus and crucially, ignore the stderr error messages with 2>/dev/null
+    BATTERY_LEVEL=$(qdbus6 org.kde.kdeconnect /modules/kdeconnect/devices/$DEVICE_ID/battery org.kde.kdeconnect.device.battery.charge 2>/dev/null)
 
-    if [ -n "$BATTERY_LEVEL" ]; then
-        echo "{\"text\": \"$ICON $BATTERY_LEVEL\", \"tooltip\": \"Phone Battery\"}"
+    # Check if the command was successful and returned a number
+    if [[ -n "$BATTERY_LEVEL" && "$BATTERY_LEVEL" -ge 0 ]]; then
+        echo "{\"text\": \"$ICON $BATTERY_LEVEL%\", \"tooltip\": \"Phone Battery: $BATTERY_LEVEL%\"}"
     else
-        # Handles case where device is paired but not connected
+        # This will now correctly trigger if the command fails or phone is truly unreachable
         echo "{\"text\": \"$ICON --%\", \"tooltip\": \"Phone Disconnected\"}"
     fi
 else
-    # No devices paired/found
-    echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"No Phone Paired\"}"
+    # No device named "Galaxy S8" found
+    echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"Phone Not Found\"}"
 fi

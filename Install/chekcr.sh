@@ -2,7 +2,7 @@
 
 # Define the directory to check and the output file
 DOTFILES_DIR="$HOME/Dotfiles"
-OUTPUT_FILE="$HOME/Dotfiles/dotfiles_content.txt"
+OUTPUT_FILE="$HOME/dotfiles_content.txt"
 
 # Check if the Dotfiles directory exists
 if [ ! -d "$DOTFILES_DIR" ]; then
@@ -13,10 +13,12 @@ fi
 # Clear the output file if it already exists
 > "$OUTPUT_FILE"
 
-# Find all files, excluding the .git directory and push.log, and process them
-find "$DOTFILES_DIR" -type f -not -path "*/.git/*" -not -name "push.log" | while IFS= read -r file; do
-    # Get just the filename from the full path
-    filename=$(basename "$file")
+# Find all files, applying all exclusion rules, and process them
+find "$DOTFILES_DIR" -type f \
+  -not -path "*/.git/*" \
+  -not -name "push.log" \
+  -not -path "$DOTFILES_DIR/Install/system-files/boot/*" \
+  -not -path "$DOTFILES_DIR/Install/system-files/usr/share/*" | while IFS= read -r file; do
     # Get the relative path from the Dotfiles directory
     relative_path=${file#$DOTFILES_DIR/}
 

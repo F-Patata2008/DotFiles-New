@@ -103,10 +103,6 @@ wich will be detailed later in the file.
 
 ## What I want to achieve:
 
-- **Better Phone Integration:** As I said earlier, I use KDE Connect for connecting my phone to my PC, but I ran into some issues:
-    1. I can not answer messages (RCS/SMS) or calls while on Hyprland
-    1. When I need to acces my phone filesystem remotly (not cable thetered), I could not acces the drive, as Gnome's Nautilus did not recognize it, so I proceed to install Dolphin (KDE's file manager), wich promptlu recognized the drive. This solution is far form idea, as I do like to use Gnome's App suite (Extra and Core).
-    1. I can not monitor my phone's battery while on my pc, and I would love for it to show on my Waybar when I hover my battery module, rigth under Time to empty
 - **WhatsApp:** I know I can exceute the WhatsApp Desktop App using a VM, but should I use a VM, Winboat, or Wine, because im rather tired of using Opera's integrated WhatsApp tab, or before, having a dedicated tab, in a dedicated workpsace for WhatsApp in Firefox
 - **App Recomedations:** I included the list of installed apps and functionalitys, and wich would you recommend I use for a better system, my objetcive being a config like HyDE or Omarchy
     - **I need better hardware compatibilty**

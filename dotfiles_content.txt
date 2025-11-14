@@ -489,6 +489,8 @@ File: waybar/.config/waybar/config.jsonc
         "custom/separator",
         "battery",
         "custom/separator",
+        "custom/phone-battery", // Add this
+        "custom/separator",
         "custom/bluetooth",
         "custom/separator",
         "custom/wallpaper",
@@ -497,13 +499,7 @@ File: waybar/.config/waybar/config.jsonc
         "custom/separator",
         "custom/power",
     ],
-    "custom/suspend": {
-        "return-type": "json",
-        "format": "{icon}",
-        "exec": "~/.config/hypr/scripts/power_mode_status.sh",
-        "interval": 1,
-        "on-click": "~/.config/hypr/scripts/power.sh"
-    },
+
 
     "custom/logo": {
         "format": "ïŒƒ",
@@ -558,13 +554,13 @@ File: waybar/.config/waybar/config.jsonc
 
     "custom/wallpaper": {
         "format": "ó°‹©",
-        "on-click": "/home/patata/.config/hypr/scripts/random_wallpaper.sh",
+        "on-click": "$HOME/.config/hypr/scripts/random_wallpaper.sh",
         "tooltip": false
     },
 
     "custom/power": {
         "format": "ï€‘",
-        "on-click": "wlogout",
+        "on-click": "$HOME/.config/hypr/scripts/loguot.sh",
         "tooltip": false
     },
     "clock": {
@@ -609,6 +605,12 @@ File: waybar/.config/waybar/config.jsonc
         "format": "ïƒ‰  {}%    ó°¾· {swapPercentage}%",
     	"tooltip": true,
         "on-click": "gnome-system-monitor"
+    },
+    "custom/phone-battery": {
+        "format": " {} ",
+        "return-type": "json",
+        "interval": 60, // Check every 30 seconds
+        "exec": "$HOME/.config/hypr/scripts/phone.sh"
     }
 }
 
@@ -1576,6 +1578,34 @@ fi
 
 
 =========================================
+File: hypr/.config/hypr/scripts/phone.sh
+=========================================
+
+#!/bin/zsh
+
+# Find the specific ID for the "Galaxy S8"
+DEVICE_ID=$(kdeconnect-cli -a | grep "Galaxy S8" | awk -F': ' '{print $2}' | awk '{print $1}')
+
+ICON="ï„‹" # Nerd Font icon for phone
+
+if [ -n "$DEVICE_ID" ]; then
+    # Use qdbus and crucially, ignore the stderr error messages with 2>/dev/null
+    BATTERY_LEVEL=$(qdbus6 org.kde.kdeconnect /modules/kdeconnect/devices/$DEVICE_ID/battery org.kde.kdeconnect.device.battery.charge 2>/dev/null)
+
+    # Check if the command was successful and returned a number
+    if [[ -n "$BATTERY_LEVEL" && "$BATTERY_LEVEL" -ge 0 ]]; then
+        echo "{\"text\": \"$ICON $BATTERY_LEVEL%\", \"tooltip\": \"Phone Battery: $BATTERY_LEVEL%\"}"
+    else
+        # This will now correctly trigger if the command fails or phone is truly unreachable
+        echo "{\"text\": \"$ICON --%\", \"tooltip\": \"Phone Disconnected\"}"
+    fi
+else
+    # No device named "Galaxy S8" found
+    echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"Phone Not Found\"}"
+fi
+
+
+=========================================
 File: hypr/.config/hypr/scripts/loguot.sh
 =========================================
 
@@ -1620,88 +1650,6 @@ wlStyle="$(envsubst <"${wlTmplt}")"
 wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlStyle}") --protocol layer-shell
 
 
-
-
-=========================================
-File: hypr/.config/hypr/scripts/power.sh
-=========================================
-
-#!/bin/zsh
-
-# Detect power
-if [[ $(cat /sys/class/power_supply/AC/online) == 1 ]]; then
-    POWER_STATUS="AC"
-else
-    POWER_STATUS="BAT"
-fi
-
-# Define modes: mode -> timeout + action
-declare -A MODES_TIMEOUT=(
-    ["IN"]=900
-    ["Patata Xtra"]=1200
-    ["Patata Ultra"]=1800
-    ["Patata"] = 900
-    ["Nunca"]=0
-)
-
-declare -A MODES_ACTION=(
-    ["IN"]="suspend-then-hibernate"
-    ["Patata"]="suspend"
-    ["Nunca"]="nop"
-)
-
-# Present only appropriate modes
-if [[ $POWER_STATUS == "AC" ]]; then
-    OPTIONS=("Patata" "Patata Xtra" "Patata Ultra" "Nunca")
-else
-    OPTIONS=("In" "Patata" "Patata Xtra" "Nunca")
-fi
-
-MODE=$(printf "%s\n" "${OPTIONS[@]}" | rofi -dmenu -p "Select Mode")
-
-TIMEOUT=${MODES_TIMEOUT[$MODE]}
-ACTION=${MODES_ACTION[$MODE]}
-
-HYPRIDLE_CONF="$HOME/.config/hypr/hypridle.conf"
-
-cat > "$HYPRIDLE_CONF" <<EOF
-
-pat = $((TIMEOUT /3))
-
-general {
-    lock_cmd = pidof hyprlock || hyprlock
-    before_sleep_cmd = pidof hyprlock || hyprlock
-    after_sleep_cmd = hyprctl dispatch dpms on
-}
-
-listener {
-    timeout = $pat
-    on-timeout = brightnessctl -s set 10%
-    on-resume = brightnessctl -r
-}
-
-listener {
-    timeout = $((pat * 2))
-    on-timeout = pidof hyprlock || hyprlock
-}
-
-listener {
-    timeout = $TIMEOUT
-EOF
-
-if [[ "$ACTION" == "nop" ]]; then
-    echo "    on-timeout = true" >> "$HYPRIDLE_CONF"
-else
-    echo "    on-timeout = systemctl $ACTION" >> "$HYPRIDLE_CONF"
-fi
-
-cat >> "$HYPRIDLE_CONF" <<EOF
-    on-resume = hyprctl dispatch dpms on
-}
-EOF
-
-pkill hypridle
-hypridle &
 
 
 =========================================
@@ -4635,6 +4583,396 @@ File: fastfetch/.config/fastfetch/config.jsonc
 
   ]
 }
+
+
+=========================================
+File: fastfetch/.config/fastfetch/Saviour.png
+=========================================
+
+‰PNG
+
+   IHDR   Û   æ   \gð3  EhzTXtRaw profile type exif  xÚ¥½[–å8Žmû¯VTDR¤Èæð9ÆíÁiþ™Sf™U§ò–{„›»Ù~H$°°`_ûÿüçúÿøË]®'¿µ´Rn~=íi±ó—zÿüêßŸá~¾?¿_küþ,üë÷¯]~ùVâkúùgýý~øãûáÏøùÒù[þ§ªó÷ã_Ðžß×¯y¡ß7J^Qô_¨ý¾PŠ??¿/Ðnë.­¾ÿ|cÿÞâïë~ËÀÿ—œ›ßË¿÷ÿ×?/«·2ï“bÜ)¤›?Sú½€äÿÏ•º?àÏ;½<ðçï!eþŒé[eAþnþüÅÛ^ÇK}þöAÿ²+'ýýnýñ·ë¯»õÄß‡¤¿,rùóëß~ÿ
+ùïwå[úzç§þþ-þë÷û›ÆÏýeõ¿Å?«žïž¹‹þ–ºüÞÔ·òýÇñ"o]/.­Ü/ÿg^âý~7~W¬zb
+ëž÷à÷-Dvâ„'¬ÐÃ	ûû:ÃäŸ¸¯È^ÅgLß7+{×âLîßãïpâ›ZZ©²‹óÛö'Å?¯%|oÛîy}ïVyçxh¼Xà)ÿöïëß}Â9ºB÷ïâc\WŒ.6—áÎù'cGÂù]Ôü-ð¿ÿúË}Mì`v•u‘ÆÂŽŸ—9ü	Ò·Ñ‰f¾þø`x×ï°D¼uæbBbØ5ü!”p¿1¾!°•ê\:;rŽ‹‹ŒOJ…½©Ñ·æ)oøsäÛßÌØ‰œJzÙ›–:›õ<ûyŸŠõœò“s.ùÍ5·ÜK*OÉ¥”·ŠØäû\o~Ëû¾õmo¯©>5×RßZk«½Å– ÍÜJ{[m­õÎ{v^¹óìÎzq¤ñŒ|2ÞQG}b>ó™y–ùÎ:Ûì+®´ÀUÖ»êj«ï°1¥ýì¼Ë~wÝm÷ƒ©tçäSÎ{êi§ÿ¹ká×mÿúûßØµð»kñÛ)øþ¹k|÷}ÿx‰ œd÷Œ‹×Øñ×-À £{v×ð<ÑsÏîñŠ¹Èìž­àŽ±ƒÏ1ŸðÇÞ]ñgGÝ¹ÿÕ¾]ïó/ûÿÿîÜåÖý›;÷Ÿ÷íïvm†æ·c?^è¢Þ	ïã1=Vþÿó×ë¿úÁŸ_÷›f^q.ª€®Ú½Ó­Îr·Í»Ž+¬çÝïŠ½‡°ßæ3û3¹ö#¶²¸ì•{>µ…·žjyÏ=QÙ†²Gìc‚dlÿM{ÈSó¤g={ùdc%®hÎ¿è<äl-»åyRìQ;,{“®•ÂÞeÜï|ÒŽïè‡Åßµ±Xå¤¼òyÚ~†xºFÙw›…·«uº¬4Ký¶4qÚ±CX)®>SÞÜ!ð}yçžjæÊNâòÃ¶‡Úë¥¹àt¿µUêzë<m·ë)û´Â~=§½óì³æÊ3>½å}â˜­ÜÆ`íF*<äYñÙ'´tvæ;£<.EÅ²kŸŸŸ}Â®OxŸQæ€¥1×CÝ÷xN*»”gìÆê…¹[þë„…î}±æ;ybþ	˜ƒEb³ãj{‚˜ÛýäWÙ\Ë;xµÆ8u¤=Ö3óë¹7[C
+ØÖc¤XfIíÄÁ÷'&ÌžòŽõì ƒ‡‹áòb:±>ù
+µž9&K3ñc™Q,xF{•³Ç†cÆqØ©6rëœ_Ùí=­§R\^pÎ •£ñÇÿækØåz±‡ƒ‘®þ¼µ­÷É8ð®ù>{¿/ÖðîCx+iû<7¡›¨³Z\¸Èágá¹Ád•ôaƒ
+17¶Û#w°FH.@|ïÔæ›7{ºæÉÐtê\¥¯ž1ä‚ÙÞØx‡Ý‡™öç:ˆËãXè‰˜WXXS~ßÐÁ,ö¤sÕl5¶Þßº÷öÔzíÜ¹@ÌNÌ‰{O·)xw}GÌ©–Áu¯“¹ø6ØÙ°ñ¤~
+·ÿ<]P¼
+4³òlû\çÁñø¢¾ïÂ{
+æÂÝ,À·—š»>Kní½ñîûÞ7òŽëõžÙà€÷o~ÍôÐ²ðLÞu;xš¡àÃ¹ó–,ùé¼|Ûq1/0²°²Ip˜\E«O©8;°O\ŠûáYý]lœÒåÂã‘lÔH°ªy.¶x¾fc‘»^<’u.käÄÂ€±âcˆÛƒ¥\¬4w°VŽe]ËeXc¯çÿ—A8ÀˆsbÁ*¾­Ÿ÷95±`¿ááGCäºÏk&Üäe^„ÊÁÊo<œ°–&Ä{Þ#€b£V«½P\nôÞ¼ÛÂ@àZ¢žó\„Ý½Wõx+l\\áŽkñL`z`_lKÚD%bJ&ð´÷éër1šÝÔãYD¼‚‹ÑfÅkž<öÈBÞ«fuæ8üo€…òr±q6¼†+âÊj ~ãO§-DÑÄžàabhÇf±±`ÀH­f6f¶Šk ü\U J°ì7>Íçâp-Þ¸e¸R¯—ÎÀÛ< ào)šq‹ëì
+üŽH½¦T$žDäç:¡õ‘þJ‚3Q˜Æ;AÙž ,¯âz¶`à.Ð9/|p”N$|€:|tX›X8r}—QkŠWÞ`n$Õ—6	¨Éh…}Är•æ›à}'^bÏ"¾¶â4èá™X]m#iÆñŽ7öÓàª'Qh_áË;À=Vnà<Í­Á‚î1h†ï6„Ž­;a·¸.°¸OÁ5x›ƒÛ‚ÙBeF³îü¿ÃÛëŸ—è@Ö2v¦MÀ©Òœì´ÿ~±å\˜E¸u	â¨}›¯ÜÂÆªˆÜ€ÁFì¬‘/€ª®p§[î7Þõvàó\ã€@UA¹¾²¶Y\Gû%üÀo¡aÏJpî?MPk€Õ†#á8„û#RtTì;Záí‰Ë/¸Üœçí­PÀ…s©C.CÈ]î7@¬÷•Ùå˜&Î&‡&Ý$ì•¸7+Ì%œ)•ŸtÇ®°VXå£7j¨06NðL%wnH«†}gîÌKÏ£aÙ¹BÏž$ÜF¸ÙGø‰Ë‡¥>c:ß‡¯-‚m†#Dý›'lØï®ëÎµ]]D5ˆ¾úL°voEÖ¢òŠ
+ÂJž1cc`sÄ96ÜÔBÇEOâ6+¬‹§¤[|xM’›Å: Ë4WÅRV¡ˆ¹C!Æ§°É/ô}÷+ÁÝdÄ‘aÞ-§Á-¡0@‚TxÒâ–âÇÿYžÛé3˜À…AèÆùã£°³ÙqÈi4Âu{üñÂ8ë·Ò®^†ÃŒ´b9qcQ«õ–¹Ÿ~Ý¬@TÃ-'ãì¤bŠÿòv Ðz¹Kxà{Jò‡ûKêïüâŽ r
+×[Xb ‘{Íï	âuÖ$¤CxÈKˆ*qAðµyã‰höNŒ­èß?'¨b‚„ÔM@nÁÀz^€ pºKó‘.¡?˜Ð6]ì¤²‹øÈ›Òöœ3¬W>F/½,˜'HEhÃ<`á3aõoƒ÷A>sµ#ðÿzo”×Ü) ·Ëà/¢ž£ÇçàØ®á\e½ð•´$QH‘Œ|ÃÖêØ !Q—`EÐ}À®8Ñˆ¬jâÕvì=Àùu¶Üh['û«\ˆxzE(eÕ:¼••%à`(ÉC…±8àQêNìW€L²Êøøïƒs‚øá…«—E<´~(²Ô#!XN|¯ã†Žó"‘:°Š´dÍ	Mø…þ÷ó×ø7¯‹…ØTýGä4Ì—áÀÄ¾ìÛ@TÂ¨T\þx×ÈË—<X£'c~³©¸(–ûtÂbï¢´ö`9û6ö4µ•.!gà	¨`¨(×yA—Äž:*&ô*¿ãºfÀ´ÑíÓó\<yÚ1˜<ç’ƒ¯·aûJÄ`øl¬x˜C¼zÄËÞ3V„œäßœnàûD ÄIÑ£p Í˜….z‰·èôs Žˆ¸iB5(±JŒñ´Óñqr#±êÔ«Àc¦»gÉ/ä7Á$*ÈA"|EÑ¾`ÎÚ¢ É£ˆ,8¬:ÈW˜D@êR#–2kÈ×‚9Á¤Ûkbo¤(úO_	!åR¾ÇkÄŸ¿˜]þû¯×?¾œ+w ~DŒ¥
+Ä¶1WÄ«itQ`Ï0lcÀÂ`eØ,’ú¼õ‚b­86~úbbà:˜+@ÐÀôrg˜± C†Y\øˆUá$bÛ‹¬D°tê‚ã(%d”¨¶Ê•d4þìbßh•’±#ñ‰vO¬Îg³‹!žÄÂ=¡Aãˆð(h-!íˆ¡ÜC9Ý@
+v
+qÀÂÓJG¶ÀIò*SW>Dö<¥‹ˆøš’ÀB0sÉ °kÊq3q{‡”½DL”¹ôhÝU¼D‘ª;B$Kk.'k¨«&õÁ)‚d@9qûÁ¸?‚¢é	"_Ešbu„ú÷‚Y`ÄX?‘xB·K`ÑdOˆ?ŽvÚ°5V|Õ\(Ñ?§GÓ•08bçÅåFˆËò…L½°–\ÙxYAÑuO¸à]¢úli¦¨ÿyHRc×€}0÷@"ò§ÈÏm""£c®£g#ÄÀ¦6u‚„¦õœC¸`ßaWIW¨	LyÀt\\94	ÚùB4°V‰+g9Þ¶ç¡66¯W,r˜äÂ	gß7Àp®à53º¸ïR¹–ó|ÐYÙa™ ›¥åÉÏ‹Ùb·ò2nv¨ˆ¢ç#¨Æq.Œ¿Rön¦=õ¡¹º	÷¦¶Ž/qr8ˆH@'³Jö¡Æä›afÃi#ýà©Gy—ÀÝÌÐ<°È !H÷î£Ü¼ëŠI¥å¦A÷Š4û†Þiè"$>1ù;Bºíx ¶ â¼Ño·|ÇT‹§0‡Üñ
+0“cÀ¼^‚ß+JA5”ß÷M,o<?@T˜*Áò	v€Ú~.l‰ÛÑŠ`12t4MÞ¼Á–Q&Ô)JeÀe«?36˜@¿O¾B,4n¤¡tb7£ªºGP<¬6v¸4|½MíÚ´ûÖ¡Tf<‘ joWç…R(7tîCâ5è,T:âuûÅˆ¿˜HÇðVe¶¥÷iJ7þ/Œ`:óƒMyC×@ƒAaçž½líaº@H"ÿÎUFsr5l?þš<^c¥Æmkiñ„ˆ¿ó4ö	TCðë´ÐEBï­ÒBz>FÍ‚Ò­Ï…1À&„},	Cc<`\Sú³ÆE.wn©<‘¦z ö4V'Îñ´Ë¬.Ø–†
+@û²VGT)k™´ ™1ðÆŸ_FÉžNjf¢Â«w¸t¸75uø"¼~´äHÊýqïAx@i³s•¸{/”>ŒdBàÂï–9^hwZÈí±RèS¢Ð,/â
+ÕŽ.òR?wÆ<buÜ–Nˆ"6^8%;ð‚8;V­ƒ¼ÜàÒB‰×x±ƒ¹!éŽD™ˆÙ?ëj~àjZ^='bIØçä™ùÝ\oÉZÔœi@?â@5(€ûŽ/­9ÌÝCF‘[È
+#&·O…NÉ¬Tº	&Ñ‘Ïö±„ygÏàÂì!€ù–G
+°Bâ4Yƒë#§’qJÈ†n™Ž¦ÐÅ4“|øÆ#åFùt¬õFÆ[â¥`!è±¾àiî@ŒÄäyï·oÂ}_.5¡™]ø²ÄíRûúí0qŒ>O¸«”–0qNK–ÿ‚Ð \M›åÒòôXŒ;»M[*OHb2°üÀƒ¸Ö÷äê ÈvÉG2À¢=|wÙºH3kxÅÒTÅ@·Éd6˜ S2ÑúFÖFÈã*÷[ë˜.LÁH¯eÜËÑSV‡e$oÄL7(_±`ü¦ö?¢xGHÁÁÏÑÙ\8þxÁÓÜfe!7qÊÏ¡¯Gh–¹M‚bGÈQÏˆ1ˆGyNh¼›´}z(ÙO€D`ß9¬Õl—)OhÐâEí)T@0]õ";`ÝWÌFâ6-îš	&_C@¢\'®Gr þ;,6ÖaC83W4ìŒ½³#ÜÐ‹iCè!{°œáAÕ… R{CBuÙ>±œÜ‘;-›“B7Ä¹Šý*Ðf®ñ+0EC0wÛLŒ¯„ž‘7!2×í‹'l¬&‹V—„&aÆhÖŠ{§e¦*¢3ÙjÑc€…EfU/7dMÌ(•„¥‚3ìó\zžŽ#1?È&Vý½0=¤~{LSd <hmó+\$‘ûp—J}ŒT+nÕÓ«ú•~±²Ékò<zdwöï²‘¸ÕÈ'ç•öQPàÐ«O#íŸz{–qÉ/ñž‘§Dþ á&¹xSb¦<í9@ý–7=jæœ¢„›,BAë;Kz/v¡ÜhÈ¤œòÐ‘—$ÞLÝuä$C$Ø
+'â"òœŸd¹:m%(Rãçé"<³ìn/!ôÐA5‹î„N¼§ÀC“ù3žÇvƒÒ6¸<Âß“q]íÈyŒ@øçá¬ ŒF*uVÁ´–ÕP¯ÄÙ<lË¡-ú¾ˆSæ¼tžÃb°gßGçßõEÈ³Ê„x2~ÍNO~Óú¸·‰d:Ï¾Ž¼‘dPQ –`Š ÷!£˜<~#îëÍñÃÁˆEB¿E¾lvo÷rûánˆîž4‡ì85Î5oŒ$&\¤ÂB¹ò¨_Í¬÷HÀÊ÷NÈûhïÅw‘Ê+ylp:žŽ7Ä„:Á½‰Ã a€‘³ô(8ü¹‘J…õ€£87xÜÖj×±ÀhzÞIÀ{<Û»Ù3,f t/ô1¢×ðsè#øqI;‹€¿n¨ö„ó ³pF¸ì¦ÌG!d”9&7JÙ[÷ØR#ú dœÉ(³A°÷5/3	 p f¦»A¢XFb?‹­îHP61#Ý F´\ydÃb³ ôƒ°t$p_Œ()»½+?Ð^üö/Hãn‘WÈ¯“<Z¬FDuy‡~ÐÓ¹û;¨:ªôåõî¯¾£,«çfDF|–à‚ÕuØqkŒ4)×÷âà#!ËÚÈ*O»¡€¯r ¾[Áx_äÚæMÂÁø3VR¶è æƒŒÀê°cë©@Û|â
+¥†‰±PˆádXÀ·”˜—yCðÌ:CÆBÜ×;3|ÃPwÜŠn–Ç|E¯\ž¶È²ç  žw,ænx«]uîu¿h‰k-“#qOpÚ@ÄÕßMîŽ2%"Ôƒï EN#(ÈÔï?s†—?¯—,"û‘ïê5u!7G'L:Ix‘ý0ÿ@¸7š"äê9)éK¸¹î}øÁ‘kB¶ñùÆñÑ9Ùá™ßjÊSxI)…ñ­gYèÚÙoDvàM¬‘	òb|°Œýa§‘°np[ñä8¯«°†Á$òþ¬zŒï &âøåÆ§&ÍÀÁ¹Ø^»ê1g/h÷f&Že>çfá€¨Þhf¦°Ê ¤
+DF‚¾dÖ
+ƒ9xâWu7âùò
+	arêaáxciÞŒ÷£ì‹åŠý&"s¯0LOåã’*²e¼¨ˆ²&îòb¯Ù‚	@@Ì¢?ðþhvÜ«„sïê€#K3>Í7ˆ	¨A÷¸cþÖg8,J²šÀšr»Š§2<Á;Ïñ¬XÓ€¯aœ=ïiCýƒ}=8ŸÕ`¨D$~‰¸Æá	…Uo@eŒøJbïàAÀr·Ž0C¢hö  Þ*hÂ3HŸˆ x/{˜€Úg°–,ŠÓÒ	¶z¨ÉAW+¡¾mU’f|€–Úo…Èaî1ºÞïPË×|$bø÷:„VhŒ©_BÜ4³ÂþÁÝ3Ø¥á<D·1u7ÍÿxÌ}[UÂâ¶áI¾5‚‘­~5¬­ÙØü©uO•¸Ïý·å£éšÖ=ÓcÂœòý&^XbïnÌCÉ@Ož­»XÏÔnÀTFMÂžž•ö°k¹b™%™+ï°Êçx iÞ£J… Swþ*eðÉ?è0©ù±eï¹Ýàã[ï4Y¨núSÀ›àÅ¯÷¥@Ÿä™M2Éafaô`Ç¨õLy £€·›8‹”ÇïÀøMëI‚1ÍÝes¶Ðk Þ¿Å	xÅâ½×=!~vóXXcF?ãüsuÍ¿-7s×ƒ«[LÔ×ñìÒ1ð–oðó
+Ö Â)nÕ	 Ÿúoˆ<Pêéš,Âb-p‘œ½ˆ$ä±<).¾§AAÛ«j$äybŸ0Î¦©ýXxÅJÖé< sMÄ“’¬ú$L€}€)ÊÕ¢¢%¡Ö¶x"ÄŠ~Ã¬»õ¦Q­jEüf;˜ƒšg•»XfŸ‚ÙS¬µ’Â QÖ¦*¬Í+Y>3ùï+·5¿ÈH‡€@†¯b¾Ÿ“x,;ƒq!¤ˆônÔ"¡£Pž7±•ÄÎ1í¡×`àÂRøe<ÆeùÙûøÜì¡Z˜IÀíÙÔJ³B9
+jÍ8 låÖL¯Í 5pø"Ôôa¯ˆž8žõŠøËPª§Õð% cTgLnTäÌðî+ë^ìSª¦3«GéKNÂúæñ©ø:öyÓæðéæñÀ	pbä2;¹-_»:«y€KÅN—m.E#°²ÄäÖYx‡ä‘ôB«CP€{›¨HœÀØà”¯Oåzç ø—R€Ì5«© œ„Ì£Ÿä	Ž‹ g{pdØçó %úE„Â¬<>Gœ óõB–¹xØöÈ…u¾nUÕÂc¸03f…ØQ^žqÁ'^ÙÜr|<IË1ðt~³fá7/a¹À
+V¿X×Ê&ú·anÄXÃ!Bñ˜ºo‚6ÚTQ¶Çà)Ø4Q¼ð
+'åê¬laW	ÙC5R”•$t&l!°±
+ÂÑ| <s;·Á›8‘ïÒÞ¦’UÁÄÅ||.+,é®x&.S³¬	ª(c¶ˆ‰›ÀXq+xˆt:Œ!ÝÀÆ£å	îË5ÙÙ¬G7%&žj ä èR±:Ì±à¡¬Î>ãÎÞ0:l…òLíáÙ­M¼õ]!vþâ±’¹nÞç§V(áòaT7!Ñ˜9­Ž³¸1›©¾`€{K-#2ô¿÷Ù2wE_ÑäÑr³hƒ¾A†“¿Š:ècšë·ÞðºEˆKmæ[	‘F Žk
+ÖVú;‚!8¢
+Ž'Ó÷Ë°Š<0ÀŽÖ”-ËD!¤Qñþ1j5ùŽ}½‘o°žkI%pi¼ÂAs‡þáWOÂï…‡/Hx÷<ØfÝ J–zZÎ5#”/ªˆ¬Ï±¤>‚+æœp¿ã,»ækWlï“L¯§>@Å«2sÀ‡&Õ]Åe+7¤î9Vj ×@{|ÈÅ‘¯¯¢f™gaÞ©õ®ÏV³±¡s°:Ò^|8š¸M$bßv¬@TXò|`—‘G(\<*š×‰b(ß¡QŒ–·q¦U«·ç³JLoAio†Áœ)]è—¨¾´Êv«GáÔ]'®aÎzÝdQPnÍ±5ˆ3ô@	á:F7ð½€»ÉìMŽÄ/a:_‰Í([“K¦’ M BiÜf.óÚÙÂAÖ–›žÖ±ÁÞÚþ9€ðR°S‹Kàµò”¸øàÛB‘	æåËbši´J uç·>…+Š†)'®€˜übÑ$RÒT¸	$óÿuÃûA5àÜâÔd:¦º¹*‚ÀeäqÁ–Ge†ºp­Zœ¦ã›|á–aåo? Æ,j4>1Ï;í.¿vè5‚(}™qL4A–ãwÐ¿ç4yÄz A qazk›ÉºÅcÎ¢ð~ì÷{ÁIx«mq¥l¤n`{Ý°ŒÔ§5a·¸ÀÃ{Çé9T¯€;ñŸû…ãz¯vaÁa<Âý=ÇAAgs0é£Ø„~(Â¶â¸±o&ŠÊÜ¯X‚s Ô·EçïuˆåuÜ­FøÙd”b£`íGZÕBœ×‚ËWâCDÙ¸ÂÚxì‘Á¯Ë£+BÌ¸ âpWc¢×¦¢6›j¢¾4¾úƒòÜ„œòn™àÀ­×fxØ±›óè($4JÈ4<T¯àŒµáñÓôˆõ5/k¬`éÄá(}pÌš óq¥psKx–gJ/3X%õXÛ^ë/‘é„e’¶Zc!—€ÓÊh±¤ˆùžÌGoÑ{ñv\ýóÞA ñ,Tïž‡1¾Î­-˜áXÊÀ·2Ìœ»ë©P={‚}ñ° ±ò„ã«~]‚ëÁ‚‡žÄ¦Ü»{ŠŠD!®ñ§JÊlÔô°ÖÒm}Î0$² †mQú‰µ%¯­ûúŒß‡€p€\ç§óÌFZînÇý©cìßŠ`…—ë¡À¦UÕ#¥Ì;X.âïð¨‰€ü­ç²hte=MZ;š¨w«FNÐ_þå!ð†Í$«;qÃãå‡¡÷Bì-ª={ÅøÞËâIL¥{‚DtqÙJîÖ¬¥(%@’=÷…\#¤ŸÊsÙ"”õ!PŸ)¡Y(‚ƒxasÓ˜<íeÇBÁhÀ$ñ…Ôg;¯ŒÆƒ§›{À4u2u'`•t«×úI>/Á‡–=û„‡‹¡_¼Ù\Pü|{êƒË©­JD¦uáÞ¢„<Š!ÄŸ†œùŒ\Ö^ýT²–»{žV=5¢(6W?Ïbw“È°ý­fY»Îi‰×ˆœk³9¶/Lñð´í†–[#ÔÒ†jƒÓ,æP7Ü¦`ááó«…ÙF+&š±BkºšåÍ,åktf‘‰yˆƒ a`;±$[c­Zðê/CièÁ¤€X»8.‚ºçƒ¶¥½žƒÄøøHN+Ê1E9‚Jÿ¶¯£K3Í##j«ÙÂÕc€NI(9E´OOéµþßÃ³´¨EBgG9ÛqIXå1Î£¶DAn°»¶öä=G¬Öáâ¡xìÊg< ó²¤‰hPƒÔ„ß›PLOK@ 5ðPh òK†‡pâŸüü5/,*¯h>,ÄóËWàPÑ1½z\œOñ˜Dþ²û/vI F^fââ=³Ç–RÀ±t¦Àbå,+±àAgéíõµ$][°>§°²¶žHSòk-GÑDW^íþJÌÍé@ö@Ô{À$9~¹C½ø0ÿ|ç_€|,0ôdÐŠè 1Ð¢ÊÅn³N >pƒ…új·˜®ñ$Õ!¦{¿&¶­òn±˜çï?'Hå¼
+®ÏÖl³êêl6ÑïAùå[4xù/ƒ4þ”5÷øGÖ]—õçWØóõ[ÞtÜ»›(BÐƒ@ìˆ„&³~:Š”ˆè	GÀÌ»†¯$šBÃ ÚÂ×T»÷ž¦.—‰V»AžÄ•`E¤Çä-¾\“Y-7À¿»Y2øp“þþØlÄ0¯† "2%OÅ=+Å$¸>±fW!¢‹¥àz!áðQðÌÕž ç0×ì|-^’5öåÈ¨µZ(¿Z`zÍy6B7:eÝìÄ=Bj !o
+k'µ¯µ³<b…'˜7ÛÄvm ˜ý|mÝ*HB²	„7õ{{šU¬÷²VÂfî¤}¬&5-ïqD´àY‚;ˆyüçÖÀt?:¸É·ìøEX ¸‹(YÊaÜ¼,ó+À«‚0†œzIÍúŒê=}üeÍõÑ=³³ ãmP¤Ð=i%°øJÃ*®ñ á¹»—Ðþš„7‡‹‹|e‰,ÉÐ)oå…«V`Û6ŒLZ¬
+z€K‚ŠÓr5ÌRðG«JpŽ/ûA:@úiõ^C° Ó§'ðEð½ù@Qù>¡øK_²Z»žÞúÂ2qújc,–ð=.Ác:¡£ëÔíväï/¹ò•
+’SB=¿t¯ð
+%–™5q^öKƒ÷.­¢8éÑÏ{Â>aòBó½,óàþÍŒØ9U»•à%Ë]ÆóJ®»[Ä"	®ö‡_š9³Hõµ%×¬A–W,üÍözXÜÇÃ4¶~…bI°aVÁŠ:t p¹­yp[¶ç€·?È
+9ìËð…²ÁSaã*KQiýOÛ8‹ÕÏñ­9Î¸‘ä1ríø‡‰Li:DX|'C0ß.àÄœˆc$6ïmÅÑ`lª§Þ\)<%­wl€åG_% •<\îJ±^±qYq*ÍëBµ ïYbˆã<Ï§<"«b¯¤Wgˆ1Ì•¸›LÜ[#ÊM_yŽsÐƒß±a½‹MOZ›jX”;â’},V {Ü¬Ž¬Šƒõû/ó¸`-./¦2¿'Á@­4—Ý9â¨È,9ØŠÔMz©(ùB¤¢}¶ëb†}¬Å‚GE÷X]…·Öª–&f¼’õée"ÅcÒªÚIµ²ë¥P³u˜Ý}pí­573‘¬p#â•$ktÜ;Œ´Ø¬d‚×¤÷®×jHe˜;W€ÜëÕ“¼³ÍlCu<ká|-ÊûÚmÆ†üˆÖ|•¯!íÆûO¶—„u\¼1kñ!ò°>Ïî^Ý³)h 	|„Ínøøq°áZWÃä­¶+·¥;wû®Nõ<<ËÄ‚K;aèVSç„ ô\"[çöÝ—u¬¼+ÌÅi¯h€ÑƒÕø¬„ÅœÍ™| ,NKBâZ,A—toÈnôíøQ˜ˆãóXQB0iŽàýM1ò–D‹Ò#†+ö±8Œ>at,&±ñþYÓ€/–J«ÀÔ§ûjW&º•d	
+º~iPü›DR„ô­ˆ%tÅ~;IÅšñ"­q‹ÍìÍjxR,À°'ŸøZ¥<{f±NF_ØÙü§ªíë?Ñ‚ÇâÐ—ç'†-¦‰±"HFòp®YÂ›Ð£Óâ‚×ôŸåN=\å&…fOä¦3àñI¹X;Œ´Ù…™°¸0<ƒF$—‰(|%,Ã<w¹d7Ù_öZ^¥&[¢¹	Ë{¾3ñ€°K¬ÄÛyæ=`öh@ª{‹+Èï%è(ÇNPþ„^¢ò¯ÚŸô.þ‚J1!LìF+æª=¦ú†U™Àcv(&aƒŠšA*˜Ø‡‡~ÊãÎ¯õ0ýÿ€žr	‰ÿìoøõìæh–tí”±€²ÇuªyÀC²š`×¯KÁâÂáðÛ>Sb–ýzZæ‘od€•<Ö7«g“ëÃ9Ö“upÃŠ©)|yM¨ÝôµÅ_åƒS¨Dœ6<Ü<²£µ!¡¢'ßUnÊ6# ÔÊHì4É·­>2ç¯ä&Šåù3!°b›!6ÖîvÖ\zÊ‘ž`áëNÍ9ü"ÙÉ–&âØNËXCoŸd¯Î°bÌf{’Žãd°-âÀƒû¡Ÿ7ØŒãÎ¬Zù)>…SÆ»Ö—ñEŽ³¿Ô¶­óŽ#€éÜÖ=gÖZ”ç¡æèízØÊÖú]Œ¸Iµ¾è1• àØ×ù»lN9vëé³é2TŸiJé¶]\MkA¸°ÀÛÉôž÷.Äç/üz!*fÉ‹|d+Ù	3ÜðÞÕ£½÷B¨ ,2fX¾y–áe“ÚæxÊWzðèÿŠˆöý€ökAíÁ…D@‹ ™Ër^”óØ¦€oTäœ98¾ÅÞp0©Ú»eåøXêËATíÚÌcu[|=.˜|Üáæ³AL$/Ñ¹	áò=°4ÝÏAÕ~mäl]”þ"Ø]ñ~ó_U˜ÌÝ~Ý#-^ÏÝrýÚ'Úç¿X}¶—½%X..á#°F¬j8z2c|°:¨ ƒÍ§ øÇm•ßJAG8p1ökK¼…VGíë€·	\H¥xâIóT‡nKÕÑw h‡üæ?LÛv›^ÁÌñ9:¡Ÿ!_·ÜEq:ÀŽ®:¾nH(ñœuFxšaÊ,:ÌÀn?éo®ƒ…¹ 89•)Õ+¯mš©)õ;ÎÌmN3žÛpß„?‚1Z?X@0%¾ãmŠ®«EœÛá¤Pµ%¤¤7(ÈÜŒ³‡×ªkžvƒ’ßY~„™£ORS<ßà"z2Dìé¶7Z)Œ‹)±#ƒžiCh~
+Ýˆã‹L–;Zñ*².ôWnk‚(%¶FD@ªcNtÀ ª§È„Ödÿ4÷ÉÑ˜±BÖMY]¶RñL®ÿÐÂ,Tø±C—­da[=km'‰<ü!Ç¯;î`ˆ1 ûÇj8‰¥˜,Á—nòælåÛÖxydWL%á!6æ3”ÉF;Ü‚Kü†B\žÞ-™HqË3£’ì”øõ¹¼éµN™P€ü°=š¯<š£Ø^rq­È]•äÚ€»]ÕãF‹:g¶
+,Ù¢ÝB´‚Œ&Së—i¶Ã4›ã¥¨&î IÖ=öb0û®ß)¢+ìÓœ’¿:,[5Áæ§Ø„þ¾–{¼ë¾,c…=óÜ,ƒŽ`±s¶Zm)`£Éæ…é@£ p}&9ïõf›ÚÂË1bò-cäív°±²Lþ²E”GˆÝSÁ3ËHÁd¸—+«ª‡Õ3‡ëÝqf;àÁöáÆ _’ók|2Ã÷ÕˆÝX–­Q¯'VøŒçª@ÁÝ ƒñŒË†O`À"!lþA(xLÓyÎœ ÒÔ\–+4ËòMCÛxÑTXý«ú&‚ý´ÑyØçI¥ÓÝþñÕ©YÜZk<·]¹#}Úeß ‚kDðë™–®³<Ì\¶[ÈIÛi“‹>FLw.ØnüzÒLìÜ„±{äòxUß&÷Ž¥„fêäy
+‘iiçpþJv†¼å]ÃZ}û‰Ëeþ‹‡<ƒXŽ”±ÚºÆ¯¬Ùq0=â·qÒ¼·~Ç`S ò©N£nž×MÿæŽ ‹_ü³¾Ã+„ÀÛ*Gà÷c9„"ó‡BÞÂÉÖµŠã&á’@ç¸{ÔT­xÌ­ÃÁ+xøAZ•O@¯à3·=;Á°C£+GÌÌ&ðy–³=–ã6@¨öìõ˜ZÁÂêÁ®4…8¥Á@¹-.	Ä¼î,Ýf'çmg ã(¢‰UèÐË>^QNõî,(àTñüÁ“*íÔ"üô5UL4òÃßï±DÝ–Áº¤Üúò"lr¤ µAÚ…¬3ÚþîVCìmPKDˆu5 ›à]†Dß©tÏÖÑßÀ i151´Â*,PÇÖÙ™ˆÚ¸ÎæÖ‚ˆÆ¿¶`A,Q(&'¶ØBöÜ¸þ2½òUÅ "»„¦À+<§½Mcexþ=B•cïu3¡Eâ™Ìmà¶ÁÕÛS®ÏÞàÒ/KD<`Íp»ç^Ñ†@rNÁ½ä–p‚NÙ~xÜÂK }0\"5$bXÿ5ûš!ÂJYy‚HŠ-,“Õ..B“í?Ý‘yu}Øï„MÛšÖÆæ H®Z“í\ÁnzÅÞFa yœòb§«g¾<ŠBfûRd’ÇÆOÏàm´Û3Éà‹åÔÃ–Â/´Â–ÍÛ”	ëZ‰:Õ‚X»„Ê·ÙÊÄþ5(•¯HÂ³ñ—›pkFÊ7f ®·Ã²†#˜ ÿ‡r(U»‰²Õ’ìènW€˜5…”L»j­#8_8kHÇ6D§‡Èsì›ÀÍs¡# íD‚EãîÞ‹¸i†ö%DLéƒüÓùh]1—Rˆ¾pã/oøµx8¬ Ûog9™â…"š1fiX-ÖåcÔ–ªÙ[Æ°ó¯eèK_s4ûžlÞøªš­c	¹zÙŠ°{È.iPn+Ë<byÕŸ–ÅpÃé†„fKHVÉ_j›u†Ïƒ£¤vxäÁTŠkîÄ€dg¶™I rÛUUÚ—Ò­7J§W¸jÖ¬B@ëª–íÚjrçLá?P±;Á²ñ3Á1…}[4DÈ€7ñ!Y? ÍX¢r,¬ä~ÅÏÍ¦Û°ºÕ
+˜l)Fµ´oÅ“tì`Y6=
+ðH>~ˆDä»4;‚ïN@K
+âfö×ŠsÏ·õ6¸»p”|*¬­fJ¢Ä3¼âúju0ãÿfºÛ.œ®Ø‚i®Û’”B@)3;·Ëz«x£û‡C÷B!æ×q®N¸=œ4\>ù†ívç,©d½„v‹T<°¨Ý†—ûÊ(‚Ô‘oÅªÜ“xÄßB¥,¬:fD}Ø·m±¿Çã«ÚHËµfï²„NÈ½cÿÜ#~ùX|°ìë†·¹Ù^
+.|§½ìÃW•õ{°’Ñ©XùJ&«bÃê®-ìwò`·Oþ{‚LÓÄ±)nGûÙ‚‰kzð­Ù/þ¯‚Xmhr´Û,`´88™	ŠÊ# ƒÇZùxÌ·ugØ=ˆäDìŸË#Çr#> osA…P²ðÖâ9¬0ª¡í»dbÓœR(ôíq¾Ê±8AQÆf{3¼Ù3øb‹Ã´î2 ÿVS–¤8Æ(Û?.>mvLÉLD¶PtríÇÖO–Þ	k!P=l´œT?´>ÂªÍH}Ìð5+ _fO/söÒC<í’gÍ‚µ`ö“-óÛç™Ã¢\»·Qñ²™Ût¨Žão2û[sZN>dsŽÇA5Þ¢6j;oý89Ãè
+zAç`w–ö±ô–™‚öÛ*ÓãÌW·€ #7O˜ÊcO¾R!xÙm%vyaŠKçu £ ªÃ2»ÏPa£Ð<û >ŽØØU6<n;¡<¶ûÃÓa.@|+¡o&ý»ìhà‘çß¨7ìp¯ÇCÔ?f
+EæŒÍCØuô Èª–d§²Uµaîëk®†‹e‰Hµ“½ØáLpWRŸÜëc¡+„Ø†qîÞŽé+rmu+—ãQ³e1£ƒÿmc¾ó1³¹ˆj¹JËÝÉs'›¤@Y‹ö‘¦™Øe¡µ\2âŸãutìöhÜV¸wEÆ©‰ÃW˜W~¾©';Ø±‡úÉžžõ]õU­·2ñfÝ¸å8 žÙÐîÚœG2D9+Ydp„¬Îœ‡QŒÀÓˆHˆ˜€¯¡Úá?vöæîl«m;â‹YýÕ å©ýWj¢¯f©³é<m'Â!³@e]¬ù3 Ù¼,ŒÎ”Æ.öaZý	¦ˆg¥Äý #H7 Ì²•Þ2w‚EDø±p·å¿1–ù²ÒYã„JdÏB–S¡«Ùè¯Uö!”I°Ë"6šg1a¶kšõvP*;+–ÃèL Ûb`WLäe°«cX`ËWœ`Ñ6ÌŽ­ÃøsMˆ©ÃQñê`\lmïáxlã8ú˜ç†”“©–Êæ9.Š #Ø|k–kC±$®Œï/b±lºE÷:#è­ÀJb@BP™WAÙa çàµPšÇÂÜÞ/û2¹@wÚ Ó Í SÐZ vþ¦,Gua(æ
+e`í+WëvªägM+Yxjµ~ÜBËåÑcÍ3K‚£ƒd‘‰Û‰–öVÀm Îö± ÁÐZáSóÆË…ø‡÷Ù)º?5ËÀûÂøÑò6ÏCb’•sùg×‘†_7¸…D^ŽÂ_²ˆÅÒ@ ÍzóãC­j¶bâv˜¦Ž V… Á†¿ÎRBW¥r!˜¹L“ÒŽDÄºˆ±.Sq'åæå‰P·¥Úý³§~¹k»‡!úfWÐ6§‚Vû˜nøúË<ûN45Ê'Ýfãm3ôtw¸UMœlxö>_gµ©Û‰>a3b"ZÐ_=+=q~§£€A².žÕCÓ&§ò¢?¯¯	î£QÄÜYÊ•ívrÇÌÐaÈÊŠ_Ù9ÇJvø¦3Ó†o`“Ã…?±xó€ ÑøÛ>Wÿu¸X¶ŒâDÍŸµ„LŽvÇD«.WvrÒõõ»¦Dàd¯wÀI^g{?ŒñË¤RJƒ7k±ö,Á©çêB«æëê!ÎsŽUÈá§³æ¿žSŠCO3˜ÝíQ´Â Àr+þðBõ«Î¿LÍD™pÔ<<?åX‰TÞlzÇL9Ãü'ÈïfÂ"tµ9mæ¶Â_Ä÷‹¶[¿©¬ó…úãœ§îû¢ß|®ŒWZ.·’µôƒWà¿qÂY$p%$ç¶hì¶U¨D6Tl÷bJ#y^<Û¾úW‘fÓ/TßÁm£"ˆ˜„iL›þxÄ)ÁYløŽM,\S²Ðð®Ä÷ûJÉQ‰£N'9B…-‡\¯Yùs'£Nqî»½†)_^«~?•˜¢ƒîö;ì˜>§j¦î¡¸ˆ‘ƒŽ
+Nfç­ÚÀŒQ¬6­^“\É›ÛE|Á™^E3/æã2R‰d{¤$!£Ö¸…7[ ¶dÈØÔ€uöh7ƒ%1ÄnítG
+ä/%yK&¦sÝ¤Ç¸»Â’s^=ºÛÍÎ<V ßH{„€˜ƒ8:*ãéê|ë2æO|è{ÌÑ#“Æ¿Ñyp;fm yäá¨ýãÐ²ÀWÏfYÒÛc@¸_œç÷÷ç›ÎqÉ–Á+2&:‹;|S¦V{RÀ²ö…|p2^°„7˜6$$)L³±c;3}œíóèN]Æ¦^«Œâ7÷Öñ$(š½ÒeMù³Ï¹Þ_ÕÂ8_oFq2€í·¨Ùò —Oÿ‚äÿ½Êñ|ó±¿[€ªnUœtì˜·Ûg§8
+È€k=SSœ¯°3:$KíÝ1+ˆ'ôüebÚìÌŽèŒO†àÐÊÓàaÓë"ä,pÀÔÓ¹û¼­BóñÂ.$HŽïÂcØ3;‡!ùÏþ†›ÉþjàPV¤‚‹4› x¡ÝP¼á‰ï•\“ny„¹~ÛrØ´ôZïE,ª’žr¾‰Ç\ãû-O :1Ô"›:¬®¼¯#·kZê±€ËºÙ*BYƒY>Qíd»]uh6«lùµãd£Y=[×b·]6wK†·Íôv4ˆEAA–þÜ`œÝÓy|L‚±—5G¾õ(!'@Ul³U½àzoõxØcü„z„ü¶÷±¢€uÙà_íöëj«ý+œà›öLY°auí¶lÝÓ9âOÒMØì`ó³NÝ2Nàfp	=¸IPÇÃ3^åºCÁíýwŽØí¹¼Þ3êV¶¸z×ôÕ­/—~ ÍùCØzw–·™6‹Ê®eVªÞÌ%Kè<Ž"C=fåúúáy09<òì1çˆß,£½›gÞ<½_vâ0ŠƒoV]u`$ ‚o8»¥˜Í‘‹“ñe•WV›‡Á¼ó¶9Ñ¦
+»?T“¾ñyk!ßó:¼ðVý&ëXð;+½f×UÖÃ;4%}!Û|ãû=Àl?ÃšF;q€Ú<­´INVµDuÃ= bí1Sç¤"Ç¯Ì«˜0Ï-a·ÿÅš*K ‡ÓU¸ëAkb¦æbzqöJ´\À£
+[­¦c‹2–*³DjØ\:<€·9Ý¶VÏ	ÙHÇ ˜Ž¯=Á9){x®£Oô!øG /Ñ¹÷°·.ê¨h‡ÀÂAíñ”ÅbÆ~lÁk·&ûGt<Üê7ô÷y/‰ {mÙãAvÐ2ÆqwÅ>Ýór‘ÅÚ}ã–)ÄZïç’C•J¾fÃöáÛóFìPù·=“­PÄ]¬×ñd©B¡_¹áòìÇR${°QfëIßÙÑË#U¾ïó(Zhá=aRøuül¹£5€9ÖK_!ä`Ë¸Ü¶f^H²òWéœ×ð0Í£pkXÂ÷1Núµ‰BÜšÇ©UÕiö¦[à~#[„\[X»m:g“Rˆ@Á‚ˆjÁã7èq{Br¾ Ñ`rí+¡<\ºµ¹êÈyŽ°­09Ë…¥«é¶â;ßQ6¢”í²È}ñ¦NY3½q>yÕˆy¼O	½ÄŽ†4=2b«_»jªú…‹^ÔpÊ«ó·‰+ 
+
+/tûF[0ýnÃ<±ß)îÑdˆ?Â;ª³íåcs|L‘Ç¬ãXŽyf·ƒõŠOmÅ%]?þ'%Ïÿý×ËÕ0"iÏ‰²³Z˜Ž™ƒ‡ŸÚ²úç|µý”	nÙö GkA2(èq&0
+…4‡TñÊÊTi{~œÇ‚2W‰O‹Q›£0l‹5ë6áÚ*¢›óÝUÙrÞ®C2  6Üà›aÉÅ´
+%°‡i{`d_Ë69e‘ÙûÍ)Š›ÑãŒƒžx`cæš·È½Ü|Joñ4¤~åþN‚„õæ‡HãÄî m*<j
+¯\Õu¯Žç;y†hê¸x.{bÍ Œú£ªs?”Á‘¼Ö¸=u’¸nÕœ¿•®G¼[Â©¤àª Ý³‚¯´ÏÇ´ÛW²ÔlßýØSûjB­5%LX¬zÅÛ‘ÕÈ^¿Àäxv;O yØ¸s'Br#Dm‹‹6ë)-{©žs98›ãúú»¬ÞÇ§•¦Ï75+þ ±[x(’øù	bë ].Þùñ0¶ÌËéiÁI–ñýÈuúæÝÃ‰ØÙ>b| ,Í£>bv±6Î±«ß”_Þ	¬ªÏöv˜zøé•Ø?'Ó>Ýž7b•YØSˆ8ZrKâîiö4{×íxŠn™Îý˜Uö£6ØÛSöÎßàòlß´Š:Ýß9×ù¦ ðË•\ýëzhÎƒ33ÂsT›Ò‚¹BÐ©Yèd)œÕ)Ã¢¼ãŒ÷c™s ×&¢àg©MgËl…$'D}]glÌ	†ä¬¯ð½c‡gø:L?ží‘KqØ%À÷`Þøp÷#Ò;Öh&¦„>ÏÅ±_e—ÓßTFöÆÇïÐŠT¯o"¡§¾`£wÛêœœ™,SÃ¶NÀO°þ-ÕÂýÔq„—ó¦­Ý—½-¶ÑœÇdü–iy¨Þ,Lùš¥tb8»Ÿ3~@†ÓÚªÑÔ
+¯n§<»ÙUbî&9¹ÁÉý0—½np7+°¾Òw˜,·~[
+YÌcÊƒ¶=âÇ±Ù«U¨¡ñ}@ÆqøôTC	<7ã©NGnâNBÄ´o£Ü¾7¶"[«u‡ãâ^ÇU7,{VÕµõ{ºíïw^«à¯Ÿ7â°-pdæ*—[è,¥Ç½ígÇm_/ëg’-y0ø5‡XçúØ-›G¿.O{K\D“Ôuñ˜Êæ¾«3ˆñû›Øüó³Å4z³ï‘íj=€lM_$°ãð}JUªOÂlÜ3Äu¯/8ÿ£8rýÛ2€ÊÛ‚+¸È')!	–hKÕô:vB‘îÉE-Ç¬fÐévÀˆŸ¿C\!ÄXŠVílèÏ7n?«)øLDZGÁà’c,OÓ¾Ü’·_ÉŠ]¥ž¿¿háoÁÌæý¯ü,çD[ªÒÌp®eo;ö•æa§+Þ×ó¨/©‡ÜBb˜¥Øç§ã#DÀéVm„.Üô·tg;•e†ä9”¶é§Zt`ÈÊ¼ªxXa§}`‡÷wô5ÑÉ~ÞÑw½þúÝ¡Û€r¶<¢y•:§Óþ4°jkþL·9‹­ÙêôÍŽ:²«O„y°ê–SØMkqì_¹ü}|T·Áì$’ÈÉ:WóDaƒêÎD>Ä~×íõÓ0ˆ–«ƒÃ“/ÐÐïá¬—qyâ:kŒåú`°Ç©Æ&Y¸ 'ÆJ«y+ÝëgYˆ“¬:Dæ>žÒø¶¡¼ã‡³Ê¼cCYW§òø×´ª²:oÄ¡âXØl~Š3í¿ùÙ‘à#!ùáa 8ÆUü÷sjrß‡	cëÅÆõî'Ò¼Ó9tïã‘9ñl‚5ý<õf³ÍŽéLsÿÜàëôs2«Ýß¡m®V÷e‡U“ŠãŽ{dW0w.nù78ÊÜñV!Að]~xÍq2)¢‚µìo{9ZÂexE;€Ùrp?Àl;Ùß£‚Ò=ä+í;aäÚÐŽ¬äù¾¸®c£(¶ŽÂG añƒ¡nöLOø0|[î0sˆÁ™6¥«¢!=å¼ãrúèÖgâiD4-ºòþÚfº5AÖBrwÅO-zl¯Íïû© ¿ôÌ® P¿jž˜pš—Ç«ÎJµšvú·óö";fï¿ûL´xý?>4ío¿Ê~x_¶õ.H¨àiÛå©³Ãæ±WW?èf Qêw‚hó’Þ:Ðæpå¨
+Æ5«C~q›±Ä™1Ð ‚òW=l†”fŒÚªgaÄ6Ñ`Òª–ÐCü›÷„„„ÙW!%‰½#¦êìV'ËÉ|è×=}Š£µ—¼(8iûkÝÍ
+Í›X °5õÐäÉQÃ·Y9kÿ†ýƒ6‘ØBÒ¾bºËÎÅô³ô<Ì ’áÒõ™×ãÀtú7ÜÏšÕïcˆží8}zlËßlÿ£”%„š’wZLj³çrzÿ{ÁŽ<ð·„y‰‘Ú¦>ÌéÁ`º>Ç^!Î9ÆßéKÜŽÃua¯™¹¯iJèËV4€ŸÒ™ýü*?†Î¼µåëkéL¹š^WC]ßÞõí™½íÔhÉâ!«aÔÍ‰ØqÿfG®”ÙœsQ¿¬Ãg”RÁ~8é±Ó!ýÐ·5.?+å;-ø¢ÇŠ~ì—¯åC0[Òà¶:ÙÉì´ìžp¿ªlÜOª@ª…Çè±a	‹ÙBôÕnâ]Ìb¸‘³ìý¬-{—¿¡˜÷+I²mÆ}®¢èòØÒº­úÍp”ØkÀŽ¨~Ög7·‹ûoNä±	gðcjlž)öeW·Rdð
+wG‰YAmæû„$`°Mñ9\°G³²j8_X_°i †kÚ&Çrø	®ßÐ’”²0–áÊDÔ¤íf»2£CËGýúl<8w˜­}dÃ6¯§]°«ý¢èÐ\èäß‚SÏbÿ-u|ýrÚÃ&ÏMñ6¹œß™%›ßÅ« Ó†»úU¦: ‘V?óÊÀ€jß'è±9¯· ¿Àåøuë;åB3V€­kú­²º0ˆÛÑxÙây"B}pIÓ.FSH€â¨Ä ì5´s9ØVvê—‚ŽZí½Ï~m¾ÅÏìÃá€}M8o^@û-Øûó`›RräÅu÷TŽü‘ÞžoTHr’ðãŒsâ·ótÐbŒû›â‡3ÇÐ?JëþîxÙ|az6g€ëæ/ýèË…è¡·ãç¦‘¬rÏvgÇ=ÇgZ¾ÕÞO¸YÆíÐ3Sž(AÏ—^K'Q°6}5è1±›-CæØzŠ\û>G#½~^_upÉû:\(Ø›ê‡?.Ç8§qNÆCØN&8gþÃ3 §TÎûaëXlðÂeÀy‡Y ;?‹IáÏ£ÁsŽP¯ÿŽ©uAý.m)  „iCCPICC profile  xœ}‘=HÃ@Å_S¥¥´8ØAÄ!`u²‹Š8Ö*¡B¨Zu0¹ôš´$).Ž‚kÁÁÅªƒ‹³®®‚ øâìà¤è"%þ/)´ˆñà¸ïî=îÞB«Ê4³/hºedRI1—_¯!€‚•™YŸ“¤4<Ç×=||½‹ó,ïsŽˆZ0à‰¬nXÄÄ3›Vó>q”•e•øœxÂ ?r]qùsÉagFlfž8J,–zXéaV64âiâ˜ªé”/ä\V9oqÖªÖ¹'a¸ ¯,sæRXÄ$ˆPÐ@UXˆÓª“b"CûIÿ°ã—È¥«FŽÔ Avüàð»[³85é&…“@ÿ‹mŒ] Ý´íïcÛnŸ þgàJïúk-`ö“ôfW‹ÛÀÅuWSö€Ë`è©.²#ùi
+Å"ð~Fß”oÐšÛ[g§@–ºJß ‡Àx‰²×=Þìííß3þ~ Tršwdâ  [iTXtXML:com.adobe.xmp     <?xpacket begin="ï»¿" id="W5M0MpCehiHzreSzNTczkc9d"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0-Exiv2">
+ <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about=""
+    xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/"
+    xmlns:stEvt="http://ns.adobe.com/xap/1.0/sType/ResourceEvent#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:GIMP="http://www.gimp.org/xmp/"
+    xmlns:tiff="http://ns.adobe.com/tiff/1.0/"
+    xmlns:xmp="http://ns.adobe.com/xap/1.0/"
+   xmpMM:DocumentID="gimp:docid:gimp:1cb833fa-e588-4486-b84f-73a5056ab260"
+   xmpMM:InstanceID="xmp.iid:702d0dcb-288e-4c19-ab62-6bdfb63a5120"
+   xmpMM:OriginalDocumentID="xmp.did:2ee19955-3247-4752-92b0-4f1ca32a5ce4"
+   dc:Format="image/png"
+   GIMP:API="2.0"
+   GIMP:Platform="Linux"
+   GIMP:TimeStamp="1728306929726816"
+   GIMP:Version="2.10.30"
+   tiff:Orientation="1"
+   xmp:CreatorTool="GIMP 2.10"
+   xmp:MetadataDate="2024:09:02T11:46:35-04:00"
+   xmp:ModifyDate="2024:09:02T11:46:35-04:00">
+   <xmpMM:History>
+    <rdf:Seq>
+     <rdf:li
+      stEvt:action="saved"
+      stEvt:changed="/"
+      stEvt:instanceID="xmp.iid:1cdb6101-f84e-4121-bdc3-0b8f0e0d663e"
+      stEvt:softwareAgent="Gimp 2.10 (Linux)"
+      stEvt:when="2024-09-02T11:46:45-04:00"/>
+     <rdf:li
+      stEvt:action="saved"
+      stEvt:changed="/"
+      stEvt:instanceID="xmp.iid:03802551-dbb9-49b9-a716-24140e0ec4e8"
+      stEvt:softwareAgent="Gimp 2.10 (Linux)"
+      stEvt:when="2024-10-07T10:15:29-03:00"/>
+    </rdf:Seq>
+   </xmpMM:History>
+  </rdf:Description>
+ </rdf:RDF>
+</x:xmpmeta>
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                           
+<?xpacket end="w"?>ñZ¬Y   bKGD ÿ ÿ ÿ ½§“   	pHYs  .#  .#x¥?v   tIMEè
+âð    IDATxÚì½i˜]Uµïý›«Ý}WMªK*}ŸÐ‰€„€HE¥‘F	6 ‚¨pmR¹GEQA±9¤UÑ“\Eˆt&"=	„ 	éûTR}í~ïµÖ÷CŽ¯çE_…yëWÏ~ö®õa?sí5ÿsŒ9æsÂ0ïh1N&D½ášZÎTGãkn|èÝ~rÃü+ŠM	-ü§¸F‘L/gªs4Ñþ+ŸÕ_\f˜µ‰by›‰ˆ\ &ÕÆQLª-|ÍŠ™C¯¿&Âa†ùàãˆ¼&6 ƒÅ³ì¡k‡š»æ¾Axï8ŒáÞøgf«X¬Ž².`DT‘›ÏX{³q=ÿ×Úá?°aþ•ÝH‹c[Â‚‚XG:q³"ˆ¨CÈ²9çõa†9$Åf
+¢îdvpQj±/	b-`¼‹¬:TÄf1ÀÈ0 QÃž×0ÿjbSCVÍCì·¿ãÄ1ÂE)a±Í‚ñî!ÔÒV Ìb082 æÓËláÛQA"ˆXH¡ISXB¾Õ´PˆKá«Ûý	D¢H¶FèŒ	÷¤þÇoà÷«j		m±£Ïdä‘Ø?_sA\DÜá'<Ì!¤¶=™{˜—B$ŽHð‡Ì ðV…x¥.&BêF/¹”æ?žL:‰ˆCê¬"Ö!±¨ýð¶$"ŽÐæœiòÁ…$ÖŒß‚;$¶Ððæ[»…HrpÄ+ˆ#ˆ#´;“¾EùBü×Ÿ¼ŒØþo^´L°Q\yCÙÓŒHä¼ý$Šˆ%à^Fò7Ÿ ¾ÂŽTJØâíf˜×ÝÈûÒˆ$Sœ•$†H„ƒ×Œ•-¸_j`ö÷©õŽ¬eå*!&œ4BXî RKÇóuÜt¸i"6Òf¾ô1F|†LÏÿ".5ŸdŠ°Ìæ€DßIÏj8Úó/Ïïò¢ðú¸'§„Â(•r©Õ·òý´q`òí	üº÷òù\†©ýpoÈÓxd—|ú©ÿñç/Š ¦©¿æHM%“ÄdìLG4zøùs™6Irï­ñ¡u3³]0î
+1æ:FÜ{+	9Öå¡1‚,‹ Ò(HHèK	büÙ5ÿó–Ylî9<õ9œo]ˆ’¥ÄõYi®Áb™¼£"’Ã–í_Ÿ/	±t§+
+£tñËµŸ@Þ³ŠòÖ§êk
+Ÿ!³ð#ê‘4k“J¨@ª
+pyg¤r´ßâ™b&Jè¸¶°[åÕGË40ä²wVFÉ°ØþÕ›ZaŠ¢ÈóËm%˜þÚQWõÁâ'’÷üjFu¯»§rÖMáƒŸxˆÇ:¿éóã€„|PPwÍ¡¡aÒíÅBØãº€=‚ª%”ÙÐ=Éepa{˜aþ^ocù+8í·jk{-iÞ›†¶å""ØH{YîlaûŸM-àW‹W%.ˆ½÷üjö7Àÿ1BìwAbP *a”„0¨Áž=Xrsl˜ºOÆþ	n ZN›94p«!wV!b²¼ÝAÄli#üÀM¸"ØŸI½¬Â0QÈE¡Ÿ1öî‹±žœF_
+2o<×üh91A†ëÚ†ù»QóæÁ8öXÂ"¯yíoÞ™ärW”-Ü¡jb/GLÎjO!ûkiCøÌˆ9Ä_žŒýKË¥²©4¡$AÕFiã…0ÆåƒëkC¢øYN›9T/÷º—Ô>ÏbÞèÐkÂÁ¸ú¢"X"XW_@tÙâÁ‘Ë£é»4=v.–œG®DÉIùÔí«	bwaþ^C]Ó„o,#yóE[‘ôàôí!aUH¸(4X6³&‚H©‹	„O"þÊÔ½ÄÍ€„Ù™J8/Š:è€¸/:¨‹Yf}÷?ÓM3y½Ò ÔÎKrÆ(Ò"£F‘žÚŽ3þ
+\.©#mæupòW©ßõ^÷…k‰È©3ùÈ²v"‡`%ù?89æ-wQíyX¢ m`,e¾Z"««J½ÙœŒÒàsºÈ€¾’ð¸³úâGŽ²RÏpøç	_Ã³ºÃr¶aØY/Ã,tPòª@
+@¡:42éq~éKQ€üƒ·¼/‚ÅÌ*?ÍÞèAúÆdñßë#§nß#½âåTŠ_<ºl³,eí¥Äõ+"aRs»ñØUPT¡?Ý‰¡¸Ìúîá É0Ka2×7Ô1òÄ³¹+ói¶Æ ¦Òi°ôoþ–@¡*J	ÃÈÒS‚©ŸŸs÷Ïêþã7›¿ˆ`Ï­R­V’*ïUk|\³/JZÇFmVàÔìá¥–AC»Áú'Œ&•¡A;XÆ=Gä>n`œoaÌ+z,ò5gð>pk—ÝçÀ’`ðÁ±*¨y*®Êãô¶ÕS¦¥ïe†ÅöóÞÛ±Ê‰U¼ÃeÉ§ßÃxPm¼â-]É›(”à)y2l¨‡”~¼ñŽq·´§¿%„~ÐLé}•QÛÉŽèUzOµB4ZUNšXo"áø–‰òxY#@¤Jy$ ‹¦þã¡õËŽ²8¶E +}b	ùªÀ'€I*STÂQ&–Åîõ·Äo¾9Ò®E9
+Õ÷,M2³—¢U	ZØ ExÝ´{–{ÃbæoæØ&*¦®aÔ:Må„°öEª%Ÿ£üæ–q¾‚R ¯ùK¯”Ô~ Bè¼¥t3Ö–ƒX=Û¡g«ÅË·%L4·›|ÆvØ_“­š€Rp€Áz±ø•¬Bm#Kþa/†'÷”–úÌÒ†Ó@Ådpî&€£Äiž¸f	Ë«¬×ðÄ.Þe#‘¼]0Q66rÓ€eŠ¥ï¬’a±½Å$]t-5ë¯äëva	gÕúT«eì›wviw2ÂÉÙ8»üÝŸêÆùp†S¤Ò³2Ùßô˜UÈìH°±G©x»š£/DÝr`’¬)  ­ 7€)@	(Û„: wØ?åg-ÖÌ> ˆ9X}&JJá&`›XÚ@NŸAíH•özæ¢(ä=Š€Âðfi³Ë Eûé"wXlÃüÍ\¹Jò›ÝÎ±+i¯ØX,²ë$@Ï%›Ý7‘óÄ¬Cs0´QHX<T›&)%ö¯ k³ÅgPû‰8Æ¨‡ß‡l|l dmx®šÃMz2NTQ¹Ê«Æ•%¢Š‚"¬”)I'&{´£ñ	ï·8·ìAýãs¢	5ÑäS]1¬…QŒx]4	Ò(ÏŒª)ZvN½	Œœ"g*úü—Ó½›¦¯]ð&¾ëT“fÁòGl”½‡Ü†ì3T{»-{—gówb›»Vsçáµ4?Qa`ÊRˆg°¤9ŽÇ*Ö¢¸j‘3—
+Ü\f|s#P†ÃlS5ž32sM€;f%•?'ó½ Êã‰îÕRŽEŸVä´BcPQ}Âªâ…lò|&>?´Œïï30“k—þª¡·ôä
+xÈœ¡+î`•~«Š`xº[#ûT¼ä`ˆÔnåüÝ€ÒˆEK1r­£uï¸ì‘a±½õ(Æ¦w&|‘[6j¼Ø,<ê
+¶xƒñ %ÌÂç†åå§&•-ÅŠ€vhïÏÉjå9½þ¤8‘‹ÆÓ‹¨gcÕkF„#m#’Ã:èfC¿Ö¤´&¦4|«5Ñ`a|E­¯Ù¯Åòõüw?	‘
+å±³füÃw¶OäVr[+@PýDµêÀ«mzI×
+1©ž¾ŽžQ
+pQLCHØÿ„9å°Øþ…´¿x°‰…Ÿð±º‘§úØ¸`ëJ|À(%üÛ}®XøèóD—ä)Ý>?<»¥?õé*Áá(v?EoçÀØU:Ö¨*ïy3Û@Hž(å
+Œ6EÉô&ñÙéùÌ Üz5sFe»Í'€¥YðO@ú0Q&FÖÀÐ€1èÄ3ðR„âÚ3dqé2µóH|Êè¦#@´bð/]dŽ™:lÙ†ùÿFmšM;xqúÿ­OyæÍúÅíÈøñÄ óXnÓÖðé+¸õ}”_Ø?r3Ög›°[{)Ñe=k÷õ—™‘¬`Öq›­
+UÐ¢jÕã	¥QÏiQQµÙ@íõQÓµ¶nÂ^¸‰gHl¹TS¿æÆÿ„¤†ý ð	
+
+2˜Iâ(ÈhUÒÐ„iXÊBG²åÊèæ8Ü¢r©ê¡,A!@9Èx`æ†-Û0ãó/a@.ö$¿|ÕÀêø2³Nd…èó·‚'¹òõ`ÀepÆÕS‰4;x}›)º[(wu@µäqE(oã;õùŠ/†`x#-€‰ù˜Ý`P˜ªè©f‘Ñ‰É7tÓyÒ§Q®IÔ6Omû'¸‘Ùòf…ºÀ#ˆ+£ p1Âyü£1Ô^ß ÞšSæRÕƒTFÎ	Xå ˆ´€Ôbt3 &ï´®0,¶·š]¨w±d	•x”ÎGèsÂÔ=R¢ó´FPí`À"ƒÁ´$ÍAO ¶.‚1å’ýNÍ.*æV§²s PI›A(OÙuð^@à8X« _C“…ñ¸†VûEvÎÖ_>`6˜&öÉ[¾ß?Á²6Á	aÝdc½(€ÜÕ¸ÌÐZb§Z@»T|å+Œ©$šfŒvS#ªQS£Ño°`ÔÀà§F†Å6ÌßG+²y¨.«Æeÿí|=ÕÄ	Ïø3;@A›1’ß½µƒkJÇ-¬ü„`Ì8B]ìÚFbQÃ«µNYÇbV‹8–ç9R)ÆÐ:FŸFvÈ>‰øh]!˜ä£kL¬Ÿ•É?ÌˆóšÑ·£Ü,–“gÊŸÎ?ž¡ñÀùÞyÌØhÀ6ÓÓPDôØ6FÈWÁabà ”l n!xÌÅ¼®3ˆa-ô§‡-Û0'S±.CÇYã{Ø7—|èÌi7LXèHæ±ýƒz`çéX›ÎxÏÅGHƒ²÷Ùg4cZfâ½—H@wä9*v8ýB¦j¹½¶«4Ž`?­Mý¢¶ƒÑâi±u$0tÜC–ÞU¾Eµ£¬ƒ—8•c»ob/šãIªáÿš¥ÿW,¡i½ŸŒN¥Q?#ˆÉ†åÖC£×F=üÆ*F¿‡²«¢ÒVU‹ªiŠ2I%vW
+o±;ÜW{Ogdä:t$Œ…e‹*$=3O¥û.FnÆK¶-¼TÔ±ü+"ý¯•"C/«ýö×ª*Æ'f!ö<ÄzÃ9u‰åËßÞ<†ÅöV‡"œèKÍ*©¢w5ßùJÝmVš§žÃ¨ã-Œô4ìm™G_ú”(„ƒÒµ…3ªÆŸèÊdñÌ*z/a;Š­ú@­MxÂBý	¥WXÿ14Á©²)ê´V™0©ó>ìæëÓ.õéoÕtg,z]c‡(ôW¿¹Ø~Ìs6,œ‚bg?®u6O½òcV,bÖãäà~æŒ31<Ó³|vð\-	,ŸJ‘8å´o–d³h7O5fÆÔ„ÒyhÄ-+üìË‰ÓÚH,iú/%Hÿà”œJavá+%Q]¼¶f×¢¼ÕÌ·J`fÈ.Zôö`†ÅöÖ^ós·È(Œ#ˆ¦ªÁL#Š×—#¯SÔb%ZsÑ5–:îN:?ÎY:Hµî7tÔwáåK/aK:ÀßlÓHž*º‚0ÂH²ZS2°¯ÿ<½›¨ya$3Q¦Me'lž'õ0 ~:®7küjvV;èÐ2@58@ˆE+êÖ,&ðÎ‘A÷Ñð_¯®Þ ûrFwÐ]EÏ®E	ÂV¼¢º7P
+—(;½{,© 2¸!/ ²y.§|z,ÿ1üw‚3¬<Ð@eýz
+‹¡•"¼§@x¨hÕX¾|õÛ¼¾4ø¾ÀÛ;Š^Ž’tþÄ
+ÇMÂèËÑ·? T|•ng;½=Ê¡ŒêáXŸ†¯?†þÊt"•­T^RîB8€ÞŠR”vsTÍ~¢ŠE™Qš a( ¡rmÏ?~˜ß¹ôïrüXÆD<aG­E—ÑÍ=/ÂÅgü‰Ð¯/dã%Š3ÃA5Y¨ ŒqþÌV’Jsœ´	(A*Ò¯-ª³hU{•PÂ&pÓžD¦ø(½‘ÁRnÏ1Å(+ ‡ÔÄ©ÖÏ¬x^ô‘Û®ùíE¸Åük‚ó*†Y‘¡ÓV¤¸ò èùï'ÑÖ†ùOQ2•ï[¶wêÇO™p²[¿“ã	ŸJ8[!W7ŽtzužA¸o3•Œ‰™òaV:s#VQŠ–›¹¸Ùí™¶¦\2ð½ À#OÅñP.>Ê¬‚ G´R©+ õ|ù$¥Ë-ŽD»*e‹î²w0Opš·’›Þ|d_ÞfEy€-Uf(T«¡êš{iCh4Q%£ê£-`¯V˜¢ÙÐf^‡áxÂa¡ŒBÆP§ÿ.ÖgÀJA\0T'†¿—œáR¹ KÕS\tÅzŽùoD¦Þ8Gj_Z‚vÖ”çƒYÇm±8—Ô‹x(‘Õ¿¥ÿ”EDO;ŸÈà0mÎ+Lõ†ÅöbÇ'§•äæË¼w•êŽk"œ˜ˆ±yVÿA$÷¾z?½Žb±íä}Â;ÑÏ3U¨_¿2¯ýw%ŒõF Éå«f1_2ì@ULÏÖ
+Q¢|ÐEPf°¢[Ø?/ÑõØK|hj…žsBä¢ôç:Æ8TƒáýQÐ¦O“+ªozmË5‹g	`Ã"C¡Æ¨1 ¶&¨ñ4Ÿ0QÊ@)9…Ûƒ¸†ª…éÔøX`8åvG¶ÕmRAÜÐ`è?ÜÖ}àUÉÇ2”'ÃÄÚNÛ_X¶¿œ˜9¨
+Ë½% OqÂ¨,ß8¹Â­aü#.Ó–ÌCB¬ ÿÀÏ)¶µ@[0†;ÞÖª‚ámÞbF3Ú¿ôZŽšGè„ý”x–\ìî:Âõ]Y·¢-8þŽ×5¦j®K˜D6œé ¬«i¸^n^âÙÜñ¬KÏGlÇ7ªÕŠ‰Ò¦Ã7m|*5!Ñ
+ŒCê'
+§¬Q›úåƒüü$rëBÈÑ‡Rk°†ÛÊ›ÈËÖøÜ¬¬#Y™1PÓB
+U¶0½
+þa qS°ÅG÷SÄ \5ŒÄá%[zÉªZ5âöü‘l4”TŠ§ü²%v(JÈ \ÌR¶;è7…pg¹¿ð®¯g”½¶…Ã_nå`¼ø"%¥Ðõ|*–åÙf(Œ‚zÁot›¼†ç8ëøvä dC•wòOXÔ¶l‡)¿ÿ>ÌIu(JäIáø[ûqcØ¤IÛ([»Üw/øø(“ÿSµ	r&ÒÝ±ã^hH0›ƒjaZŽ74?q,…a
+Ë„ Tô9AªÑ§2	È8töšô¥4u"î/¡ÍÿÎ
+l–1Ä«Ïþ[Ù­V°T^~4@&*([¨J0˜1R
+ «õ¶’b¨!Û8’¤} ÄŒp
+Ç’X
+Ç‚rÅ8†BY…–ýTÈ ô"-ÿÝÏúÚ‡þ³·ôóëéŠTi!3¨Ýz’ESVa÷Ø´x	 î’‹ðÇŽ%ùv÷…a±½Õ¡ÿ	gV/ß×pF’Ý…Õ¥IMiõ`=¥Ð–fl˜‘êÛ¡?U/)^½q9Z~¦ŠWò‚ñEnëofÑgû±#BqUVQ'WJ8^!m©œm˜Ò­‰h­ÀtÌ~…Î	aRoU¤dïŠØÀ'`¹5RþÎÆëÝ'zç4£à¿t<54ìj¾Úo¶³ÊÒ¤"
+ó `è2ARáôÖ()Hsàh³˜0JéØl‰æPŽ9*‘mÌ ÁØBSõ0ÆíÜH¾o7ýÓ2ýPÖ`ç(Mt0‚˜£ÊaÝl#×0Ëÿ2µW±û”È]¡Á2 1h¿È–Y\;;óói·Ž™ªŽ÷û™]:gâÁ­“1V^eÄsOú¤m*ì¬à×Ý_éª±·m#mÎ°ØÞAü¦‘ÌXÂNùî–½¯ …ö‘ éXÝÌ?ûóÏ‡m:¦‡ˆ¾œ+’Xðyæ9¢çß¹¶ænÙ‘ä˜KñëçA-ÆÝ"Æ·#z—j¯h« vy00=@8»<zj¶.0P*2Û&tå\’ÉèxÜ/}‘w}¯Y¦¿˜YðÚ¢ïÍÞæu¤û$l3±¼ êƒ1éC³Æ*p0?Æè+NÞ·C4—É–`|
+«?{^¤4²lâ›¸Õ¬&”°}$ÇØW¦h†BU*²…þh‘êÌ#ˆ]÷‘È}¡]ié
+”ŸŽä{ÅÈ~X~g>õ¼‡7ßZ±^•Ô-S9xúgµÊ§Óñ9Ø x½	ÎN‹`Üp%žRhh{[ÝÈá9Û[Ì¯|F~†°ñ{òS‰·leÀ©7)V¬*ž$c•
+#&S»™¦î
+á¶bÌŽë„ÿ˜„—Ôlî8øgKˆÌÖÜpÇÄ[˜R}ŠåQA§€¬ÂrÀ0 ,m`í
+è©S„µ%¡¤)ù]b•¾ãÌ®tÞ¹Š”ÙÂ`vþ_†úý7 †².Ô¦ç6°­$°VAE ¶`«~3.Ç7{£`Ö(Ì1|´j ‘Æ
+’½»(ÈVÊ‘²ÂÚMÇà@X«Bl7ÙQQÂ}>e<SRUäz|ÑµS¹ïÂÉ¼p·ÉŒ3–´ý–Ÿn«`Ž>½4Aï;îªà;3Óû4½<5¢›Ó/0ÑãTHHV<6Û`<eöm¬è¬¥KDµ+†-Û;‡†>ZÏ@Ùy|kš#‚h·gúù¾©—“Ø¥íìnÍóÙUˆÓ'%Þ}#ÞÇZk%‰?Í‰xj„ûó).[ ÍÙÉí(ì„Â))Ü*˜Õ×Í“êU¨‚¯
+ÓÀÀ!9`aV›¦gÒxŒ²OýÓ¯ÊÃÑ^>C‚ógòžèRV›+@ÍcyIP0viÔ3¬Á½fŸ`ŒRXiÒ9¼R>bØåL8YXåFŒuQØû(¹)ÏàÍ´ŠiB…ªOÃ.ˆ}ÈdQC÷SI
+„]§+ JÎ¶]\‘ÛÄ”RàœÆÄG°×2¶siî\YxáKÒƒùÁú^ã´KL¾öia	f_koû“Ä²VìÁ:ó£„—,Aƒ’åoóž”Ãb{‹iî`lŽ|u
+ñØ •|UÁ\2&aòõ(¯‡’UÅoeß{wþpV×@4ÚoñbôÓµ(à@(Ç]]_ãúž­´ ²;(šÃ˜~BZMÏ„°‰ÂDª&T,dŸ‰g+ªe¡4Â¤ªÛ?Àik×q©ö(,ý¯‡ÄÿÕÞy°²„yAè6Ð>²»ŠöKû*9³ä+Si¨+âëœ”ƒŒSC]8Dm8šDïó¨v<C~æ+äÇG¤ÄÕ3:‚¸t¹üæ£gðð>K“3t¿Bù–(‡Àt† t9nK'ÇO!)„âåyüGç™zw4ÀY?Kïï¿2'À2ªØ+8ÜŒ÷üieÖÿùÎåÏt\p5Q€ó?GeÐ…|ûv#ßbœ“ËTÝqDC/ÐÛ—T¸5â¦ë…]õùtÌvšúƒœÀG©mÚçövÆ)4—ŒÊ»Ê¡ºï¨âøE6I—‰ý‚
+ofo«OÇL…™·Ð>Óø©ÁA‚ŒôöA6ãRÌß8²zòm+¹¸3Ëá}¦|—³ôü±½qÖo·û¨ç1ä80÷c©P¤ê[:_$À5®áã•ÊEhÅÚ÷¥#3Dtã_Gø"1éË“Ow5Ž¾OÍ™«b÷ßý'_3ßFãâê,QAcÄ?ŒÒò÷…‚Çv’ú)ÙRÒç«“H%ÇÕõn<ßõ;¬¤`½eMóÏÐW=Ö^<-ßsªÙu	å¶6J_ù
+ßF/š† !h÷+^³âÃb{'`j³ÕÅn°°’yü1:\È£3Ó
+–Tçé­3J<Ð`vÎèUSf¬S¼pl	Ï)ºL§x’gr¯#dOØf)"J¡J‰”€˜è*u ÍB`6…ÀP‡C´³ÑTí/¿¿zö#ë˜¿m3W—<g[=Õç¾EÀ]†ïß8Ú›¯¹“XaßÎïí—TÚ™ïãÔlƒÂùXöVòTƒŒgŠ‰CSB¾ï¥=¬:Oé8NµŽhÝÔsH–ÿDß¬@a+\ÙL.^¨œü4×ÜRÈ_{÷=6ÌÜÎ>$Ö_¶üïÑÙ~=¬ñ“½/Ž{/öºûÆô±q6ÕÄô2n?ºO£²Q1¿$xæg°Ôœ3þ´È’ÁÝ¦{¸-Ù±¾RC¹<U‚v†¢®o›Ø†ÝÈ·|¡-ˆ…±êÈ9>b!\ Ì ò¨Zãq¦éPüŒ>ÅçÐ¸ôÉ jlœb``ßùÁÀŒúBÈÈtkY!é	›5!h‚¨àà£Œ è˜äLí: fò´ùœ3þhâïåíû,j]—ôÀû1f0Ýë¯Id*mþ»9Ú_Â¼ Ú-«Œè	Ø†Â±rUGD‡p›K¼40Æ³ªóHõ‚†Ç!~ÀÅNXõ`Ô‰&_ÄSû-¬ƒQî—Ž[v¤Õ5!ê^p0«{¨Ô·b.yª±/Ÿ9qí/äìœÛŒu\5ŠJ¥mG<
+ZÊ”3ÅuÔ|ìüS~íUæ‘;Û“OßB‘v±iG©Y!˜ž,¿ö:=(,òö¶8,¶7¡½}0c|è·²_ï¢j¹$.›AÖ5#NÄ$ÂC¿lB$¹‘É5S¥>¶¬‚§’r²ä}ä²iR#D³kªÎ    IDAT;÷SõöP4‘‰ŸKçWpŽýäúæ£_ÞÃ”¡‘<ï½VÐuDP—Ñá¨sÊcŒJ&ÈLÀ°Ê5«kÅ)¬„ŸjÎŸVxúÑÒM_ü£¿²Œ;º*ìé"–í£TòÈµ¸ðjóAŠ71Þ•×k×þ3I	Ïr…Çb^uw{ŠÉÅ&Bv	dJ(_[53F™<3Æ×TñÂ»‹©Ôu´ìx?Aß‘tEˆ4ìå@ÃÓìšŸC''J<råÝßð3ÅLÛÔI‰hÝ¼o?ú©®•Xp——bÌÝ‰ÓoËXáñsï8'ËÁ;»æž² •¾êý˜ù«Z}zhÏ¬^~öª¯]§[î ë³à<ûºúöÜI¶ç˜/üŽ:QUaF®l:¿Y½[u|¸ˆ	KÚ/’	ð¶fý»‘oÂ’%èE‹°†Fû¡ÄU:aå¶Ë°á™2ê²} ŽJð¡’¬V¦’o»¨o{a\¯ˆŸ	ÛÂ(¸(Ï@ù!YG¯Æª¸Ue6þa]¬cþYO˜û6Ïl’PîUºNóèƒšŸj$ÀŠáE]Ì?GOô »¡(åG{êŠ]‘hÎÀÞñ†COðèªWþôÑõ…ïrMv€Hµ¬v)¬HD+Øì#‹G½m'… ‰×]C®d jpià»óˆÌ½÷gëFü:½Ïr•	­{ªÏ®Åœâ(rÕŠêÌÅšhðŒš>TxÆ˜0%«ŠÊ{x(Kö›ÔvÅH’æ—{ýˆÑ‰ëÝ»zj¥Êçs
+;÷¯h#`å%çPÝô:žÈÄSÊvö­(	°g¢û¶¸$ÌR•Îk¸¯ÿÚ¦Dû³},jkÛ–gJWî”~üÉ‹»wï«ûÖq§üêðË=J°¹l¯»e%e5,¶CÈT$€ìæ4(ÿµÿ•wRBÔÈ<<…µUQ³ÔêÛ•óùWHtÝúyów¤ÝfÂù„¦(@Ç0®/O`"žXçP{ÊžðpnÕ4Êõ"ŠÊ{J]ëó#¨ïB=ûöô¥,Šµ)¨ï‹ïmLVÓDÂµ…®½f¸ÌÖí÷/ç÷³Æpú¹_@?ù3‡M	¥1tÃ"%>T®. èàêE{dèþÐJ>†ÏÚcŸø^4F5óªÛ¼–Ê®æ4¡X©.&›MÓYÈ*›ÓˆšYôä2Ê`6¾½Ù	ü|Õ;”œ¬I9ï”×Í*íÝÓ±í|aôÚ^
+óûÜ
+>önsÅÆsÂJ‘fz¬zkëöY¢-Ô”{ò
+¦.[™ê\&jwl*‡’A¡Í7”¬ ÌÁQ1®PÁŒŒ:ÃÀ{ÇË<ª„M€Ë‰«\üˆÅ›ç†»‘o#ýCN•Ûë+o ¼ðâË_ÁáSÀ”¼G)™eÂÒÐø‹P%êîýyýOvR¶]Ì²‹„0*q,	ÐV-Ë	±Ka†Ë°ð9cVêN„·–qûGjÌ£´?‚Â¸vÌ©eÃiÇ›{4Þè±R¥î¦2¡þpŽ]^…šh=ðÒ&žœt4ç.¿…ÐãÏñAåëj¬¬p"
+»â…À'c žõÎKc¿k0rÉkóµ2 òn•ºcáÏFíôïóÍë—ÿj#¿v-Í‘õu±Mý`*öõº­¸vœ ?â¡C‚	$¿#L¬€v\Ò[¶Nâû°xÊ™Åi.SH*ž¹ÂÁ‹¤Pº¯:’þ†û'´R˜ÓgVì‘˜ÕXqz‰ÙÌ‰-‡]½…Ô,VŠÕƒ…¤«oŽ0bfþ¹ÄæìD®žBÁ9V†€<ç]Qdìð:Û¡ˆ L˜@ì²¥„n¸ÿÞ[©¶ME‰Z$J>oAGîŠ.]ÖNË"Â§ÿ(~êúPÞ†LÓÂ2¦RrÐîˆ
+UMàÚ8*À×cPðûßLâ¤¹Ï¿ˆBÅFTï$B½‡Ú=ž0Íx$);6>ñ®ÚJ"Mº_áv?õx×ýŸó;7³ï‡·Ñ &±¬àŽ àH”«°ûjMŒƒE‚ÏÂ9Š¦0PŠÔ…?þ[Ê;ýCýýõOœ°©î¼q‹¾îNýþ^½qïº+HOYI`Þ³°Òòõ‹Ä½ñBœûÂxÕ’‡_Ð¥,A8É}Ì€Ô~ÏðÙ™û7žÆ'i,´22_äÎ0µ“¶XôÇéÏ¥Ù9.Á–Ó„¾kÈÕ7”Ë&VŒqäjr¼L3ÙHs»šç|ŸæÌD4]Ÿ²Ï¸ú²âF5%¼‹øÇåqT±B0‡î+Ë¢+Ô“Ç2,¶CŠñ‰×g'‰>pãfÍ¥õ›w¬¬ÈÀ‘a¡i óƒ½öÅ¿‰­Z1úü^Rßµ±îpòç2ØeÄ. £€#ˆ^ŸBBy,MUL¿¢2pâ†G2ëÈ=/+ßÝbQz¿e3¥L¯]ìÒ†²ªô*Íž0Œ¯×ùŽñ[ŸÛ;°2ÚÀùá,›Û¿Àá›:BA7§	B9"TªB1&y…ãDAêÏrfö1kØ?tÒ)PºðtÎŸHhÄlb´bzÛn?ÌØ0â#?Á•›ŸÛ,/¿ÿÏß#\“Æ¼¨“êi§+ür€®–0Ý"TsVYÀÀ	f3çöLJò	f*ÓÙ<Í‡“•‰'ôðõoì“Ûî°ïÌ0ûK±?Â*@[&¾í{Ø
+¿<Iqq)™“9à´ŒÇ÷îÍ¦^­4×Ôý¸ò»µ<Jÿ%ô¢QX¹ýdmƒ á’woª±áÌáDäCË¤mÉƒmmXC×”éô<À‘ÿ¾„÷Í=‰i·Î!½ŠsË<„ÓsÆ2õÑ‰›°.ÏavÖ øÔ(^È"…ªúh_ÐF‰*>AAC8.†ÙM¹¯Oé….zg‘>Š»l2õÕ=U3ñ"„õ~aRŸAÕ_÷Õ4‘i øòÚ•üV—¹Ì/óÜÕÿ‹ÐÓ/‚‰òP%S(š”™i*€.*ì BÀÈ(”—'øâŠÁ=,Èdvr¼Â×ûÉó*%zÖ5sÚ”ƒ°24½ðnùùŸéº±ãœé¡Ft´£1b!l£„*ä0´©Ð.nñÂÈ-cˆÅÂ{Í«àìè·Ù™¼ˆ_öÑSp¹ì p† ßˆW‹”F¢¬*:.v_š‘VF¸!›Æ,½ÕÉeª“Y´ðúì°gÄñ)+¨„)šU¿@ÉkÀaÃ>N‚Æ*kßpMiXl‡++€ÕØÝKÏÞíÜ_SÏîÝ;8ã¾Ç8ñžFÚû
+snz…qMàO8bòÎîåFúKŽ@úÐUÄ©àiqÊÚM™]Tk}›J·[5g"°v‹ƒU³.Fª×GÛ#â»¤+VoiÕ›\ÍQ¿c[kÇÓÏøk[›ùdºÄÖ¾ÏÄÿ³šQšú &^Š”…H$J“„í’6¿ HFá(×"‚Œ2`e€œy¿yïz››w[ç4cUrxÑ	_ýmã9·ÿøÌë¹â×šÈê±æŽÃ1§ÒŠ2-$ê#ñV5íDâýHXWñÂ„z¨ÓM!Ò!Ç/euãµœ—ÿ	×£®ÌŽc[tuO	ÁH	»TÃet4Š…(éÏî.HÊ&bZ!œ°å1Ê 8á¾=’{¿P…Ú÷eÒßD_žÁlm$Ü¿—¾t
+o#v¡³Â»_s“—L›g‹íPŠFîØ™´píÖ¿@=q=ÎVð—™gö^È¿UZÙÒ9ŠFw
+ÞõEjâc_¹økãv~åÆÉ;nŒ'þ÷ÃÒíã®ƒ\´Çìa B£ib3Õ†#ÀFs‹&Û0°%^@Í¨¨x/[
+é}¿|7ÇLÚùjêo&„‡Ç«NÅª¥>‘ú›óã¦èqî3›v©ÐXî.ûÞOéþé-nE$MOÙË¡âQ°²Åp,¦ÇMhfŠÕB(ÔÂÁ„…U¬„#¾G$‘&AÉÚLM¨ä…“Iù»ñÃ”{&aýbè‹É}æ(r‡51PW¥‹.:³üQS;ðó]x%…Î–Èo™DüÉGýj³¹Oãn©ÙïlEoŸ‹Ós}SßOOä“êBê³sºwD¶õlõ½ã·ì˜¦ü®“‰ïœKSç§In<÷Åë¤ö•3±¼>úUõëŸJåÜÇºü)ój0ü?Š‰" {÷¯áÃ'¢æjœx?ÙR'W¥v¬IB€@ÉJG5Ìx[ÝÈáÐÿ›1ztIõuáãÖ¶?7yEô™»ßáÜHvÙoW·Ë3'ÇÕË_ØÏ7ÿ=Ìï:¦sïcá·û-.*·äF}õeµ®w)­æŽT´9˜hÖ"ì¥'µÏðË»u|G•>ÕHœ©‘¡Š5ð$ý¥g¨ÖH.ss–Û=46ÒÕ×E%múÐM¹r€Ã½»×­ì¾mÛ“óƒ¼x?ÁŸïçÏÈ÷ª^…h±D_P ÎÆÍ9F)~î…ÛÖ~,£;wÞ»†?Üõ7’(‰ÃÆ}b½Ç©“žýÌä7»oT—7R²Fbnš€ÛÕ‹Ô÷Á„"X6>	|Äª‚FGlT9Žê­¢lq³Ð2Ëq
+8LGç{Æ¸Å5;ô'1j¦tYkß3!é°ë™ÆÆ€{fÙ‡5¡‰UZKO KœP$Dé¨-Ú‰ŒNUú¼÷ïªNim=nãîÂ×ýaÜUá—²ö¹{¢^7:5šXW˜/ÐQÃíÛŸ½ßÞ@Þèá¦¼âÃ–íÐa‘O»RÇ1ß‡åú™Ÿ8÷>–[—-?+
+ÄïhaNO›fðìaïá†/-åä~Ï‚mÔ}ùÎk¿í³—õÿé©7ïù3ù²É˜ ¦£êUsï˜
+¹Ñ“0âãˆ¨’¨<HÕÝM©ï}x‘Ñ«/3éžÈø`<J&¦‘}cØ¸}ÅŸyÞK›[GáÑ?üôG_ØŠ[15:íÇ³!ê
+q(iÇ10ò!œÈôf^9åTf,8‡ºÅW³µ·
+•±ÑÉ0bT)¹dì;ûøé›9»«q
+<”Câ›ð÷°'Öâ&¼ O¥ÛDòQèCÎBé¤‹¨F3ÃòS”;¨ÇaN¥o—ûx‹ßUGšQ‚šäe/¾T>ÜÍ§ŸN|Nyº#üyAg¤·a“*6¿B)º™J|ÕDŸ°‰—BMx5£)LžLÎBB¡
+ö˜oñË;²áÏÖP?Ó%MÐ—U¨ŠàŽì%(oS•gÝ³YËìöOko{ÛO5Û›pûêC)=Ë+ê&1X÷uÛ&GúïÉržw÷Vî9äù+º8/zùÝ•ëåSóVqÄ_ã‰öŸc¯ÛÆÈ©ÇpÌWï%vÁúŽ#Û×>9®ðJ}ˆý“ñÈX;Ù“
+XÐ˜7g¸AúÔ˜G‘ÙÛAÇÓe¬š0µ¯€Éøî}+®lkÅ¥N-¼¸šàÁ_ÒRØÛ<&Áè0Ùš‚¨pfm   ÓÑÑ¹mGM¥¸ã%B^=÷ÿŠþ?­3BAªŸ²Ú£²…‚Ê¹ÉJiwdÛ@ª·à~ëpâ¯¢Þca†›p÷… ·ŠÆDÊ1è‹ Šu¨½&RíA(@­BÙaŒ²¡lõ;½rÀäÝDšçö{Ùþ‰¼hàîHâ0ãb><a&ò@n–N%}Ên«öC”Z$âV@Qd§ùÕRˆŠ"_#ìnu_í;¸ƒr¢t^óÜVÏ8R^“5}”ZË@fW+7®~_›ˆB³ƒÁ5¹a7òP¡s;öõc
+¼ºÚ†yš;VÛòÑy9XûÞ/ì›:¨‘mû>o"£š6óÍõ×@bÑ]÷–äø…×nXÕxëu§Xü\‚ÏÿAj[ç™|1^Ý¹LìaÏ¿~õñ—Ö37¿úDGªth¿J…FÜ® ®÷ø¾	³žï{rs6Ãh^*¿”¼ö*^WhÝö[*å#ÙuïõÄ;Ÿ%:éaè|Å£R©6•"Žé÷„œ>cÌhJs'QŸ¤i`?ý×]ÁöGÃ+b%)#b#'èuãSÊ»s,‘a°Ç(Øðë+AÕW‹ÙÂ1+¨dÕ&r@YxQŒ¢ÒeH$0òû"Rg!)Dr•'?:cKç³»‰4÷SŽ~pë1üUg>IÃ™*e:ÁŠVÛóÀ°2Q61ûƒ~L­!òJ¥º00üNÄ5‘BCÌ«”Q[	ê÷ïøÆ£pm™ÁT4>Å°Ø!R_B…Ð5> <¹xi>º”Mßš‚Lï<úÀ1¿ß>NñÁKw©}×z€«åœ<1Ò4YºóýêêU1Z>óäŠ·ÒçÍ~?ÆégâD¦1§a“Çùô4tðÄö?öç—?ÉÄ=fÒsÅmµïÊqüÔkL09Bé“Ø‘¼®¯?ÀésI­ùðþž×™Ó-Ûï7Ì(¥®~Ry*y¿l’-K£fÏ §¾•éŸx†`Ýš´%Pñ‘[Fôîqú0Å´JEk\÷T’F+NÅ€r­…
+kÐqèÚï#v/2Ú‚T³RFý_öÞ<ÊÒªºûÿœóŒwª{oÍÕÕóD@Ý´ÌÐ
+*(8Ä&!"JT4úbÐ¨‰_ª£‰¼N¨QP£bº5QEh†(SÓL=Ï]]ópç{Ÿéœóþq5Yù©ùÅ_’_–g­»jÝªUëÞçyÎ>ßïÞû»÷ö³Èš-™$§‰qcŒ›C–\MªŸ«oqÀ:ÖE?;¿=ÁË§.¥X½—#ÝóKÎ{*¸9Ÿ:MµºÅð„á¤4=ABÕ¤¥nŒãÄš0FlP
+
+D™*‡z¯¢§pKèh¤÷1k[u«œÆÖw13PñãÃ{š~!µcùn‹ƒ¿§‘ÿmÖŽâ-Ï½9<?1C~{î‹<}GôâÔ¼dË3× ^—ÿDòöÏ¬­À#âÒÔ›o~]IlÅ0u]ÇjSiŽMo¢£ÿ’Ÿ,[¼%ß÷…kÈüï/E0n÷03µsÜ×qÑ_‚Ñ?z{¦•^œ›òF¹©‡Á#u¦F2U–|ïN®=Õ‡é9u×“ó.è!“ôÁ±è¯M0}"À9ÂLñ ;90Ú©ôùk™ìíf±íP~ì	J=N­Šu<ÉVûµc,¦¾oÝÙËM±±¿×")ž ÖŸÐš-Óª¤ÑGóXÍ&Îê:Îº4¶“‚JDôãLg°âQ0YÂ‚(»…qŽY,rqhà´ž•Ðr0ææS¹Ýj´êÐZƒ›Ä‘©QS]$Óž‘ƒ60LÓ4Q´Pº…!Fj©ÝØ#mR"iºqôí ó"GàvOàlj¡Cä¦èÓ)l½#D‡ÿŸ4‚èfv…ÁâÊµ’«?Xã¿Õº•5bèÊbÀì -âkë|à0w¿å'fûG®ÿ«žÛÉßŠ0bk…&4GoSlÆ6½+šÏ,â G¾V!PG&ªüO]1õWvùîïrÒMgÃÈùYcˆÇ\Ë¦³oï¯åé;òÿì&ô÷ý}î§K¾âm.œøŽâÝÙí†MZ¯ÆÞ²ëEåBåæçlVpºMu]/f‘bßâ…d3dw=Cáî»,pÉýeQˆ%ÖØ‘é„Î’ËL×èR2‹—`ÍNf2¨Ý	I­Bkr„¨³Kx™…¤ã¶ÝBÛ5ÂZz,„Æ
+SÈ0¿‰É$hÝ…˜Ú›"—àÆÕÆ‚%%ãâ‹P>‰œ× ö{Õ´2˜¾fJ9˜:Ê)‰$UFÙUb,i°-ÇÉßÊ`aÐ¼%±J!µÞÅtê,©Æ³”ŠgjÖI§ŽQé¯ÍãSoù¦;»þœõuÀ^¿­dójÄïíßO…ÿõu<×ŠÍÁ1Œâ>Û´gt9s/wî½õÜ¶Zë?sŸÁ~ÜàÀ.i¶ýeî‰¼0oí«oZÕW|ÿl}Ò£çÿã›?Ýõ|ÁG_þÁ'Þñ±!çÆëˆÎ‰È`„<ÿ%"»ò4Ñ-¸h¸ñÙ'Çî©Ór;È¥,¼°Q|IÝùVúàÂ!ö|ùÃÌÿþ6
++õÂdç¬ÖK6WŠö>g<‰j°>ð9…ã~•Øùú€3üíìïˆašü‰7/÷æÎòä×ÓtÕ8B9I©ŽEL¼æÍ¼`ÀÐüùS<þÍû¨Ù§R<ºš¢è
+;
+±³éHÿ0öì¨eUjÖ“”d7zW^XËzÉ-(âù‚2asœV\#N$‚®ïàÌÌ œ±jf3H2ØB#ƒ}$nf3´¨u¸±möÛ-îcºçîÑCwræääÑÀ°MÞ°À_ÆfzL¿pKé·;å¤
+”r˜éŽ"¾5*°íqj(«ff)Š1ÒN©ê aO/õí”œÓ¨šÛ°Æö¾©-œ¨ÂíY#w|ý=6+Ìï‹Gÿßäžù—}àŸS®·ëÏ®\ë€HßÍg9¾®~å§x=M¿‹›}@6ëÜíX|nŒ–0/.ÝwÊ,ülæ–Ç‹7íaúé?%¾að•ŸËÍ¨[†·ßuæYï¹g‰mÆ<ôZSþé—=ô£¾Oï¶û[8€¾çÃtv‡Æ­&H+Àd’1Xå›Ù²kŽËþ#‚•_gXï¤4z”$5	ÁeqÏÁ^u”ÐÞ‰a‘»™WÜ¹nŠœôš¢ÜŸM‡^Rc@7ç¹tTæ-oWŸBÔwTHïgCˆí!"h‘ôY­p¸g¼ì½ÄdGi?œÅL
+‰.­ÂŸpð%XÅ¸Ý#ò×®„Äp ²±¶c#ãa›_>Ÿç–b
+"EÔ$*è¶Ð.¸v;1tKÛCvŒ0Ø–$i¢P˜¸…vDœº•8Q Ut±º"´¥ ’ äÄ3¹Aì}ñÙw0ÄŽ®ªˆOáòêë›°Iüg£Âÿß×o>¶îŠ"úkå•gïòò5çsa»fëKÐúøkp8û]’mFoßÞ~Ê›Þ‘ƒ3:n…é»†—¼¹Jôüi¦®äkw©~ÛÃ$§€J¸ú¬2"}ã÷â¬ß‡µìNÄ3›Iª'}\ü*ìZBc e8¸ÅîVKæ‡]rý5»~ˆÖ‰Û¨/\Å}Ý³œô®ÉEÁ‘QËË˜ê„Ÿî!HíýƒÑÜ?wÓù–½ì³…ÁMÇ™Š ˜ŠÝ]jÓ¥LÍHÏN²ï–OTÙCàÚ-T:j² éÞ˜xö›(Ök$ë;ˆŽUQV+¨a-ëÆVM?AÍ€íÿº[«æ¹:Hea…H	dhM£r	  ‰$ "œ:F„ÞÕ~åŽù­hðu{¿™©ãBc­Œ´ÊÄØ†ÄJAÔ…ê„©,^Oš†,%Ž°±ˆ8y˜ª$¯ù3¬óÎ}“zÈ˜Da¸ÞxÜò6.R°ý÷Èö;C9!dW4”9ÿýè×ÜMtâõX[î'{ÓWéf1öÛ‡IØ‚ËÜõ§]ˆh,a¾Ñ€?y‘è~Ç'¯Üû­­tAæÌãÇäü#¤û¤ìÇïÃIuâ¥‹x
+G¯ïÃ‹ðç•ŸÂ_=‰7i°£8=MÜ[À×Ï‹²þÏ	Ç±÷…¸ÓÒÙA Òß•>tÎêx;å»IveÉþÝBºnËŽ9_„â¶a½þ j¢„reË®çp3{ªg¼V¶ŸÛ¡ôøŠû†®ðd&rWÅ$^âhæ‰}l9I—ÛÇqWâM4°	ÐT¶kÒÆJýHBal3Ç(4´š º ÄÌE"4(ÐÂÖ¾ãVÉ^¬z?ÙJNÃ0ek‚0Ì&®5?qÂ¸]×)%‚D	¡€IâT„Ö.Æô#“–HÂ•v4UD"rx:Æ÷«H¬þäÓþ=èÜ‡°øê[» ÁÛnñ`à÷Èö\ÿF„Ih ¾o\)rpá|Ì…7_3. °óAŒ©cHv¤.8SZ®fñ@Ïªc™½%úÏ|Êéº™“
++h´–3R¹ÛÊbw`y#ÈÔØã˜z7:.€q‘ÚF‡‹Qù™Q§ûØî¸|Ê©XÇšè%¢jávXè`TÄÏþÔTìÃ…¤yFƒSßŽžµ=¨ÝÅñ­ßZžüÇ““ß½tçŸò|ù—Ü›û§âÖC'ÈûßfxÉ|ìÀ¢Ûö™Ðg_fRó7’™¨<ý8Í=Gk±·{ ït‰ aÇM,{q:afb|†ú2Ÿä€‹›¯ÀÙóq¦&‰³f´ìêÃSÍßÐ|Ê™£u"%¡F·ê‰CDÅj[xM‚Ö,©£@?y\",ÇW#q&È"èvfÍhÜ’Óäô<éaŒGdH'ß ƒI’f|Œ;>é’C7Ä˜ˆXÛ¤t7˜Eu6pš`àì÷ðñü½•*cÜvm‹G¶¸S› ?ýWã÷Æö[­Ìœïóo´%»|=éõ;.Š†Øž`Œmc”ÜŠ ÍÁ)‹ë{*Œ¼êT²+ÿl'ÆJ×AÙ›míuKg“í±IÅ…C\=Ïöjº¦ê>&ìC×3Ho´ƒP`âb»Óœu„VyóZGL‡	Zfˆf*H«ÏÚÅ„û¤Çár¾¬Z©¦+©
+a-µ›X?”ñÒËö©=tÚ§â§Øðº¿­+EþaMpñ,"™Éyš9¶ätú'Bxtê‘Ÿ[qÇ>¯Ë"Ê)jU|‚Å&S÷I¥ê4«>ºÑÂ,îÂ7-§ã^…    IDATt·‡91NTìÃ­»8©ßdl!„Ž1ž†VŒˆ'HœCÄÎaB¯b¡c…ŽæR[)‹¸ñäÂB;*¡M³£Êc‚bË(ÇÂ‰l”ÕAV±<)bD4Aè÷ TiŠ8ÉÓqØ3M˜±Ž@¥‡I2‡ˆüCDr™mpµìo±ßôÞ[`CdžG »ä×OvüÙþ½H¦þ•¡IÀÜï?N¶ë!5‘\IŠXDiï Ñ¾+¹­zÂ,ÀÉ@¤b‰,Zta;5¬8MÊóñýµjšZS#Í1’ +ÌÐ:Bh1DÔK+d£bŒ±ˆË„ö<
+™x½wšhuÎ2™eÜ¼F|ÇÃ¢â_Äà#y#/+ÆeU¢<v¯HVúÆ²'ä[.9QlþÜd³'î'Ý+v^;q‚OL3>¬Þª5±¿þ|Ò³u¼C'Øý£±FÒõP‹Š£¼T9¬÷»ÍBÇ!£¹š®œ‡ÕëÓp–»P«¥³Èz1¯·¢À®Å ~íÑ˜”ƒˆ#Œ­1a€ÑÃÅã„bÜÑ¢*Ð‰RÊ 1€«‰??<Ç8¦Ûjp¢§h3šÒµ²<ƒÊ-"‚*xa[8DíÚ;Z('…÷ íE:“6hâªo„%‘ö.jéašß>]=›æ'–:Š¸öCÛ¬‡ÌWÔ=\»9†)qÇãCbè÷ÆöïXÍãwiÚcÒ‹ç±´ch!–®ÅŽ_‚´.z®Áï9BfÉ¬ìOq–¸± Â :Ñ*CŸŒNÌ0“(RÎpºÞÊÏÇvFi­¯-,å¨}hÎæmŒÎ€qAg@¶ç<«Ö(Ø“8úÔYZJaŒ’XY¥ƒÓà5Œ—¯M´l{·¯ÿa}ŠW-(¥žg¢Úv=åŒuîÖÆ‡·®eÙKg¦‚sº§¾Ÿÿ6}çOðË“„]]ðäêS9-0ôÔLþð{Ú¬¸»ÉDŸJ%‚îL«U6]v‘@$drØ}KèË 3f{ñ9@‰c…¥{ñË‘ª#b¿ÞmSàÛˆ–ÝŽÆ-”œ&ð&1Ôlâ–Aa”Ö Ž…^IÓ:„”`‹iÙ$ôR†zÊ ÒUOÐ©44…±$2IÐŽDb\SóÁZK¦‘E§[(%FŒÄ]“Ö–žÝ=µíç›zPV
+Ñ{â]ïÙÊOà!NS°ñ·°ýƒ	ÿ] JÀk=7
+€ÜœïuÎ0ó€%|Å;“×ÅÛÀÀ•6l‹Fla“õÈ¥Û­»Ž&ï?…får”}Z/"¥[`Œötfþ	¤W¡HªÝè°œD¢3{d„J²€Í©=4bÍX½ÚYQ/žQñª	™^Ê^; ´ÂBáÚiËÅ·=<ËÉízpìdãvžÖ|’8më «iuëBÊ%5ÿj;´êÕÚºå-jqcåÙ5ëq‹]Ô§GÜpíc1›W\&ÞüÁ÷>:úÑ{Ø™¿e§.:¸£ z;§Eå˜.aÄ˜^‰˜²‘Ê Q*œ]ÞÊ¦¸¢IÒY±ê½/RÞŸf¡29qqÖ¯{*>"Ž12ÆX1Fj´‰]vËñiQ_	1þ]ªñ,Îü£âiÎÐéAilÛ¦jJ›¥Þ½šú?„ìž<9š(~óÒ{r»&âšÛ½ßŽ*ïIú]4¼a2åSÎ´mÐŽ‹='ÄiuaÇ)T÷"Üz¾º“V×¨~nÇÇ~üA>ô<5¿3û’Â>r„µ‚.•÷~Ð¬ÿ2¼62â.ëmì‰>Å:l±áF˜UôdömîÙºKÑŽËüOC6áÁf½ýKŽhÔ&¾âÝÇëÂ4_µ§¸Ãm!l»IæèÊ×˜Ù#î6=ßXMµöÜa8Ž	#¬Â®"È£<tØKR9.Æõ"­q¬ÌA¤SA)*ÛöÝ;›3Ó$Mú
+ÙÙ'?k”EhT!­û[©Ê,M“,VÝ—Ó#ÕÓg$ëðä"<öæP—f¶€Êö%–™‚žÄ&¢úÌ4ÞkTÿ)­'š«¦ˆ¦OŒËÚ‚Ó5õU‘;ëÉhãñÝŸà½à£1:Züê+Ø¶Ny+¸µŸ
+}­g8b¼èfL,Ú¨‡H² Á²k±ÒFb…´ùŠ¥#R¶vû*!$ˆŽÈÖ5t¸Ÿ$?–UbQFÅ‘‹íG4ævª&äÓ¸gÕ¸&ýµCXÿ¼$ê?Ž®ÎÙÄ]@úÄÞ$êŸ"’˜N#RED&AcPXÒHËƒ´GcTŒ®JŒŒ0ò¡%@ã-áC}=ðôû‡¸ýï+§×*)…~ó-‹yäìï<ò0†àSÂ<w’m¬µ7se²—©ºØ&ÌïŒþÛI9¸ªClã¹îÃ¿ßºM$÷Aô®¿»6ª‘›6ØKõWÒMMÑj1‹<	ìž"å™?€ŽjúŒ¾ «ïA¤ŠÐQqãLÜ"F¸ÃXé]Øù‡‘ÉR„ÕBÇˆ¤ö ¥=´œA(\Ï!Rµ$A„.:rˆBM'ã+êƒâÀÈðóKu¾»’ÞÞ<±Œi˜~Šþ4¡•+’mæHõ$XÍ(Õ~’ªÞíÖt”’îVs"Û÷œuöTõž;wÙè·žÃBJú .¹éÜû¹ÃKqN<X/^,ÂÃ{8‘·}X Û¥þãRc #±~[!T.Ä¤|¬*Xå
+¡«Ñ5õ‹a‡ÿÏ+ÂX¢mcÂF`ÍåQææK	Iºçq¸—FRFË2–{ŒÄ	5N”àH‹ºkøó¬^<]ãkuB2X/þê»Uè°ÍX«™Wi9Ÿ\+MèÐi„ŸÂd×áMë¹m*Q&0E,“GªRL Ü4¶‰0Ñ>Zz…Möä“©\^b,¤–\ÏŸ}òcÞ—×Æ6/Ì7XØ:–½~ý†Ô£Â|µÃlûJo„Ë¾.àëw…#¿[kû¯Ï³™½uÌŠK—{‹_‡¿ä§¯AKÚí¡ßõw¤núSZ7ÍøhËžßž\þƒxó³QÜQÔdÇVL“lÙ…á*Dr:^ö4²¾š¸t1:\ˆ°§±²`eE:Óèpqùˆ—´NF‡KÐÑ|,)‘„k[VSÈ1ÕkÄS)ÂÑ"cûÕ)ãñu³JÞ\Ëgþù@#ûÒË¯¢Õå1ab*9D•I%6=b–Ñ‘ýLúFGFÍ”¢kÇ`ûî®žb‰ž&2™è.<Æè³ŸÄÏ?ñþ~š-¹‡òuË÷°2W2X*â÷®¡XÜ¥^#ûâ<‹ö¡)¤¦ÐÂu6bÖ$t· 36Nc‚
+¦³…Žâ7
+qŒTÑÖ¿IaÏÕ©	„é“Ñ;	2&Ñéi5£,ðÀ3dBMV+yg¯^ÿ5Ë!H²µ[È÷%™ÿeÒbA“$éÀ÷"ÜÁy¤Ê!Ô‰µgfÙ1ˆ›ÄJÏÃò»‘©42k!Š	¦Z¦±¢M=MÒp‘ó24®4¼àU_%[®ò¥æéóøói£4^þ%ô[akm[,ÞvYÜy@qé¥´å}¿{7ë¿ÞØn¹Ëå–·¹\{µ9z›‰7±Ùl`³~#¨ÏÌ¢Äúæ‰…îÚ¡]öZpê¬©åUf'[UÀ)¥„å£þ¼E·JAîq„“FÈn¤À¢„ éí£š§ jç¡ë0ªˆJÛ¤ÀšAXç)#ØjÝòšk¢ÓRL¸›ëQø‘Y§þÓãÞ€—Ù@TÈ1™?Æôl@+ÄwÏ¤§x.½…•¼®j¡k#^+ì”Êj§c?@#xÚŽûiAâV©’tÛ£¼ñ/¶œÚA`~°NŸLXXý·g¹?û¹‘Ýgóù3)Ÿ{óìÃDÞâL®bé.¼ÌÂ²­t©±…@ICÃAhÓN‰m-e5«Ó©†‰ÉV…É×1‘ý[ž³FaæPÍ(Z´PbiŽWJ)JËÔjÊ2¨b»•˜k#ïoáçkÜ=ý~šOñÂf¾^I:øìƒL¶î„*ƒIZèŽüF@ØL0N
+mº±t/B÷a©Ý…m²í"±0¤@ZO;UIÖF$Y´°¨®qÙÕŽeŸ>ÿhŠ#‹¢ey®Ž<L€ÇOh~Ø¬øJÎ\ycL8Ù‚mm†|ý§[6Yï`·Zÿ³häõ·%°õWµU lÃEÄÞ¾ïŒæîÙ—½ž¤þZäêNøïœšhl9	8&ö1ØUbÅ¥U¾ýqÔÔópÜ*¶(c‚E´i•À§<!È D 2ÂØÇÐºkh ”‡Žs*˜$³z÷äîøö¹ÓCË‰hf”èÁ¯÷“
+ö°¼&$‰jIš¡$TÐ0Rh…~ÿ"²‡Q«&°*OÒÜ÷0Í‘’pÏòŽWä:´™ž¸÷ì]]ºµûê1ÝiÃ†ÙÏ¼÷Íw¿÷—UÞÂ_ûxÏh÷!
+¹”¦§M¡ßÜƒ¡Fª.UÐxs¦4$™h‘ˆœ å¡ë¡ëRNŽ¦êÀˆ8pðËqdr8ú7uß çü4!…!DÓB‰-ÐòHefA4U{¬N&Øº!“d\;ïª2u`¤
+¼eqŸv8jw²8iñCûóµÅ?Ióø[5­ "­;°œ	Œg!(÷Zƒ ì¹)¦­R!²¤ÜI4‹ÎzšT?Vh¡T@ÓÊœìúÄÏc_õl?øòÃGÿéR^ð¾§þv1nôþƒòã€?1·>®/»u…¼Ë,Õ°*=Î^NhûŸæ³m¼Ìbù4¬o¤Ë>2ñ¯C•Vb5Î#¸c>vúöàýëâ¼WZ`Å>¾ñn®yó¹˜ÖéÈôqÐý˜$…m•I’n„UEØ%„Uía°@; Ò„ÍÅ•…D`T+¤:Œ6e„’UqíÓð£8ñ0Qx€Ø:B#!ŠæxåN¤%:-H
+.ÆòñŒmŒ9†“&.&ø<I=¿‹æÏ§ûüÁ8Õ±†ŽøsxÍ‡©ÿïgiþÕ³Õ¯_5{û=—ž8ñ³/^w–©íýÂ‹>ûúËf:ãEÅ3k~x0SÎuÚ×PSÂk	DbÚ‚–DŽ8Øc	É:‰°!(àZ=ØVVÎÑÁ ¬Qta~»Åøo”cÍC0“´MÖˆE%öƒÑ¤ê!X±/yàÔ0sÖ
+üÙ£ÎÌ¶ýAø-!6œ¯,-ââV˜€gíþ´p:o+pð%šz¾aµfÒ¨eéH¹ˆ8lEè"èæstN"ä/Æ|·Ã×dpóãÄQ€RŒÆØî$È6aêrgìçû¯|ÅWoùïë”ëO,Ì9LÖ4³exõÕ,¾óë<ôÝ;¹±í#	›·
+Úwr ÞþÜ¡ÿ9Æ6°wl÷]‚ËŸdD\H˜\‚¶b¼¦ã¹;1Én’¸ít£*ëpº€ƒòœÉkN˜øù×ÓÚÙÄèFyAˆ¨nÆmçVD›B%‘‡Ô1‰j`Ù; †Xì†8%I|wIŒp'	›Šfe„š;ÎZdói2….1Ö“Dˆc•°¬qÇ1r%j q ±âYÍNrW£»¸Ž±J~!^ßfæÝý8Om*à6."åŽiûº‘½îÕ÷N>öæNqÎkŽ³3Þ@¶>tÏ\KŽŒŽfè|Ã.Ûòh4&¡™HH	Dè²qö„/Ð“² CœdA#‘ÀŠÞ4Q!ÆŸþMÏÇ-æPmNI„6M”h˜a´%\éuùF1Íý;Ö°ÿíÛ;X„ç~îä™OŠÂKðøÑnpúAâÃ]tVïåŠ/¦ïmg«š‡]OZtR°%D1¤°%ÊH„È¹VÙþNJ`i-C´Ý\ˆ§00A]z>ÆK°ÓImåNôy|çaø›‰ÜZIYÚ´"ƒqS¿v’ëéå»ÃæJ´0HF¦<æšÔþ·Ê³µkÀ@Â}Ââ"ÄQ°Ï):¶	ìÍ˜ `ˆ!0añ™÷/A?º–”s)ÁÄó1:…Ûó3üî}hK’4Šè €
+úÐ‘DÚ³¨V~.î–Âô?ƒn¶“;ƒH,L8çiß|T7N§Ä¤[˜¬78.r¼E+•B[Æ«`*«ñ7‰K›,¡ZŽöS™†…ç84õJ¤{.¶\….´%ÑÕ(gŒ$}˜¨ªÀ1édî–Šö5Ç§’)<D“§„žjw»§õAîõä÷¿€Î‡µ-ð=„¨$B„cg×`å½üT Ó±«Ë^†±•¥žÝª#B‰vÀ`:ÖnuÈ_b0> ”/úP"BYZjcl„ç u§!é½¥~†ha•Vß8¡	ñ£4Ž”¦E)¤Ï;JÃK!ƒN|_!ZPn=LP¨ƒ7…ŠRðãwš¿yß;C‚•Ÿ¿lð@røœ?}Ùi—×¯{òu[O¿²pÏÎwêoÓe}ÎÄ}?<wuµëgËvŒSòÛÉqcFkŒQh­0`žý,at]â¥ŽOªl’9s87XÃšéEˆ*Â
+êXÖ’ÌÖa‚ 2 ƒß÷LáÚŸZåŸŸºŽŸ¿j>5™àË¿Áuo^<ûÍoY~ƒÙp°ÌcÑ_ò‘ÜGÌ_TÂüg"›7'sJþ‘¯|×æ¾ËmU 6ÕÓ-ú_ùJ¦oý¼IXRÌJ•àdKŽôc‹H^Ì‡¢KäÁÇ;é8þÒï Ý€¸2@mäÜ6c°kmU†l¡õ ºé¡ƒŒ˜m7x:übTvJŸŒlÎ±
+-Aš6W6Æ²ñŽ‚%Ý¤vOuwàLU(­]„·§ŒÇDÝE„UCE] ÊZU5DéãÕPõTz?qµ…²<×Åë§%Á)7P]bnV¢ƒ£ŒNÚÇì=Äº‰¶a,´âE½Ê­^@F­Ãç(•‚û˜(A§AZq[ä©ÒˆÑ£$§u3ú"ŸŽcÓ:s$¤á·¨çÔœÂÞfŽf¹Q—Ø»5ÉÉÓ5w2w¡´BK‰ÖŠvôQ´gñ¢ùMŽd×ãL8D•Y¬Ž®%q2HÎ&š&RiL¨=!XSè¬DX)4)Œ›À¦Û*\ò>a^<´eð@j\pÁñ«¹(Á]ãÜÊ›ºÍÎ­µ—ñéŽï_~¸ø:ñÝÚSt~ä<š{%âô_9ùEÒV 5´ç £Sô0³_z+7p÷>ß®ð{c’òÜ¬(Â‘RÕE–Ì ƒ*ÚOVÐzfDZX$6h÷)Â¤ÿ¨¸ð/—|þ‰ùþüÄïæÊÞ›ÌÖ	–|Åã· Ú¿Kcûu´Vë¿±ã6#Ø2<Þšž2ã·‚ä
+RxH‹ôÅçaÆ7¡›ÑNˆßù²ï‡H•GÕˆ¢¦1ˆÑNÛ2¬f{ÜVâ…½HÓÄ4 j‘Dý`|´U‚ÚièL-,„Iæ\ŒTÁò¦‘î^ZÏdŸ¬PÞØ‰}ª§/–øûÝÖæbùRcyhÑ€ä|`‚£ˆxMdÌ<‡$R–µü„
+Ùˆ~íeUåÆ&_oêÖW0Ó0*×‹ÄÂV
+‡hÙ$qCÚsœÃNøÃ®È=(Qg¤¤9m’Ï¾žžê8•MeêÑ<ÜØÆØºÍÔeT¡ù³ˆÎoÓÃä|ŸÀðý†Å‰“(‰g\%±]ˆ#ƒÉJìûºôr 
+fˆ:ÚÚ†¯%"¡­±tÖ©;:ûŒÄ™ªÛqtDÆÂ=‹)ÕÜz¼6’©c¤:*4KLØŽ¤w€(@ì#éÇZ(á©$¬ÕxÛÆmrA'ÞOÐß½1b|c‹}ƒÇ*£Å{éøØ‹‡ÿ×w_WB^p„áÝ=¤Âkn,—‹ A‰eµÍø¬R©“tW@þ…”Ž}"ðNÓ]•ÄÈ´Q`Û@'¶êaœ:IaÌ³Ã‰NwJ"êBÐ§LSþ³OxQÐ78r4Ù2¿:óÃ.Ùî2S7»ühŸ9øŸ q~¡9ýå€¼_¬w<N$®\ëðÌ¦”økBò×l@í¹€¤r&8¯³„Óû0Vï·!è%©.CU—cd®!j¥0q¡-yrªˆÄE7æc¢<BŒŒˆšýˆX¡ƒ~Âªë5Ð&ÂÐ‰5&t‘î4"}²÷ad$¡|¦± =u•Ìiè§S2X(lfvœR hæVc‚"r1:ˆSì´\îÕIr­c'[¸ä]w%‹Ínýôýå`›û“§Yý¢‹yéî0‰ÉÙÈ°Fà…`yˆ±´ä¾.÷ž‘áÙÓóÌ^þŽU³æ­{+ËsüI¦ÎÅH¾!‰7v"L}ÀFÌ›&)vàŒ%éïÆy|7Á¢ašV
+'^D,ŽRï”´,,&p	tˆŠc)%ndhv
+ä1eC|1 B(”#±B´–ØÏÌ´­`ÁÑ’ƒÝ‘ø…J’˜Ã~8/¤†GªwVÃZ4P0`K´Ñ4À‘¶¼¦6\GDÓY€Û\F*5Kä"~Áåá0Û÷Ûü%Ò§~‰ê~t#ó*õÓû½ï®xáªÇhÞ´”˜òYÆj— JÙ¦‘¤üå>SåVÆÁI¢¾ù(kVžÃ³õÆZe&Ù˜X`ŒFY66D0€%\o–×AB‹ØÎ&!žVØ­À`yÀ„^ 9™ŽeŸX[yû&ù¸`­»Ô|&ìÿlc³æõæ_¤]Úÿkmb(bcÆáGŸ~WÿeÈì4Â	‘)MÇÚÏà¸ÄÕAÔä”¶v€-4¨&ñˆtt4â˜ÑNB¡už˜1D#’&$ß££ÿ+¸…SíGìH‘û*ìB“ÂI³¼û¦×ýbÀ ÌÇ¹·o1Ms£Èï¸b¢ñÚY±é-ÜØ½ˆâÐ›ú_ëÐÝ£MXU¬~àB¶Žö¼RÈ­[1Ào»šÔ-{?Úâº¿Sœ^Ây3¹í;¯òyl:É,2V}ÞÉ‚ãWpèŠ‹LåžöO;‘W}ˆæ] ;^çV§nè|Ù®zþ¾Óp{ÆhI½Žµ6…n¥±jcÄ]>öñ”yšæ’vPGù–ÑR…ƒS[#ñÆÒhŒÀÞiH6L·@Lô*‰5&+LÛw–1WØgÀ( 3@ég:°O´L¦“”0„¸Îº“îÄT«”Í¬ì4µÊ”IhØ4KYFG#öë¦¶[ÉU‰³ðrv‰Vú³ý±Ïjß~ß©âÊïªîxƒdÍ;îZ¿iëšºõi‚¯žÑ6L­¢+uh®œL´)!,Ä\Æ$á4‰Ýª^cA¥—§D?L—Ã…]s¹?ƒ1
+Œƒ&‹cº0&Dê§AäÐM “&rkè|¿`ÓÔþAÁÅdâoÜzÆÔÏûžØýóñ-¢µ…ÏËíÿÉÆü«$¸œC¸6½œxE†^úIŒ¿+7‹K±œI¤!<¶Ñ7»1q)#tl“Ä>F{h£Hj'#M´‹Qi*9‚´f²A8}5*’,{sošBˆ ÒÓ¬o‰òžb¸ƒ¹YÞ¿ë¥k0yßØŽóöûMÜ(|_˜É+†„ÿ†õœù¼WcØË''Íø]=b¬ñKŸaU–mÔ yå[Ioý:ÍO	4#ÌÖ`ñôÍŽøà®Ø„»Žý-§4Þ›<{?À†[±^vÝf›-ÈŠS—|÷ö4·­6dïî¨——¯'Ý¹—‰uYÜñ*¤;Ië5“`éB÷ ßKõ"—„$HÐþ	ƒœ™vé¤I"Iœ$ÛÑ2rlmíÝmÐ¢b0sÏÈl‰ÐsÅ³z.š§¦eÐy«ÂÑ
+ÖàRRÎ‚ Ùz„ÈcÊ]N_gˆž]‰]ïÃq4~«„qŸHª'*’§(ì=P®›|®42£$&É ‹'ÁdIÓ¹Zl\õÞ=ëGÇü'n <öÇeÖ^G¯RÔÂcèìó™ßØÏˆúW;3¿s95™N#J¡'0Yç8Ë¥ÂrproÔèÇ
+d‚2&íÂq‘BÊR%hß–x–Ž…M˜Ö©\\kå§T*	A¡Ki†iMÓ<t²õÞ?~”—1„¾‘ëZC¼é¿DA"~…Nþ’J¾ò#+ˆÔë1ö*œb·çiÜ®ýø…	\·Š®ÌG·|Lè¢*}$³QÕ^’rª´7€½Hÿ{8þV„>Š®.E—–#B\B¦{À¼yúôD·14ÌòV´kÇ†ô@	ô&ºqÉz0ËA-‚„!BŽ]Á+‡®9ÁÉ¼â±opç5—›¯öÓÄ#ÄânÑû b]_jÛgLcè¹¿[ËWˆ4—­€SßÙ4ÛvÅ€9™M±ý>WÜr§³£¸K°c«„Í
+.M`sÀÓÿX2[w'ý·_¼‰îÓCâ5óð‡C¢H …h)L4…Ê»'8µÄ˜$Â¸Ž$<h˜>NºY“iãx´tèh"ŠA…9fP¢n06˜ˆq0 ZŒ…TsíæJÑÔ˜¬Bç—…æ#4GX§Ð™Ar­"Zi¢Ù."½¡OÇ)o$3¾ŠLÉØ…v#È&¸KŽ¢žyRªF¼€ÔÑ5‘¿æRZyqÍSÝ]œ3ÌËoþ,eqhÅ=ST(X™w.
+i4Æ˜¹h¤ø•ýUÄ©ª•Æ$+ä^nQ±OæÈST3iddÚ)	I$0±ž+Jð0q‚“ ˆrdzâ:K…Ã-2Zâ‘ s³ÔÊ	­æŠ$»ÍySï    IDATñ«Käëi7úN¹ùmÍ¥-r5¿Âù@1Uìôd×d:Fd«Pî&ž9Ûà*ŒÊÄh-0¦Š±FÀÅ¸eDì££…èúXÖ£d~’•<Ëó–ÔøØëë[·	µyóŒøÁü' 
+Xy™7sa×c¼OýJiûeâ.ç?pzi&oá¶x¿‹fü5±âµ·ñ§cO°ãµ1?Ì—!ó' ßñ¼£SL	†ù<5\¢ë¬ÜÐŒ©­AØ÷ÜŠ{à Ä5wäÈwq_«spÑ\†µ}ožK…(@œ±‹Â«ðÞ¸žôIMÊCÔò
+ËÎbéÔgHzz°Ÿ=LÜ=CÒiáµÚA“Î¦Ži9…—7—!´gá¢S!¦9fØ„º`ÚÃ+@'ˆò\`¯(‰°Ì\71	¶­1!Ð¤ F‡{ÃÕùÉR|}–mP%+²er}dûŽQmØxé~$°D_4ãäÈLÔì$_›	ÔŠÝ„}¾‰{B¬—™Îé*ö±<‰Ëû3ùÕ_»êÈ³·0½´çŽ¿ègãÍ¢™CR¯Y­³Õ]D¦d´#ŠBÌ¤š_†ÂmS"êÍO™ñiÎØÄ±'o!rb°ƒI	
+éj„´1I
+_Ù¢je"é.ÿDè„Š:âbÖ’%8…2áÔA"oïgØïùpù;Ôj5~‡îÅs¢ËS×‰ôy'!>³•€+1lk£¹@øÌß¬Þsê•gR;|QrFŸŠí5™iåÛ	7•BØãåcâÂª„„`»Ï ¬=“j«îE£;²I<óy`
+8ÔþÕA`ýG/ö&^“9ïþ¿_xëí¼9hÐøô‹øpçÕ¦µ…ïenü§W(ñ²ñ™¿óuïµ¼{ÿßscœðìR¬t°Úšd¶d=º+‡¨´žuš=³1é"’¼>Š.".;õ:Š´£ÁÃ‰$"• R`ÍÄáçMÓ’õT’AâÐcÇ4ÂR–°”ãDÈ¤‰¥[°-+Ñ$A~”¾×]˜"îŸ(/ÀNû˜œ‡j˜9é‚6‹ðL7ùžýD¥ïÉ±ÏÞsÒÂñQÇÎ©åÕÅÂÛ02Ú|OÜ×Ÿ¦µ'O—÷¾Ì‘ÝÐø“;,^i¿tè%î¾u©ùùàÄKyÕ³` ïYfÂyˆÝ>ÒÅ¬HÛC$¢(‰ŒGhQ¤à¥°3û88vÑóÆ'øÃC†é6òÙWLv.YDPrPŠlÜ¢³6ƒHûÌ$ÌðIì”Mâ Df|˜w÷ú‰í™.]¶zÙqæ|J+^?žFg§!ÕAQJÌƒW=râ•Û7RÙ´ÉÀv6¿Ud¶~ÅAô#WãõÕßÙ²â‚î:N=ehmÛ†Ï`Z]Ü’›åú€Â5+™zúlÒ§,ÁRðrNz”¸9H’4ô\Šc?vêL°Õ|!ÒÛGzÁ_fFrú8üY®Ÿ×Îõ¼pf®¬¡ÂŸCNõ+ÔÖùe!ðl½Š¯©W¿óï/Ùp¿üwÜÅ­mñí¼¼ÆI¤ÿ¿VÈ<ÿËæÖ?¾-µòEx¯o¦‡Gž\€³iŸ×“ž¥X)…Ç‰ú'bÒm)•mr!'‰šóâÎ>Új‰(ÁÄrº†n¶,ãáÛË»‰j‘ŒDÚXFJK`°-YS&I0*Ak¡0QYDÚ#2¶42!i
+’qÛ"ÆŽTÂÿeïM£ô¬ª´ÿß9÷øÌ5O©Ì	 “  2ˆhwâ¬€Ší,¶4­=úí×µµ[VË ÒÒ)A¡Á ƒIC 	d¨¤R©¹ê™ïñœó~¨±ÿý_¾¶´_Þìµî•µêÃS©õœëÞûì}]û²°‰½Óñ“¬µmÂ@gäÌ(Æ:Û‘Û6µ¯@Ú¢ê£3¡ˆ­TGDZ°–oáñ»»üìÍü7ÔküF:èÁ&iŸ#Š¨Ï6yþka!u‰¥l¼4Š"·Ñ+ŽÀY¸k|Ü’-Øº„‰m´„Ø—HG`á–®Q
+ ²Š(ƒ"@TÚ4Aý m›:`^Sê$¨×‰A#WÅYõµ×óöŸG7Þp9¨ëÍ5b†uÅä;¤î÷ÄM"àø? Œ¬ñÐÔù,õ„Ø	ï=ÇÆÜ‰¾ÐÊÏ~q&Á«	s-·ˆÌ¤è8O3*BCGý`\ÒÚv÷ßpÔó·s·àQC²€_laúsÓ/ÿ¶v=ÀÔÕµWäÖà¿è~j^¥­GwƒÌðÌù0	4nù	â½‡îËÿ$’øÜW¿êïD±÷¸&çw6	b+Ú¨L»A”Ÿ¡Ù5ŠrµC*STh!²9M2½ÎÁB!Kb‘'I>ƒS”Ø¢’EÕP=5‚1%m#¥LR‘#çÚ¦¸ŽUÇh”NÑF[Z‘C9R;øY'iK-{©9K¡5&PN`!7uä|êM†…)îkV”ÁÒ£pF¥¡N2ù½L	âØäžD«”4W#ni×¹v1eC6“÷f9ûÜÚýØ.êù*á)röÅÑ" *0ú•€3³od1K‹dJbA.µñRÂˆý»YÚ4­«NÅìAì®tÑÍiÖ"ô=liiHV@`’T‚mP¾CZÀ$Mˆó	,0O£~´˜òÛ&ëµeCÊc†bkµîŒË/}üêë~îz±Nï0ä54»Öœ7€w÷ê?¬ê’›9Þº›—bŒ‰Éœb8ëÃóùÉù?C¼—Ó±*g`ÕÎ@MœG<vÑØiDÓ-ÄáCvd­ =ÎÄÏßºf3kàg¢Éƒ¢nÆlûüÌg
+ÏÌ.oçøD´î“O4B¬òäS„¡âüVHÂ«¸^¬ÖS;ÍCçžÉÐ•Â_½ö³ßÊ™Å?Ñ²‡‘9<ìÜ8|öG†(ŽÏêÈXªk^=’¡Þ9FÚ!|'‘×x‘À1 Ý$lhD”"#±¢f¹”zlö*TŠÐ¥µƒc98ÖìLM€´žãàX–ÐqZ ¥%»Á™ƒðz^7ò5}š9]šBQáfØ#Mƒ43ÃDþþ©ˆÉmB%ÏÚñ³ƒ®•†©ØC.:'Â¦¬ƒ
+2˜H¢£9dVŒŸ<æí"64`ÐÛ©!m5X#A€vþAž£ùÏÙíà$ZEÄ2"ßòS¨O2Ï1,^q<¹©±²ãX*Ô"$G¬$‚ G(ZšUa9˜¦…´†qc	½ùÚ§vß‹z¤Žg-%SÝmÄ\ü9Ç¿‰÷Tî:¾ß`ì·\ËÌw e=Ö=ëi\÷ÞÔ YÍ¦ß¾Ý¿wuÄ‡þµÎ¦»;Ñ%„qûI¤Ø	Îx=[·²|ýË¼^ÀõäØa³NˆóoÂÁ¦°þ%Ê/—ƒƒˆˆßý.N!žè5k0/¼@òØc¿Ó5ÿéÎfÿ±t™pöÎ'®|ê«?`aÔ)¬õÃUxÐúŸÛ]tæœ¶IÛx”/èá—™Qç¸5Ì;êvª½‹Èìî$ÆIû#L)‹¥X¶…êhÇ2ÄiõÜýAVbª
+Lcë1BkB¦¢æ£‚4×ð”Nš8±BÚÉìg¶ÇÇ)ZQ	#[Q²#K+‡°<¤åa-6†”ÔX9„Î`ùeì@«taç«ÜbÙVeJ…¡Uuã–JŠW*‘­Ó¬
+7’EÂC*Ðõd{´Öh­àwá>I ìSÍƒÆÇ­Å,àô¡¶ÿ¡¬¦AúØQHê7‰-viLY—LŒ×3«BÈ~¬L+V˜AêNH²Äqˆ‘)®k¤Û™}£§©#tÍ5™ÞmI4µEÄwdÎ1ÏÞ?YfòíKkrºjD3‹–ðöáav”à–ë®4ÉZkÀãŠO
+Ö\'¶^ÿ‡q‹m€3Yè!CŒ·Ô 0ï/P}èE.¯Nrz_ÂÊ3bX«>qÏ€½°.œ×_‹X½ƒXÃ —\B|ÉéÌð àï¬ã}îæYæôš5˜‡oÄ|ë£$Ÿ¼û“çã|ën’Þˆƒ÷5^‘Ù^Þ	¯Š¥O|<X;o¹À½ö–_4@°z5‚M¯Êð÷Å[ÌD÷T«œßãWx_î=É÷nxh×b3Éä–¦\9±ÇÅ'ˆÝ˜ØK°±AvBW+Vç9Ød°„AûSH¯Œ ¡u<ÝLe•4»kÏt2†NCT „‡ÂÆ4âÒlÃÃ-atFÐ2‡%]$.RX 5¸´‡dÖ_MPÃ'ÐMæ¶‹p÷>åcÕÉ¹Hå²ŽFfó±,
+Û”aÈŠª¢§KaçJibÓGÆaþ‹ÌßÔ:²LÌT7f~M3}]SÁŒÆÅhKÚ$êPvûO¢U1«6pµ•
+²2øÂL7]j¨B‘¨³5SiX{U._ÄSYTÚ†ŠA¸³]X‰>X:¹`,TF¢jÊ6•˜dð%öÍã©Ö¬ÚÅ[YuýÖ‹­sTþ¬#È§·Q±ßœ§oÄáâÇ¯×|Õ<Ï†5á;/^Ûò·IV^Nùú?`'g…šƒ¡1Hƒ0|wmj†ÝP]üO_¸“¼«ÊÊï.rÁ¥³–·ýG¢V¯&¾éAÌñ„Þùë>á°ÎÎ4êÒk°_˜ þÜÍTØŒFƒ0æ[÷˜˜µFë?wÏ%aLëõF¿âÿq¨ûøÊø£ÁpµÎ&#Ôü¼ÒÁe…õë±6mš-%Ïÿ)$Fœ×¼ôË,K ë=ƒÌÏ¼›»¾~W¿ñÏ›÷dùÄh'~Y"QZ Õ°04kMG··#ZV’+œJ!wíþÛéd¶žƒI]ÒØdm‘¸¢´ƒ%ŒÝ‹ñæ ü´Ó†¶
+é‚H¡±¤`b´n eAB¶2†Ù»7ã&”,Û&.&@éZLtÑ:ã"ç¥8¥<=a‘ž™vJp¤Æò#p;QÄ†¥[šŠD´é™•9+ÓÇhƒQá,õ+J‡JÈY‘hÆ“Hâ¦E¬$Ñ4vTE{ÓË2.sˆ’Ì>¬ì$ÒŠÑb)ILŠÁAhkv(ëh¢¢…®‘èÖ­ƒ·Âz£“ÌÂG¼²íÇòŽ¢>9NÍ%#ýåB‘ZÞÊe¬9|¢tÉÔ(ÂüA™M
+#Î?ç¦kp!ýX§ÈU8¹nÀB…Pƒ7™hð&ÂëÎ'Z»Ò$£.ýµ‰Çx¯ÙÆÛÀRîqozp¿n€XRq<	 _ çø€¸‰½N\k~÷mfàeªÕ! ¾ÝBïc×½Ìß¯ßÿÞo‡ù+ÿç¡V;Ñ5âšü9??æt‡eÃ[áMÇÝÏYß«ðñSÿ‘G73˜ÐFÕSÔL(ÒdŠÔÎ ãUˆÇKX5n€qÁ!I8L”ßOèWˆj½àX¤	¶ ß²5J[¤ø»€¢ˆ±‹`çÀÊ ¤À MŠešÙ ´UCYuHk¨Á!’,èó(WªÝ8vì*‰òèì».Ã’;FPÍmÄJËù”t\ÓÁŽ$%sŒ¢‡xF*žµ[ê‹cº¤ì\ÄT4kµ¡5Úþ¯îk¿ÃtÇõ$2µˆ›‚TiK5HIuq~¦ˆ'–U¤€4(i‘h1»T&œàG`òV=³€5ï?ð¹yc•Ú¢#ïV¦‹†ÞøåMÆñÞõ+&s+Èæâ!†J-´æz9oË\N50°f]yÛ]þ/&½ªz¶Ãñ{õ~a~áC\þÜjôÔÓLÎy-íeOfkmðü~íüÙq”Tƒ¸þs¯º Š ‹¼.=ñ6ì)Ë/‘ÉçÙ&¦7Âø•8˜ê^ÇsDéC4F7z&K)Ó•®6–§VÛBl=EjiD‰TgLòXù<¶ÑhK¡£Vâµ*+ŽQy[ÉtfÔchT°;ösUL&Kšv‘¦‹Iô¤HuÍÇy,ƒ·+‹î?¶ÿä£žÞï¶Ñè:ï¨Ù½fÞ±”äùÁ'®ý•Yó“ž°'91üßð~¾f€6þüÓt[§\+âM8ˆd
+Óbò%ä¤ÂØ
+‘q ´Èd,&Ê{èÈ–œaÑ–´ÉûÐ{Þôëò3gMqÓm,}ûG3‹^Ó8bÌÅCq=Í¹LÇÛ½ÀÚå5§‰$gg1V•0ÝÃ	ëw[¥vÒ_^hÙ#3‡Ç·î´Ê—rò§¿Ä#ÛøYzÞ1Lí«ßùEs¼ÑÂ3—üTÀÇ.ã„ûÑ_Š–w~Í”U_‚	÷K¸Þ Ê˜YlÍ%þpºÖáøïEÂ›.ìkÁi}‰F¦›¬?I’8Ø&	X8®³oÞORÚACDÚ‰mÂ"™¢.›pò½DüšèäM4Û¦ˆG
+¨ÇZ}Ø)š.¨V,¯;R*;^mOE£€Ô ­|:qìNã99¤g#HÐ„¨´‰’Fá*L¾§è¦¦C²(\‚dV›‰ñbä@Œ¦è…š6EõîÂt%¹¾iâe’žÄŽU·VóÛ„Â7[Ø%[˜¯i_’˜IžA¶±Û‚Ä`äÁûš„EœøvÛÂÙî".ÓgÊ8}«¨O8ã¸´Ç¥ØG9[Á
+¦Óÿï·BÎ
+ž¬5ÞŒ¸3äIt*«únä™o\årñ‘_eôÎnzn­ÑRìÆ÷F³KîûWÙ“®™Q‰ÙÎ­5æ Ðþ“Øa°ýÇ™FpÎÃ¼~^2NSôà0NT˜™Ö4ÛQÀ+U\ÌV±Ùá“·Z”ý¢ƒk Õãö¢Äoh,ýgfÎ½‰ÊkŸ¦ÉÒøyÔ‚ib“ Ü"Nç"2s—áõÎÅiÍ#‡•ädN–UÀ±®WÆ˜l9écE{I
+X|¢•·¶Hn"ˆw RmjhÇbDKjRLÝ`¶·—ë§©Í™‹»â Y&Ê5	k jÈøüðÝ
+“é½Šc9*¡ç±Dìo¢h+ÏG„)ÆuÑÁ.½³þô– ‘´¹ŒD ¶`×·‘äÊÃ´OMBa97CÕœ¦Y	‹p€{É¸ÓÊ²@#’ÙÅ36©k)“Î›?P¼~µ	neƒÚÊ–'ÚØW¡V0åñOÖUl¾¾á`aaù)N·£wÝþiqôî2©økJ¯(_)AB`^™ÕƒíO5pW5‹o.¡FóØ™YÒ­”ã¤áòZ¢kQŒ5‰Uúµ–í¨¹s(%,‘ú&ˆ±¢2Â™ÄU;Q½?¡þ†‡hœZGÈ½Ô‹‰—Eù¤v‰W„‚ƒ1	ª1M£Þ "%¶R'F{)ÆšÝ¼e	)çâWê¨¢’Äõ†Ç~j0WrÚ›¯$×ù:D“Õ`RŒNPR=Mí"¶pá¤ŒÅKNÜ¹f¦_÷l{¨;‚tÏÜ†u"Ë+/HS’—ê³ì'‘`<™YXƒe‚Mƒ¥hè˜Œ`	Ó¿Aƒ¤ñè^
+IBæ¬:Šámr‚8§\5†Ó’’ÍH)Âž›´!ëbtk“N@¬3g¨O"²Cg>ÚÎôãàîòµW÷ÒÒÌ¶±3ˆh
+‡Å™V. Ûw½ï.J|‘ÐìCÏúõˆuë^Îjò?ßéƒí8Žù(sçS<{”ZØA¦ç AZÀõ÷y9¼taÖ2äÌN¬ÚÔK¶1…(ôñRßÃŽm#«©2XÃýd&rä¤í[‘ÆTc^u™ ev×¿©“d'‹šš£HII©’Ê-lDÚŠ—xØ±F:á¬Ç–ä7œMü2¡úg7rÒéÏ²dé$q Ê2R§Š¤¬Hƒ UQm9=M4êaOÚˆ]	ÎÓÔìQR«É;yDqVÑ-¼Ð)U†—­ÌJÁ•ÌÚÐœ³‰W4KD,°èB½;u&ž#I›9¿¶{Ž¶ˆ­sÚ1Li,ª šU6Qm¥Äˆƒ%ÐÈÙ½°Q¾­E™ åÄ÷·-\OÂœ¿œ“ìòèz€¬í³ìò½¸a;Cj,Ðub_bµtòÆU«¹Ø {ðà’Ü5k+W¾²Ñ·þpù§Œ¥wrlÚÙOE1VDÜèÀK3¨hŸ¹”È’£X“Û¤~tÓ³8oQ/’5+àd;që%ì`† ³Nš+âlkÁª´ ¢"ÂmÃˆÎYÙ{š»Z÷Nì¨o¬0{à";£Iœ:¡+a& ?‘¦–úìåÔBZr³€»Æ0q_Ê¹Q+Fê ‘¶c™–‰j¤b%f¢Ü†ç6&ëÂŒ@½Dˆ:æö)ŽY@lvlÍ$Eö„(uP$j¥`{ˆ¦þm&8¸+‘[84õ0AýQŠI˜b&Ÿy¥xE‹ÁU+È"šØÓa ‰ÀoR¯bÚ }ðí¡±P¾‡ÑÂÐaðÄÍÓŸÙßŸÙéç†©­ç{Ï‘my õR÷Àh‹žërÀÊ×fp{òÔ[ZùËG¾ËÙÜKöÑ'pÛÿ[Àñ²ÙšÃeäŸ2ÒÎEóñG”o!Ó"®LÐº›¬ØIÓ„6V­*„–C.eÞ²íÔSSÄ™!9ì(‹tk„%™/‘	kÄz#3+à›¹øtáøí¿ÛéÂ2}8Õyxµþ V$n°ŠBt,™‘V\-!Š1NDJ–l@!@ÑxNžGü.Þ ™© )bæ±ý†ïnlGˆiƒXVË2X²¤p;—“‹¦—ÒéY‰HK±ÆVÛ	tånÐœ´`–D1¼%[mg$$e²ãeõtv¸n$hýòÙÌ—öQŸØ@!ƒËR"ã=ûJ…r•î ÎþÅ+‘MÆ«Ó¶ãkú«S
+YñêX?BšC58èm<Û8’VXk„à‚·Ëãï¹´Lr!5{âþ‘ümÏÑl„TLâˆ¦‘›Ò×?w½øþ¾ðv¿L9ü/éP‡Áö'ˆï­%ôˆƒ¯†Në(iK~fÐG‘”QÆ¡H­;9âô½ÈÚGÔ3·AcPIY+.FÅ¤VC&©vˆ[ð[{ð­9¸Í~Ür/v­»6or1þþ£cgêX
+Íeäd?9GI‰°:ñÈ%³žHÆˆêbŸ¿ßò0·¿ðÑ•1§¼©õ]µñÆ$RaÛ!‡¸¬–”>¶\HÑm.èôSHøi+YËÆ5ñ¬x£•‚nÌX4ö{;¥¦ø­ÓÁÌ*ÌËs·ƒø@âj›º(û4£ÞþÅ¨ -!˜öîrƒö=£DKfF¶+ƒÐÝŠ®‘À‚f–¢±TÈlKS2+¸?¨×–…2ZáÓ?`Ë®M8ï†HÎl‡3ÒÆ¦-Žx~kÿ†7þŠáñ}“MòF3V­ÑW´`Á
+ŽQN½‚-’ß?s;¶?zfÆø†/¶Væ1Oö`î,.+¼Žï£židgœLØæ‹@ubÒè§™ªÙ¡ë¤xýXö¾~6osËêíY3|Ç*s8jiz;$ÉÕ$åmNàGÑ	AËÝEÖn%gwÐlÚbÒ^†Év òÔÇ× wCg[‰L6ÆDI#²X¹‚€†#dÃš&í¢÷Áô2n˜X‚6âùtÓc¿¬	DjrÁâÆ³£È4c©4ÍÄ	-A4ºKL» Ä·Å³;Þ@Ñd&­,	-˜£—·NÌáOÖ·ƒzdóÍÊ;fÝÜV{|s29|à¶fðpp¥‡kœ¢ÁqlÓ‚]ü%ÙñÛÃ>(oï%ô#–z•‰{	K3˜×œye;)óÃ…¡Hl²f<e;øU¥›45¾#Šk>*¥„WÑ­KÄ~!H¢‚UjN
+D*Ž'ü	ÛoYþž«n½‹ÜÈP6a´µ…ÅÍJ@8b³èSg1ø¡G(½ûS}R˜¬©Ðf0öuF¸‡ÁöjbM$:kÂ[ªìøQnˆçÑöú£i¼¾0$ž4ŽÆÊ…8‰Â-¶¤~2Ó‚A`amìªç6™ÎË‚×ì@Œ.Ô¿ÙCz»¹ØZ`¹R[¹ÀÐ&pCK‹,ý$ØJÙ¡™D‚TcB°´Áò¤ohŠˆºW¡–Ÿ¤ZÌYèÐ­À›ÒÕ»RÍvCáÅ˜\ãžó–TõÁêg5ÌÚw	cÄy6—ìI8â¬i¬\]§cgCì˜éºœ(HÛ;}`8OÝÁ!‘XRåñb¨íaOžPScTÚÍðì~*" ¬OVšDA0
+‰a£A6Qi‚ÕLÑ.JÇJ¡Â•¸ÑÈ¹zJ»H©.ZM¤#arM<«jP6Ò²4&3[ŠO¶ä¨zXc…¤¿W]Ò{ù+­)÷95nüÉO±¦«ŒTC²­4­&IK–´ü!þ‚÷˜ü–ÁHi]è‡ÿ¾ƒíŒA=@	ó	ƒÚˆÇl+»ëñ;q/ê¡¥6CiY‹)Íøäfì$ÂJg¨{\Ô¨ŒCûÆWn¼õJ>ÒöïFÝ·-¡ôUÈ4	³¡ðNC`%$ã–’È3]¡9i ±µë§d
+Ù\‰¶¼GNì¡¦¤
+XÓs(¸çªîé÷„s›—g>/[\¡}¨JÏ®2EÃy/qç+®›gÖy|bö·ßÞÀ/ÀÏ+×U¡””KºósëN2œ%n`"KK©gÍ>[;–^Î~†¤¡;e4Ÿj›mÓ@áèlCÏCds;‡p}ÈL…”ÁäÐ"
+›2NQ™»ñâsäCC1{Ž?<Œ[‘Kk™SšÄGÔ‹È©üq;#Š1´§àiä¾Lr£Ê    IDATß÷ý¾ëA²í1Ïýú¦el~ˆoÜó ;ÇhÓ–‡$oQ)-àòë¿ÂšO39Ë{¹:kœw¸AòjÆî“­`³#Ì7ð‹3µ[î ·ç5-˜±”@º¸Ý.~w~ÇLÆ(ê4äÕÑêáïÞÍd•¿½©ÿZóÏõÍÏt½¦}xÎÖûØõ©r0Å`aãc‘º4'‰Ã¶c¨¶:2ø~+E\ò!7Èwà¶g™ç7˜Ó¾ƒ–®äÔ÷QSOã©Ë¿ç}LÝ7Dct‡±[ì ì‘_ž™çœý÷nÎK Í—ï÷('q]–ƒ´fbv„%³DÈiŽÎ%gb´I‰…ƒL3)§yWéÍR2_‹ã,“cÈØ‚8ÅØYDÓA„RÑ´!’ˆd˜¸YÅ­(R_¤:‚¬ˆÝ‚Ïã¦‚ŒZ±ŠŒDmüÄ¦P'§Çi¹_#ízn1?l€¬Åh`ý^ñçµuê÷Ý+²¿dÇsïûÈ/6=Æí›¶ m›(›ÃÕóm2Ëâ’ÏÐÑ§À Íüg}¸ûw˜$öa¸ü±ÑzHh­ãÂà{Ù5ÜÑtã˜>p63:§€´!cå+PƒD­£@%§œB#ƒ ÞsæÖ_¼ôÅNñp®H~ÁbæF¿bäWóÑ#!Ù¥	:•h§éQßÛÜ2¦Bš¶áÈ&I£Š†Xv]Ý‹Š+¤V…º}7­ÿê :ž=•]ñ:‚7‘uzˆó’¦5âŒ>×ŸX9ðL‘›pN¿€^°’ÇêÈKý™× ¸úì:7÷n%:p”Œ’QI¤ÍD5ÜnÅé‚²ÅCÖÌžËT÷^êq'¯Ž‰8öb:ô]«³Jo®qÙà¸óÃsØþÒ¶Ðí'•ÆLah b¶IV
+z¸1†jª–FàPÑ†DMåìfÐi“jk/^ÞmÓ‰ïÊ<^Ôp“™T¦S˜~	9Eƒ×¹ƒ“„¸£¿÷ë]g’à×¢ó#ÊOi^8pÛ÷/9*<¦¯““ZŽ:`ùQœÒö¾©wõÁÖÞˆÃ%«"Îóg¶W5fÆØ@<Ãå®gý²u§vcfFEÐnO'èhÔRkaaÊfzÒgo™îu4·äˆ¯øÖºîÏÍýÝÅ÷ofãUÊLÜ)Hëh3Câ(4U‡`L$V+~"°¨ZÛœ´ýa‚Î_Ò,ÝÌÌÌm„ÏÞƒ~âG~Sñ
+óª´Æ†yã½ÍsÇÙç¤ÎvÏÝ]`ÕhkkâC2­dÌ}/Úgtb©!î>öìe­` !Û~µ/Ô*-h¯&$CS£,é÷ºÈ§;[ìº…•”pœˆ$5(!Ç÷0ìqJSü€[2=ìÊÇ÷~uhIX$×ÒK"…Ö^
+Vy·‡‚ÝN>ÛEÞB5ÇðŒ‘àZ ŒvëÚ¸MßfŽÜ7Š¤8®MtÄrš2q<ÛB*’DãÊÄ…:©É«YÈ©4¾A8)…Áÿ›kù	¯'x=øl½*3BððÎMüxû‹<ùÌ.ÊÕ
+’±œsìéœõÀ§K„ÌÏîÛoƒíU;-.ÚlÖƒæ§ñŽéêÐù³|TÍ6žµgÎ&Òö¤ÃO£z ÷s§¥Ý¯Ý:Õ¿b¿µÚ_»Ä«ž¦|¥¤1rŸXX¤ð(¿üR6*ê©&ÉD…‹KÃAÔ]’ìH¡NTÑ¨9„TO"Æ÷–ú&Gi`ÎJÍª7\õ£ÏÆ¬¸y$»7¦øI.b‚úÔ3
+' SV	®Ê3€{ ÷÷B³AÈ›Ö87®Ã5°¿;–#ÃYô‘>ú¤„$Ó‚Û‚ít”.BÆÄSóð½¦í qþ7yìDj?kyŠYê.“{KóË2R5:01ÖLˆU±ª5d «£ñ®”©©Fã7”•m–,J]»i	5-ŽajõjÆ,<Û	!SÉtÓÂTIó!:'lp±ÊmÜß»òø5¢ÐÓÿû­$fâ+á Øßú©¹õ?îå¶»bCXc—ã!TVŸB×Op"mæB¾­—‘¯j¬³àjsÕÏ¾ìÀê úó÷1×ÇY¡IžwÉgf‰ØO>ÚñsA_÷kîÕ+ŸØ6úöäÍÐüþJJK‡y –Fs½&ºûÅ¯íý’ÙråÀyG‰5GñøÅ[Å“UÄ©.^.–Q.j,ƒId¡›¬=¢šË#£]ŠûœÊ	¾Äûö>µý„­7œÕeãÐLÈCËÉtÍ§èk„WCé•ã
+ˆIàbbÛÝQâ6p£‚ó¼ßâŒë„ÞsÎ9¤Ü†÷‘7}äWê¾#wZa0½3W¡=a×^ÂÄŸŽwÒÜ÷:JK¶¸Ue§–È¢g†¨œÍÝû4cŽ€Ï<yôBä~l¼¹$h Ž™²¦¤ÁHHk†4À²ZImŒÒŽ¯-WR°É7F&(D†¼c˜>bZâ!)±hÚ´¤1ÒŸ5æ3ÊY¢5ø}u×®G]#Œ}#4¾y¶hûÔgEk~çzsë;7ŠæÚãè¬F\\Œ¹­twÍ£ŸV
+@Þ›$#‡3Û«ÂcÉ›¸ª!Ìo:á˜æ‹.ç¬Dî[Miþ38Ãûi»{s·ßÍB—þaò¯¥Të¸sÕuÑ·×ùÁsßÓV«\øøC#·¼ø•ž÷321ØNoní†[ÜlösÅMÚnÛDS-Sîdõ¹·² §ÈYYIUdT:‰µÛ§ÐYû;žúøšï)sEÞ<0–üß,¦…yÚ¶a@­; š“$ÒfaqŽìP}áÌhâŸÜ&N7MXŸÌrw;_ööÏ5±øìúD|ïÊ¢øL)ûŠW-$ßn<]pH‹™Á™A«;t¸ì~*g5ˆ¦Úbìm…æÌ2œŽ"á_ÌøÉÐ"‚=óÎ)&NÙ±ÚÏóx©’¸+v'¬8)±¦K˜û†¤eÞÙi{kgêÔ†T¡Õf_&›˜‰DLD"äx^E£¹ÑQž¬ýú>Ò¸Ìv"šg¼…“mb¢#Ðaš4ür\hTÉRLU;¨gòIŽ	Ú3{™iœÇÙåß÷ýž)¨¯CÄ‘|úÆÄµ4">‘Žîa`ÝßtãöÝüdØ¡{|šŽw_ÀJóÑÏ&!Å£—‘¯fì9«~Q<ƒJpJcŸ(”.®žpz‰þ¡wŠ]¿ú.ÁÝ_`r÷ýÅ‰n]?Mìâ¸–‘g]¼ãñ‹nzvó;Nù1×sÿƒsþ™¹çy¶~Ë?x{ñœ…^Å;?<ï†5·6ñ•ÝXù¿´=
+
+%Å’N‰—Ã
+ÛIRW’k„ØšÜ¾:¹ =’EUÄ*¬äo¸Ëù<´‘“Æ‡3ŒŒi&*l=
+Iªúž³¦5Yû€—xV¸¹ÏC8p†ð¹±I¬E¬ùX–Cë)îù¼ Ñès%<‡þáNøöüHöOçõx2× i)”óØÉ=b<XœæF:tÄ¤øXaëÎWlK–rK†Ìšæå@«Ë-u dÅé"V½oæ ƒÅð‡é^yvM2µ&­I@ØZdÆ£ª4ëCWÑ1k²xh©…F†D¶ÿvÿÍ;¾ÈŸ?²s[UÀÃ¶×ÔuIžãfóaÖÿ«UãñÕo<Ûƒ¼¹|»ù#ª§Þ„ÙvÏš7Š™ÞEmä3opª#ç,¨÷½‰ÆøGß‹êš‡óg‹ŒßÛ2½¿òS¶û@ñ¿>œKá©,)GŽFyÖŒÏûÚŽ¾‰Ý_ÿŒê3W…ù‡ß6eö¥tLû3“%¦í¬Á2FF]cÊÍ¶átXtô%.¡ùÂê›åàª²¦^kº•†(DBq“¶±QÎZTŽž™?:ªkiüð
+Jß¼ïƒ´ˆï][zó÷HX™%fUÇæùÏî4gð•à5ßGpÞsÍ37ÎÃ®´¥¦³AãàºåpjT¤§3”<
+f…ö¨#HÝÞ_üzÞ˜Ë­î—î($±·´Zóïv³á8VO&ÒÏáˆ“”ÁäAVÒÄiÆ$`š¡cMÑ;3Ž.å©,YÇ.yÅ”;LÑB!uÈì~D…¥NCøïÿ£?Ã×ë¥)n~öîP!—¡}C4ß9V‹Ã™íÕŒ~
+¿ÂûÀ}?¬CÃö©'Õ1Wídº·gýÆÒe#,ü«z¡ö-:ï¿ïŽ«ûß€•ïô*Þ)½XK–dßa‡yý¿Íá_néí¤·º{ç‰ä¼ÕùÂY­X×}”î¶ãÉý::Ž8›Îy'‘Õ­’L/ÉŒVÐÀ«´‡x¹=§Ôxþ?ÜíŒûtœæ=‰¯í¶ 5É¦SŽôfŠ²­@ATezœÝY°iÎœKË[NzOÇ¯?”ûìE#—?×yF°ò…5jƒ@/ß…¸f-â3µs©_{b˜›SËRGš8×ûÛ›ªÉÔvLº”|#¢Õé¯å]o‹{x>£PÎM•+Äpß8“Ð £‘3ØùÆ,?Ç€É	DY…µ>˜ñ$@J1¥§2B£O8Àà;Ò©Kí'ath± …Çˆ¦BEXðGg¶o¬Í^ôfP=ÉmëoáÅ•KØX;ŠeŸ_/BnZ ƒíUŒ!aTíó¦nÄ»†&ÏKõ{N&~÷ß’ïù•÷ø§ÒXÙMýÂýç!ö™ü.›œåÒZõi¶w@éþs®žbÙ»ªè¹µƒ_ŒÙÊè%—L9oý ^ý×8g#=Ï0Ýæ Ë‹ðã£›~’‘jì@¿RÅÑþ~¾æícðÙhŸoœqïåÉiÏ½×–¬p#rÅª•“q1Ÿ¡'ßJW.[+Öš„û]ŠáèKÞt´ƒ‰®£)Ì9¦9çº÷‹ÿ
+nKxa{êÈÁ€5â«·¬»d]*xÆ»úL~ÒOf¸#äòNw™HR‰*?ÜDÓŽ‘Æ±‰óˆØü„KÙú#½€Ô\È¢Ú4ot,ìï”%µ)”[C‡ì)[ÖPf¥6®@„ÕÐ‡Î­„&S°$:iŸð:bCŠ˜f;JÅ„	T‚ÕŒ±ŽSeƒøãÏÿ§¯1×XŸº~e´÷k‹oÿØgií=†žÅkèçî=Éa°½ºaƒ-¿&÷÷¢ã«_c^ÛÛ±+šÉ¹£Œ3ÁÞ®˜1Û¢8¨2ˆf„#l¤<ŠRE¹9úçîyÂacgýtÎÒ[‰z÷1½6êNÚ¿cŸ_³GŸI¨ìÐD;Ÿ§¡Ÿ¤Îf×=	3Üê²ÖJ8l¯¨cšz€%Î·@•(»M°´OßR¤aÈÄÈ†÷Pjâ²Ù/Œúï|cä§Ónðâ/Ø;ùãÙašÛÒu›V¾=ú…UúAƒ„ÇÜYFèÕVÉžËóI¯^©K9â(ÕmÞðÒ*ÃÓkï’—^")gR{ÊÇ1Ì‚íì#O{WÏgxOõÐ÷‘äY_¨jñT…”AR?ƒ‰QbÂûõ††Ù;Ö!§ ˆ™îÛñr¸i@cÙ‘x‚:õlEË‘1ˆ)CCA£IbãdÇéçÕXÒ«¿ÏºÌy¡<Æí\¼šGË5
+ÑÃ ‡3Û«)wœèžþÆus4öIy’ùO0±lÕŽ¦ôØn ©àè '­ <A#5Ìˆ˜¨T†¥üÍ…É{‡OŒ_ÓSÎ^ÊL:,L½ÇS«œÎ3{YÖÄt'd@g6[±ý\×L(þ}Ìiÿ)¶?˜SÕá]bE¶IûÃÜÖ{ßÍ?ÈÇKtïÉãU-ÙØ_›ÛòN	÷õ]Ôî»FO]´ˆ‰ã“L,'gZâ|_‘ÙBÂ®6ß)ß¶z3Ð}œ:sâÿÊîý6¤¨m–¬%¾yMù®6Ü{–ÖìÎl5œ
+ˆëX&ˆŠNmÁöŠ•Ž“í†–Î²}É¬÷÷&o±ÄfùXËtŽ[¾ÙC² ŽI(kÒ'Ø³«¢ƒIÿ®TB˜½»ˆšŠ9ºI³³‹L–¸éÐê%Ø–Ô¶åF‘‘(¬ Bùxù1–¼làòßüüTd/ƒàx±Î¿U“ç}Žºçs×—þù]IÛá9Û[³_%z¾ÿ¶Ž/½…¥m;˜É<ÌhG'ùÂi´4F‰Ûæ“R5ÈHDª‰…"°<â†E¬<2†VZ1ç€µ‰™liâÈ…n"#2iaÈ¦Ø9Þ´‰Eƒ¹3È®HA¾	½š¯þø¥'7.ÁÿðÖ;Ý“–_\x'%ë9¡¯^’%rÝ­„Æj'çÎ%ž»˜Z_73Ÿ´¶“zíi°%v÷;¬B”{§½–_ /»ã²ø6ž‘û;ýê[(sýjF
+…1GDö sakj§O.óíöËå©EíÅ§µ™ÓUG¡Šªcc·¦6“ÈßÑ2ðOœz©^sÛÊ;ÿeOýõzþ7gFIÚêÛšÖËŽÉl'R$`œƒÙM66zrœ¤Úd~0îwã@mZŽ°¤–Œ´R¥¥1‰B9È|efóŸÙ®¾ùIa²› Àˆ 2ovXà±ùeŸ¾Ù1ÑÿóhYEk¾^5×Xð ƒ)f0€Æ´¸ÁÇ7{¬^q×Uíiv,Xòõ}\›U–cáuÛoaå2ÈÄ`â-cÜÌ+*Žƒå„~¹2š&H·0ï¥-œóÉ‡¹Ÿ!¿aN|_¼˜9“Î9pÕ5ï`×—È|G1q~ ÙÓÑõq~$_}:ìãrçÅíÛe¡©	M]hšMaÅ)|¬ö3ÎêíçÑ=´¿t,Éµñîí½Ç_{Jû&÷µæÏÃ!G¨‹–®´©lµ@«ûK†{'&ëæØ2£FÌZ=€«ÜÌy	âLó==Ä‡ÍÍ¢çÛë™x÷³íÖ¾¹Svm¨èEÔjñÉÆ/®¥­ó_sûúi¸jÉs¥ðc+*­·Ý¿rZ™p–S³"¿£ '¾úf]h¬¢¸ÿƒÃ‰L]€íã<gC‡Á´%7FWøx*.DKæÿô×Ï‡ÖÏ®<®Ï]AáÆ+.ÖÒÃÑ²áR‚B†">K¶DdÇë$UóÄ/ƒÁüOµÿçËH³vÅ¡X+ÅúçXF,ŒÄ³N¬ô…©åŽmn"aõxÈøßÍá¢¯˜çÄÆÓþnÏ‚JÎÇZYF.Rˆœ»†.˜¼@(PéìÇ•Ì>:ž}L¼„¸ð†—Ïµ¿ußNýð?u\ð~÷;àæ˜Y±DÁq¯gø„3	ZÁdÐ ­„)[Ä¬üÃîI»e/vü^Ö¼f˜9Êß-žäÛ}Újü²°)ã±<}˜/–ÞÌ#û9½Oàôrý½­uÎ?Í™ûž'ß2CŽ:¤ó…~h¡à™*If#½–…šÒÃøðAížÒïóå:w	Ö]’Â‡UÿuèBfôû.V°dÊÔ†²ª•Z-#Eºlõ×<ÆdÇ‰j\ÆÄ„–SåŠÚQ3>]eûF¶æ_\VàdŽü¹‚ò8I»‹5mRrA 8 R~ëê*lù6¶=Eý'? õ¦o²bËãÌ±ÈŸ–$Eg4ŒkáŽk,£è‡uÒ³vøÎÆ€ÄšuÆ¬]¯Y»ÖÝè­5ëÅ:ó|…d³yÐëûžðÌ¥çgîYò]_¹|”ÆWÏÀªÚx]n«‹•±ÆE¦"˜d–›ÙG	HD™Ùå3fv“?‹Å±d«ÌÂY£¼õ)›¾Céß÷\Ô½Œ±	xý§ÿží‹°¢XaØç„ôÖz^ä-W>ÝÏ÷7wñ×Ï•X³3Ã±cm&¶öB^haÝŠ
+·/ü9¯=6a÷ŠŸz6d“å¬rÄ®•Ô^·|4·`Þ¼GÇ1rÚ°ÐRA% ¶ £	]í~ö‹¬Z*fý¿<apÖ¯½WýöÞ;\î«ºûýì½mÊ™9ýèH:j–\$wË66Æ¶°MïA"!6Á	ØÁƒ	%!’’ÐC	&$v ›vŠ_š±)R‚É]®ê:’N?Óm—ûÇoî{_r¸y^.ÞÏ3Ï™9ÿÌì™½Öþ®ïú®µøýÓÛŽá-Ø·vN~p5þõ'P=^ßàtè|RÑx¸Ø™<‹>#i€L
+Žã‚„S9áñ}žóXé¯Ùv´ŸßMÂòQi»ƒYºÆåŠ1›ZÈO+À9ïa³ús¶Ã‘Æ<:ó^<ñAd€gÎ"œFÅÝ‚Ó›Ÿ1¶ÿÎ%Ü
+âª¡¡ó¾J	6IÇç¶¼¾û£~ïSÃw~XX÷òâª+£×üÙM•;žjÝºˆÂåEÒ¡Ÿph¬Ÿ0XDÐÀ«PN‚m‘&¸’¾¾ßíøë„ßð ‡ògü'²ƒdý­Æñá’ÎSÓµpqLã¢×ý1¼å#4Ž[K­YcýsNf¿Iƒ¾]®ð\>6É¾Ua›½AŽPŠãm‰ßïðÁ¹¾8±„\Î¿ïáSŸÍOZÂíÒç4¹þä:ÿº®É7W	Šö?ùRJË¼ùÂâC“hÙCÔ<Á…ã9cÉ4¢Ç)‘¾Ë¾k¸åmrËÛÊÙeYý#Í†î¶ÕàêÂW9ö£EÔDßÑ–OUµ\¤D°çH7…©¬È#Ýôl4„pÍ)þ„·-ê|Ç4+|ïBÞ8ô‚€Ð¨Ö“äkH©uéþn½ ˆ‚û³›Í–cÃœ©5Y>´†A…Ñò ƒŽN‹\æà=5’bŽ˜KÅŒ(Í˜¼€­¿Þõ¿”¶~æfÛ›raw×_¯¢‘·ƒõöŒMøNœÂÑèMøù]*/9žòèRÔÌu}†=öÍ¡NPÊG8…$Ç	Rcý'S\Tébá!…íºja¢œ{­=ø¥}pä»ì\6v*|ú½<öÂ‹Q´YÞi0Y\„’C<|7êYu÷’ì÷jìùÆ°ÏJci	Ã¬Ôìóc’Ž–´Är!©˜½(1ÍUÇJú€tYÎä5 Ú’Þ÷¥ƒûç[{ŽG>ÞÃÒ{§h ÉOþÐ4z}M`$¦o¥¹]´®XyõÇ¿¼oãU°ñc)à¶p‹ƒÕþ‹þi£Ý¸éÊÛ°Ãzß}²n¼+Ì&5…Èµb?ÉQÿÁÌ‘—²hè^}„!°a‡—œvÑšcžây3œq{z
+ÏÓ#ÉöéXîþüa_-rBfª;\$º7ÚÏºwÿÊL¾o7á*YV£9?‘!2p"°`s‡±¨F‚Ìa®ÉNãöG#ø¿M¾}ÆØþ?‹ÙÄf¶4…{]ÄÌ7ûß{}g~“3_šb/~=KöÎaGÎLÓò&iG>˜2a`ð$¸’Àº s).t 
+ÈŽÀiuÈ!cŒH°AÈ=ö+â§¦~éù¤ïü;U™s³j‡˜®óDÖ$üÜxYJ6[C&žæC|®P=ô‡qÂgAè‘“ôYÅFPt’²“ô8ÁžÐÑãøðS“üÞ–Ö%Á>CújGëÎî¬wÌRë«JÊâ©}<ûìÇï~.á÷Nš"­JL$ oŽ?ÛÅšW­c£îfåKØk¹ðf}ó¤¸jSpùå·|ûô‡¶íîLŸr½ËhZ.fÏO*6z^Ã¯Œâu|’Z31Í›vóöw-rÈ×°1ÿƒçÜV9ýàî¿ïðÿÐñ4Å¯øùœõŸAH@h’ùŒ¾¾~·T”Ä#Ýqc©!w~ÏŒG£iæŽ¶CêŒâ¬E$¡6]·˜Fþ7­qzœtâ3Ñ‡îß´ò–ðS2)~dòÜ—R<lÈV	:ýL§û¨Ëxú\ª{g	ÖµQ¾ëÚ`µÁƒ³ª[&’é,¹™Ár”Ü$s{ÈÅã$âQõ±|(œ@ôÖÏ«Ñ8öv¦›G,ŸâÉÎûJ>»žüÅÍWrþä=ìm¦²‹¼|(ffÎ¾¡ZƒÖoÈx¹îçù¦Êi®@¿qžOÓì	Ë\”ËŠ<g·W`Ã÷ÑAÄ5æOöqC`™;„#:ÌèäÊ=€.N`*)zÍ±”›c”çæHŠý0^|­PÝÎ[$P€Áz·Ã:A8.¼9¹ñ¬¥Á‰Ñô_žÑòÃþ–§ª0“u8Ü^üæ÷žÌ È^*2^ù)Þ¾ˆ;1¹µ—‹ÞhîÛ¿ã@ˆø ½_ C?½ÔvÂ¡2òÄ2FJ¥K¦CûS¬Š -N#…§%6A8Gu?­Ÿ\òŒüo\·¹û¢sÅ˜)áÕ§1ö§Ëýäí:M9Á|õþBWcY9†J<†ìì&îÏÈ2wÆ(%rZ¹„ØádŠÝQ·"õ.…ò:Iq²u¬šÃÊ¨6Nf81Ž˜‘t¶t:%òÎPëÓÿ¸ûôò>ÔY+xx÷]<»õªœœ9¿§Ö¤Ô(v':…¿}ê2±uyã:’ÀIªÖgÌ8MÁÀàÚ ŸâåS¸¬u.—Í}€“Ð¤Ç	ÄwéeÁ²Ö¥´‡?L«4Öê	–=5?ôÅá%‹HW,BfËˆöÅduŠmA¥ßyñ$â/nzµù6û°ÌÀvªÛØ­oïq›æÚ­÷ÿ1O¾Cî{‚|ù\”$¶ÔòÚí#éþçMŽ¬?À*.X
+ßçÐó8À×
+ä!§œcùâÕËßÀŠOnçáÓO÷0ë–¢	.ú”=…ÌÕRA£¾ê„ÖØÔD­QŸ¯YBUÉ¬˜ô¡
+*AšAð[§Ó¡ 0Ž;x!ð‘ÿ6~à7ºÒ´È¶ˆªŸqõf.Í…Ûì åîøJå*÷ÚPäê[„ûô
+ðÉ&r³ˆÞº)ø³2Þ' "J£p    IDATüz{qsNåÈR©|\-ÃIÓ¢oájM?Óäiëµ±^ŒÎblÜÁæM´ˆ1þQT_ƒÜ¶¥•Ö"”TH4èÍ)gŸkJée©yš½-ÿ>C¸´CpL¿~;ž^ÄÌAœÀ¢'BÂ¿}ÿ7/½?ý›œ©¦­6{ÌyÀyÀi VÒ”mÚâ¹,Êk—ãó92^]^ÿHcíìáó4«ÉYZ™n?'ÈÔe+Ù”3wy›Ê¾>^»†§N“fø|;TBLÕ0=w1;ZÃ‹÷ ÃaÂ«þ/Þ¸›ÅjþÚÂúé8J°¾àÜÎìøUsÒ¾àñÛz³íŽ¨dåžÉ¨½êøDÅo`PüXfÄOü¡æ¼¯²Å;‹Þê‡xëø³¸WÝ;øÒ¯…3ñq
+9í#ü ™X\%ÇF×1¸‚Áý¢þ0ëÞ¶À8ì˜Å‰*Æ¥ôÈ¸xüƒtÌQ/ë°èáú’OgnÏ5tþãî-ÛEé¬¥ä×®Ùåv±V_Éêzw%¢{c?s³ýÃï¾~÷…]ôé›y*Ç-lÜL…—U|cnL|«ÐàCÁkñb®Ø^{Ý_]|ñWŸðMýWà.@T!æÚä…Î3xFz­ýîø¢@#‹ÃÈñ&F6!Ï±qŒît°Q¶Ð^[ncU´±ˆ\cíB…°êz¸…t9ˆSL© ÜÃ4<Iž€îÃórüÎýÌ™A"E›¬?–¶—#Žþsïy÷Õï»ûãÛ„ «3¤¿}ÖûíãšPíø´w(çox÷gÖßX=qøFyŽ@<W¹ƒ¸é{iýýÄ)á9<^ Ç¼³ÍäÅä¢¢!a†&æØsÁ°4<f½–hz	ÑÔzúÃÇHÊ³8öËôÏ^×³éŽ/\Ã[¶±O‹-ÀM7…ìßƒP—¯gâ'ãÙu§ÔÂß½{PÙù™$&ùÀxÖ™“†hP4ŒÝJtò?±ù®ñ÷~n¯8½Iaô{>®Bhâî÷G{áÆÓPÓtÙJ—þ<¾	¸Èt[©„™.@ü0 ÙK–¶É^ ÜðÂÕØ³Ö½üë¹"ƒ+½g`äÿ¼2V¿·óÍlb]÷Kv[$·Ô`›îóœ±†¸x‡Û©žÿõÁµ¯{öÌIoÙ3ý™Â90€Ì*XÛÂÚ¡<”õðLNnB„éçØB5µ³¼Nš3GÉ‹ÎË~#2 ÁÊK
+ôa\†À‡ç¤“,H0Bv¸£PZ ´‡0-¬ß@—Rl­VÈ+Õ¸d&Ò˜Ô÷–V¡;»ÉWºÃ¼5æãW–=/òoÙsÛàw=Ö’<«m9+“¬:FÒ;jÛÕ“é	†ñ=È·Ñé{„ÃÏ¢¸tX¤«îuì;eªðÃWÙ‘—~ƒ£í?5¦/»wž½§h™†›®ñ“+'&ÉÖŒ"j–U;àØÌÖ7ïÏHEqÏCEö‘²ûÎuÄ_á£?ølá¥½35Sì‰FfRÓÙ¡oEuïIïÑšKF“°³ùN¶?ÿVî•‹3³¼§—CÏ¹Ë°{NAÕ`Y¨#†< aîiò Z€—¿(çÂ-$Äs¬¯­H3Ÿ¬ ‹§çç¦ÑîLþÝ×â¸¶³•ßcsWâsj!F|ÆØ ŽCåÇ™n<Á¬/º|/lìÎóvwË.á‹iÂúö‡Š÷|ÂÚ+ŠôbÚ{ŒHœ°Y&X£Py  œ§­5BiœÈx
+ÂýäýrÝÁz5\éNcqaÎ8¤Ë‘V‚H0^.Æa$‰RÁ‰'QYß-cÀúhÿ y¹¶%z¯;Bä˜ØyHOZôòD‡î7Ù#vö×X1\ã´¥&\¿XÛÁõx¬c€¥’]Œ'ê`Ý™«`“Q¼—µïO‡3.¨3ùX&;ï¤ºã^fÎ~@§î\ÃÒÇê£'¼¸Ö´ô=F}¤EÙ3d-…ñ—(òN‹·ž·Ž¯Þ¹‹'·°Õ±v³à3‹nº‰àõ+ÐWocêóŸm|öÙ¼÷ÛQ:^27–ÊÚîSÖªýI›Å„ùaÒó¯ãUgÎl™»wæÖíÅÑŽ·‘zÿAðmC~™B6ÌÂ\q `º¶ô´¡y7 „¿@¢,$Ä…uHáp`d³ˆ°ylÔ¯ç¦æéñ<^}ÚÙòÓK6méíélîÖ¹üz%\¿ñläÕôf°Ul`eø“nAT$D„!¬+nº{Í1/:•W|mÝ²Ù×ÚcÞ³5 èL­%u:Q¶h’1OæiÈ@)<ˆ|¤Ðh0 k‘®8@;:ŠŽ@9C:ƒ°a‰çò=<ßÃS)í~$ÕZä@#HA<^ÁÜ/Ú…hWGV+T++¨¦%‚rœ¡bšÂÃÅ)ôe–pñPŠ[VAö¯BÚ÷ï¼þ/f—¾û­fñù¿Ç€¸ˆ¾é1
+ó34;;8ª*Da‰°ÝÁ&ûpj
+k‹j’Ä;‹Ê†EŒ=PÜMLÎ\C4pÈ‰iè«3zOªEŸ"¨Äq/Í#"k%ÒõôáÊGñ¶íWRÝÖ•>9–vÎ¯}·åÀù/¢üØåöúAÔþ™–Ÿõp¤#,dì»]ðróÇIè¼ÝmA3ý™r…—¤Ëˆú²Ái¾ÁIƒÃ€§±eƒ{:çÖ%ãÂ…Š€§ÙKƒò°8+	4È,$WY¹Dgp˜FÙc¸.lv'CÖ%{Œ¬€yÆØ~a½™§2Á»ÝíKqN¬Ã¥#¼Ô:\<öÀ£Õ¯¾1ÿ‡w^ûC:û9Ð‡šYÏ@ñqÒ‘˜´“câ“j¤gQ"EG–Ü“ä&Dy¤`æÉò=ÄýsÝ€!HºeJ!„>RI„/p¾‡=¤ßýÑ…N p9ÂuÐ¦‰µyLññy+3‡î¢]k¨*Q@ÅX­h,”ñ:%Â<!+-ÁŸA¶ª$í€L@V´Ø²^•4“6¹6¾³EÚÈ¥#äG™» —Ýq~ñ¶<Oçž!öc1ÆÍ2:%s]Íðé²iIˆd•L%¼ösÿÌÞ€€MìD²Å9¶ot?úÎÝ­æç¨åÌn]™¨¡!Ëì‘>µç¸Ç’]wÒ¾Û`÷4ÈèÃ'À½ü¹¿`Åá7ÌÌð‰ÊÅüQ+çÉj‡ÅF€s¸‹k,x­Üá
+?W•ˆ¼§a®ÒEg‘Ö"fÁ³
+]Ñå2Y©—Æ°¢ÈNEÀÇ®!]H¢‹õ¼¬ðLží?Ó©[6(>ùæpÁ“)„ˆv1òo¨üå©ƒ›&>öë<É¿09yúóh·Ÿ|¤B”ö¢=¦L BÂb%-.ì‹„FRÄžL1æ0iuƒÃ×I‘âÂp=‡#p,‹ÃX‹Ñ
+)=¤ò‘Rv«ùÆÚÎÆž£ÈdÖñÔA¼çffùL=u?I;FÄ‰ó‘Ä$AˆhxšŽ¡TññmåvHÓ,‘èlžcu)fþ*F!e©‡>\Û‘DÐ²)ó¾æžueä!ÜÒŸðGsoð:G
+¼'Á»ÊXyµ­Eˆ$h—\¡“äXFÚ	ÚAí©sÙmïfÄq‹c÷uŽ7øXÂ´€sÄNAñËÎÜ:‚ùÑ¢6cAj:CT;Ë—7›$‡*„q„fñ•û¸P+úõk©v`\:ÊŸ<Zc	ä´í{ô~!F{ºÎíi–ÝãçÝFàÍ`¬ðÐEE„–íA	"ž½¾Kn#×ó²h{ô3ÆöŸ×æmðæO:@ñå·ö$¾Åy‹Îæßþü)Ú›>Éäè]:½ ÿžQ]=îÌ?J{òT†#Ÿ°*ðÁP„
+«xÚÃé‰˜%VÒS`s,Sè^JÔ%Š^@KbÓ²èŽÅæÈÐ¤äNâP)P¢ë~Õ—bm¦àï%—6¥ŒŸXVé|åDÿð?3þd;WÊRØDv)•ÐÇø3s0hPºð´ó&“u/>ø=ýAz¼ET¼~üÑa<_b¢):š¢_¦{:¤á ™6ÑÜEEHÈzªÜAAR/ÑãË­ªöx“Ïçø{…P“ö.£äü Á&5l} Òºá÷ÿ©ÅYlG²úÍ†+®È¶³Øf¹éÖ éhâ‚1>íkŽ[Õ/x‚ö(i²~ÂsÃjeBú	0¸—<›¥çWxY¼–úYò®Í‘¬€Ü€@Ô»¨\T¢$F¥~.ã"ÚxRXœÙ'.K(yUàKI¹.9rÞ†]­dLSÞÌ®ücûÏi6W\)œCä\z]ÈB¿”û–ì$ä¯Œ/]y	oz×ìÈS/`í9·bK_€ÇHÛ}ÐÓOÙåØ¹=ÌMOQ›ÖtÔ0*’6b¾M~tš,™"+v§K˜¨‡|`$§áš/¢WŸCÅÃ¯ jÐ¾DSÂÉA¼Hã5:èN*²vJF†ñsDZ#ðÆ³`•>¤9¥Ñ^Ä1OrhxîA*êßhï›%ªÏ;á(*ˆrD®,-å‚<,c:>•b@%ò¤kÈ²”VÚ¢‘5˜Ïb¢™ƒÄA“ZV Ë*”
+Êö/é£hç°Y˜HÕÇôe/ÐÓw<{ç–[N:ù`rÖ‹¥YÓG/ >v1Í3^†Ô²Äâdˆ,ö†CHÏÔ;Ùp†@ÃëžnsèW]$úÜåSí|¬"øŽü³C×Ü~Œü|›4nçË…ö^~
+§4É½”F²GJjfI>°ûË¹êã_Ì9‡¿4;ÆgûrÔG:+éQKÚáÙ‚ñ~Q]Ò^PÁ©…ø­(VëõôëÁ±9V„‹—„ ‹P¥TåËC”…ãŒó·Ö…[bpÛÚ€Ç…Øg¨ÿÿ´®¿³r% ÙÅëgaç=£|ì÷÷¶Ñýú×„Âq70>ûš4àˆ0\23EyHF)ƒÍc¬n"A•¢÷SB Ã:	‘øÈŽ@êçÍ“{PïÑ×VÖ&‚,wXg±Ö	•b…#¯ôãStj¾Ù¾¢;è,Áñü}±£Ç`’eíÎ<ú¹)š&ºÕ"Óƒ¸D£Â!L®@	„³Xçþ¢‹ñBd.ÒC¤á;œÑ Å ¸9:#s¹¼ÅÔ%Ã„K…Ü£6-Qƒ1¬!5Ýæ;2@´Aø&XJxíî´çðÐïnƒ[®=ïŽl+ð·ß§ñ–])·@í—S¹g#œvKï§Á9üèT	?ÓrbÖ;bë)êÑŠþiˆe¿ÿúMw?µû¦5ï4<êñÞÏNó®w Öá†bÎAå—ïßIÌA8ÒV•Œùù5èãú-éa…¯ôkÞ´êœŸò$lP°Í	ñë5¶ßø›mëM]‡Q©/ÆvvÀ‰ˆãí'?ÊóË”Ny„Nç3}õG:Òÿ„—Ë÷MùÌÍàŠ2+AõJøa‚•5¬È²DL¿8‘Þt5åVa#‚}¤=Ó*Ý¯ÚÅžËxÖÔ,6× ”ÊyRtƒò¼L!ïÁ§Œì ‡6Ö›Ãö%˜û0zob„·˜&ßafò/×“Eúì™Ðí@£ƒi&èN	Ú~$0F#œ‡÷KËú2(!3…'Rç¸$Á¦€%OÛ> Ç×Ç”Ur¡Oý¸>¦NbüÌœ"Ý³ér´2¸°KÑ¹Ì<›¡Ke”žÀÝp!KÅì_0 °žâºã7ÊÍâz5ÓŠäÜ›·øïrµGN¤ç‹(®(ediÔ[ŸÅŸÆi`-ÊØ3gñšt¬‡ÓLÄÅ	®í(¢ÌÉ0ø¥P/ÇÊ¯…œ??Gtz­~:yf	`$¤VŠÈ{ž8ón:g»ß…¢ƒgŒíC¶×£‡†yðAâ¬>[<î0ïÜ›_¶¾þÅÒÔçX¾´v‚t_õÔñ€Þ0*£2&Æ‚R(ÏÇ'GØy¬®•A…GÉäC4½D³°—´Ð02¾(k/íÕ‘^äJj¥`0è'ˆ
+¡î§ã¥MŠG™6‘i“¢låEý¢ïx´_YBÅ¤1ù)­@NM†Rµð›Ó˜zÓ® Z¢´àÝ-ˆÿB+|¤QyŒ”)®5ö’å74ÊW˜¢ Ý+i/÷p½XÊtÊUÒ<D4»ƒß…ï¡P]¨†îVNÒ–ñ(`ÏÄµû^Éìøn\%ŸúxËÂàögpš[|þ×9þÃÞÔX^¥ÜÓçQ*ãùÅ™Úo
+¤' ˆ¡ ï{ãËßÍ‹f—py6Ä5‹NçŸ•xm‡ësèÔaÔ/76DJ©†Uzí°—¤]Sb(c+!sƒiB§súöG¼ùnò±ÆãŒ›ŸÉ³ýçµx1_x9<¼w§<yGùÑãåÉUK^Ì£S¾AžÈ¢¡¾z;wÑhá«k¦é´Ûd~V!¤PÓâëŒ'·2)î”õÒ~©}ãd:H˜ŽQ`§|TOˆ*H¢Lˆo-˜-Ú$Iæž$n<N»ÀŸ/£ð;ä½¬ eHôéBùdM²Î
++)ø†r‘yhO`Û-lÚŒd¬Í0Fý—n6ç(/o‚7È&Èe}^šeÚ™ˆ²«´œó‘ÆvaV¼PìêI°"–¸9¯;	4KÈÑ [ 9†`¾‰{×nbÍS«1»Õüq ÜVà‚7¼<?r%	×ß=ßøP1L»¾¿öˆSH…@ â2sJ¼è¯øúÊdÈK2XM@ô^ƒ9U Ú?—eýïbzl.Ê3¤2[F½:@,C ÏÈ|¬
+™‰Hs•ÊÅ\ð7+ÑÿæÝ!;ÑÏÛ/¬MW=ø ñBÌ¦€È7‹@È)D„–'¦îÊ‚É'iæ8¥½-œu´IÑí×NÁ4±Þ!bïq•…­8Zç,zÀ†r€BA ½Yœ9„2LmæÉÌ4±˜¢íš$‘ZOXÓ“U}î¨.Ê^{Â‹óãî"ýøNÚ·OóéksòŽhéS<+Î°ØZB>”¡„¡HŒšFd3¦ãC/Uˆž.¤³F Å/?l67àeÙA˜qò`
+ãe˜T …Ãëh”Óx *8ü Å©Ð(a¡°ð&Î@d!r¸DÁ¬j¤8­¡ÐOÐ
+0}¦xk¦¶° åàe	à³ý¦hÛvg`£_Q|õ¡çþeI­ÙˆÜO*Îìù®u !c·†
+dÓó\wéÅ,â"R’k9ï«
+µßbÆÀ´~¹³58GG¥‹ˆ‡—á\	‰Ñã*šÍrHÅcþ¾õ»Ažÿ2Ä–_³Pÿ7ÞØ6^Mvå•¨}ûhÐ˜¯÷lzœúêÁTÕ–f¾n£û(F9{ŽN_CËRÑ™'Îè*¢=¤Õûiöì—™ßVèþŽ‡Sß àùHÕ!u¬:LÚ<,Ó	0m‹ÉR2›‘‹+#íÉ®>Û•;­'û‡ã¯åÞ¯|jKU8'Z¼¥®ÈëUñ¾1ì!dŽ]’}ÈúHS4“ŠœKRS*Eq±&Ê¨\BŒ58ëáÉ_nlF¬mA)ƒÖ!òšÐ.Æ‹%#é“äaG„vV•P®ß*œV!R!„Ã	•7`A†ˆ‰#6“P,")qÉs¶¯DlÊ„C²}dÃpbKÉgÕÅñëW"þjE‘½¼yì,?äBb‚@XŠÚ…
+3£†Æú¯pÃê)¾Wú8¯hõ3šEß,$ ÿ·+À3¸Þ¹’-ÐK6´›”ñ°ÊF8a¥O\€xÌg°‰©Ÿý/ß'ºââ_¯zäÿÆ¶j-îÇ?&þ˜.ñø‚NN²¸:cäQâå‘;&_’Ë¥k©ýKGë¤­™÷…9¢ÿ	šåÈƒyOj}º‹Msq”Ü´pyˆÇ~ï±Ö["1[(#å0^²šBól*ç3Ð~Ãñ‰”«%Ûú·o§ÍŠç8¶¾­Zî–÷XjŸù~•âO}XeASò P
+Go„ï!,Ša¤ÒÃYp^WOäþKñ„ÃY‡p1¶¢3K^NÁdÝ**žsE¡m€öŒb3#cò>@æhO€) kòº7ÃIÐ)Öén7R€«8…¨w8œ‚KÝvÄ(›¥@h6ßè;±1‡-ù‡8ï›g÷ñ¥F®ÊW-YDõÌ»ˆÇÖ¡&;t\™Æ$hÖùÜ+†¹¤}%ï9‰Ò¿ã_ÿY ;lé—í_!”Ú>ÒEèr.V¡„‡@bð„óé¨ Ü¤«ï¸‘Þ9Ÿéž¡ßcûäwCž|2¥Ÿ}×Wø'Î½'>õú‚—‹i	/ˆ¤Gß°õú(DKÛ#£+MÿTûÒ”ÿDš‹Öc‡ûÈ:UŠùtÄ—¼éÒw¨ûu`’Á4”Òý=ø¦‡@ô E”^L’Í‘¥S­ÁUæt¼™s‰’cP~[ý.õ¡ë™¸Yþöñßƒën¾ú¢Yž5Žp 6‚¯oF$[5©È×ø­ÔSíì'Òê¾N %d½V÷ì‰TŒ‡²Ž¬±ŒâÐm×B8G {(û)V)—*&Ád‡èÈ"¡ôpS³d‡v’¬ÑŠÎO}1ë“ëÀj8G x*ÀóÊxf˜ÀH„	ñ@H‹({HU%Ð>ÒËkN¥xß~La6È:>´2!‚¼å…ÙÊ·¼ñš¯?²Õ	#Î{‰s[áPÂ]a…ƒF‰÷;(zžiÏô©ýT-.’“'’ëÄSï<õÑ•ƒ×J¹ªxùYÍÑ¸ïE^À®uä0‘Å•Ò„5ÊFÆÓ±ñRßqÂa–¥‹ûy¢üÕ‰‹gGqmPd¥zóÃô¥KÉGÜ_u=}É¿²ú%ýW»ß2ên²‹›[-< ·Kí?Ñð:_Óþ'‹;ÛâBº…ƒ)XãÈNÂ%+.ØcÌ¢ÉF“Öd~j­>t£§\ÍÒ±3¨ä-òƒ0Ã3Ð[|Fá;Ad,2µˆì±š%SlM![!ÒTðƒa"o}þŽe¨½35Aûðn¯¹óû…ÚÇ—4¯úÞºù×|€ôÔ3i½úeŸœyøÓOÂóWæ€u·`?íï:¸ßÁ2ñt¿ëºðÈ¶Ž0Ò¸¸ÛÎÍið,‰ ŠÒ9:˜££[$S³´êGHú,¢oQ{œ¬ÿ¦ÚÂ‘/´ˆ"ð­îçq'¨¸Ë‚)òžüæHæ÷Œ¦2º>ßDÏæMîüö<×¡¨Œ:nC±õr¦Å?>Ñ?y&åÏ5Çí¯ºLÚE¦²˜ðà´Eè,—º°—ý[_Uå:@8Î|iƒå—> o–äU‰ËÔ¸ÃôIDG›c¨bm˜N2ŸÌàz8×Qb‘óÚ©Ve–¨Ïh÷w´$^Ë-ã¿^ûø?ÞØ6¿½nÅ={hõîÏ)ÀçÞi¨ÝáV8ðu!œu˜µ#iŠIªÒRN­o±Ÿ®^£âcÖ’VV!ô©þ6ž=$…)\¡i…ÈiŒìt N6G¨éÀxRgÐ½mL9@š!‚ÙU¯¥<~6Ã'žÊÀš5®¡o¹Õ•Óúââü·sÓ“ùæ…®ýø_:vˆ“V¶ófÅ5ÃBšg+ß’°IQxCWQÉ9{<ØÍY£°N®/¥e=
+‘rLî!…A”Èk’dzœ†š¤-#ôÑ>DCÀÈ<yc‚\Í ‹1ð¬DHºÉé_Y’4G§8l¢ÞÑ”ƒÖƒ6¶\ÅŠD9Ä‰<Êµô!¯`UÕ½…ŒkÈx!†Í7æK7m÷yÞÜÜ-œõñ"ÊáD¹íûÍÇxF$ÑZ]DuÐ³Ïþ^»¢Í°¤DÆ›^15Hõz;V[ð¦=X*ñ}áä<V)T¦Ëµ<YWMÈr‰K
+Ö÷Wµ,m,‹ðiDsYU7@-»”Ö(c¿…%6»vÑYxº Ø? ‘)¼\¡| ŽÌà|0¾À#’u?‰ƒ@d…1…g[òˆùÃpøðOhŠ	¼%Sx¦ŽÐ)Ê$×ÂÚ:V61~Š‰œ%±¾ "f"Ä¬ÝÁN­þR8|-8Êý	õU5|Ëk”ÌqKÅÇ^Ò/6»ÊîG~w¾àq¿–Žërwåõ±])Æ–-£ÀÍùï3¸OÂmz¯N!öJäº£ _jƒˆ¢™@96"DÏfØÈ@¹O÷âçU¶HY!˜ÌÐ{æÈ’L©ƒ. =pª[¢ò+­Õw•ë^ÌàlÅàbßdM½ lËŸ~èŽ?…½ÿ³ŠþºÛ¼ñuæâÊÞAÞüýÉ=Ì¼÷ôF0Dè›B*Û;è„ËYÚ®Ðé!Aö¦ò‰KjT<¾rÏW­läM;z<>ä°'yÈ#ª/õ	ÚŠ(ò(MödUÒÊ2ŒÒÄ¤ïxË)1€GˆµyWPô/¦U(ÄÛ™<uÛo#A2:ÊÀ¦Mx^¿ Û_æ$¢G"RèµP$±¯L ÉVárCQ”—:/<Ûö{Ç¹ªEî‘zñ>ä$bÓlAÚ-0TA
+~ŒQ<‡e$WÙV~çÕ#TÞÆôL’ìe¾¸—Î µAÏæDs†ðwôà¥7?±ã{Û7gœx4¹pækGÝÖ×Åîm‡§`wW•ðåëzØ|† ø ÀÇBR~‰Ä(DGAëBÀ_NÙ³Èþ2->    IDATµ»ŠÑY„41Yª°ºÀ¢ÜÓK©
+¾ßB·æIEË9œßÄÈ,H+‚îÐì_™qka‡Îbèh/ÅS7¸òÝµœ0öèÔÉr-V-î›È?¿ŠÎ“{yzàÁ—>Zfó6Ã«žÓŸ|Eá’öÆ“é©¯l¸¼^´GwŠCO,Ñ Œé!l¨³›”¢Êø-Ð¼3øBµ.âó ÛŽs¹ ÂPð%}÷a]hh÷.A§kIÐ£Q¦ŒŒ–àê>6 !Ë4ý´G”¦[ès.üm3¶­7á=ÊìôôÏ§M5ƒo‚[-“€Pé¬'(X¬<—+\<nñ5ß§eo%ón‡âO­(>@žï$›ž'Ë»ÌœðÂwX™£ÄäU|	t… ¨ðÇä£M²ž&Úi¼ŽÃ«%Z-#e™þÉ˜þšxáÇ=á@|äÆâ¶ÎcË{à–è W•?Á;
+ñ4<qbã:7sÙ~õ¼è“ˆ~…¬“ë	#)hðBf!tWˆ\ \Ž²ãÁƒäñ´WãŽo ž•È´«o´¾Dxû+Ã¤C$ÃûhIlÍá¯]÷55Å„¼­q ê	î•ïdÛ¹ïâøëoð¸Å½ß¯!ND~”úË{<jË”–Ð§jE™ØÍN.zQ	È
+^Oô#KiÀÚ+f~ ÿß¯å	Auc
+¥¼Ã1ôÉªÏY–~3§/'6Þ-S$Iäq	å·p8Ä
+GÁ†x¦—Œ­!•£Ö|‹¿þ­‹Ù¶nEnÛF¶àý®«sÈi¶ é˜O»:ðÕÊÒs'ÇîˆßSYòtãÛ¨‰£v?"äþG|;ŸxC " ”0ÖSŽ ã
+Xl·Ž*0||áÇ!¢íÀËp½ud2‡då—þ	É?
+GÈw¾$8ô©®½2ô;P6¶—_sYrÍÍïëàœàÒ·4œ fº#ªËMÂ_üp…S²	TäŒD6…£¶ŒB\ÄÇá¬‡´R¥uÔÀ8Y0K~à ñþ;iJ:¶Sjâ¢ƒDõóxnYªû•“¶½ÈÆ˜õ~À„é Kg1Ðs1Åý>¢·CæE¨¾Â»|+Ü"Øy…aòédñ¹!œQp?¼mî5ïtû¾âÑzè…‡Ýñ—MWœœÓY"I
+à‘ÄH[tN7|¿Ê1ÂaÄŽ]‘2w‡ä¸Ë4Õ©”r+'´¢ê99œVm ³¾ •Ðt¸Ö E7‡É2¬BzTl‘R!L‹GÒo1‹%%ÿ³|íY¿Î³ü¼êÿ’M”¾w3Í…—e k%,í—4>üe@0iQ!ÀåŽ’ƒ²ä=³úØ
+AÍ£§6oÛ%/@XSmej$—}&J`}œq8ëw;……õ' v!pÊA"“ÐÞAV:†â_|™úE—*Ö¼íç>þæ&W „s
+®•=pN·ÔÛ>®®[²m_ÎÊ¾*ÎÕð(›'àÊ‹û¸ñÃ9î>r?=Fä+òN2Ñ5ô¨ë—{±SäõÔ¢}Â¬˜Dy7Á–H‹týºýn‚Z‡1¿g›	Û3Þ…®Ÿ0ãf >ñb†˜czüâª+„¸ö,îœSQ¯q3¯w†õHx~.Ü;…ßïî"õßuî÷Ÿr÷’Pì7qÓ†Ó-™æeÄÀjBeè“[$;¹ù¦˜µv(ÙŒ«ðÌÛƒ2êØ¢oQ}PœE¤‹K¶P¯WÚñüÅUèü´É.!*àfò¥”ç IäÃŽòîÃ8¸ù×u–úFŠÿÅg?÷¥‡® ºã„Àw¸A8(Y­â‰•NÓém÷Ê<ø3mµfÏ%èàðpˆXã¬]ðøáõ ƒ^"½[%ù˜)R=lJî~ÑÖÂ©Ì`ª¯ç¸S$ìû°{¼³ uXxK ¸.ýUöÇ'¢%ùÓäÜ×pÜ•LÚ»hžwU=Nn)ÆaG“,ÛAë9uŒÓ˜FÕddõ`¤¼ ñ–ŒcgØðt•<1BÞm+¾ð–¢ÛŒÈêîÃIŒ¨â%=ÝC:Ð 'ÃÔ"ò¡ÆQÁK9îUÍ·XS|ïk®ÒÚýÑÒô‰³mp0ïã÷)N~²Z?aymw¦ÚNÜ”ˆ+öúî†ïµvs[é&³}îr÷{eþéÌ¶÷ê—Ó«á§wP‹¿ÃèŽÕ¹Äøà²ÅÛÿö”—±ç›Ë\¼ú;ÂÛ}’›æºW]"8z•dpÞ¶‘Í"^RìÉ†gš+ö^=þ“ž›/þŒæþ*«CtÛ•aóËÌ>éiSÕÊU	Ü~<“²æó9ýÇ¼š/¿¶»Ç]“ Š«o‰xôýÞeëÈ¿ð²ÿ7}%“$îÿAŽô #/[òÜ’-³dÃÝ°d§[²±ÛßÂV¦hÛA{×–síÖ’Óð§Ñ¤i‚ÈºÓ`”’Ø¢‡).¢hs­ŒÃ6Éãa£t‹¶?äTa
+eJþK'×Óÿ¿­¾ÊüÊû{49º`Ùn’¨Ÿ0>–ª©’ý»ÔÄmwS?ùvæžÓAã#´†j¾‹ð¼*.$,ùvA÷âôìXTqn[Â„ÒNLÚi“Æ²¤E×‰ãºLÒ¦J³Tj]#-¶É:-²<Fkƒó|¤_Æ#Á™ÿ{o&wUåÿ¿Îg­½ª÷îì+		‹˜€‚,‰ V·Îèdf‚Ž"ê¨£éŒ+‚  bâ:0â˜è €I[ÂB–N:{Òéµöúl÷þþ¨f~(ó¨ý~žz’']Õ©[uÞ÷,÷ÜóÎÊñõ6o?¿­ré}ô‰û@9ùt
+°LŒ8f4H±ídÍä¿TÒòžäL–þ¾v'e¦± ÚÃÅÞ	g’üÅ›øç~dß“V€ß<™\j.¹–ã"ÝtLØ¸{êÎ\fÃ¯™A³û±‰7|.3u§ ë#†4’ÏéHÌ$JKÖ¾› g=ù¾ãiêËÙ#›K)Äw4¦(ŸÈ2Ñ¡¦ÜncUÀ—OYÃ'=æè|¯Óç˜é^÷C/|üÕ¶ké—fHõ‚Æ	&áR!ºEˆî† ®	€0EVgJnµ¡b…ÃÚQ.ª–K‚ÙL,tP™,î>a*Œ(„Zóq”"VÞ‹@‚FXõ Ñ'Al"	w"±½Í-Jãd±o:‚{§à×Vºo8ÄCÍS¯w}+—5ÆgÐÞ!•éÅl‹á?\ òØV¢æÍ‘yÎnªb!Åú@X“ñ$wÇ±¼"Q*O˜h'Û×}$ŸÍÄ½OŒó3G6á{&2xQ­#ÞŽ™hAâ¨XÏA2¥H&É„"2ÐF„/B4Š–zVd&1#…(Û9…|È»Ž¸‡g‚ñÅÏôàEÓ;îïh\çEd+FÍoÃ-»ã«fß’„½!ü£ÀjËJ ?c»ûð]ºÀ›è@}u=á£.‰Çö”=|RãÍø’ç¼gßŒg¸÷Q[ù±ï’opýrI9ÁcØÆCèáí5ÔûLÏ‹‘§Xj,g?ö›š°¶ˆ ´"2s˜Õ\d*-
+%!P›êâ—Â³ £cõ²ƒwÛ"®ÅÏåPV¼6þ!ÓÿƒAê%bÿýo—¯ÕwÏš£®LÆÕ·S?IplKVÏœ—¯}èDÏR—„ûS~Ö»¢œ>ð*¼‡\ÿ;iÙ–!žÌˆ÷£R;Œ@?†g<‘¬mîï½o7Al‡"Ñ ¬ÍŽÍž	Ø5¶³G‘]ù’÷—wÕåm–¼îõ-àë¢qg4át×¨vÿÖ*û%ùãr¤2'Ð\GƒÑ„34ˆg— £„T†1Ã ó?`¼Ý{¿þöO¹#Ž38ƒØÖ£ÉK"Ñ†_8—Ìþ¤÷ŸIúÀ²ý§“é?ÔÀiÄûÞ®c}G—#HDcq2‘	-Z+BÖ;èc‚9TEer¡é¾ó\>Ñ¹“åc)úaªMcH´ÌÃyÞpŸjòp¬Ìæ=¼OnþZLá~–qY ð<{l Ùpjîr¢›v^sä¼]—N9ºÿÔ'É}l…w3¤‹dî§yþ§Êp´ÓÎiU}
+µ£DÛÜÛ°íGÐ^Å$²ª¨ˆÝ%z­sýÓÜ´ 6Ôž^Â„	a€O3FÔí™ˆ:²P¶Eu\Œ2Î”/ð‡¦½,
+^ü^!u'ás¯ñèä/5Œ|‰û¾þƒõ{GndZÅç³ÓÚ¹°£žá
+çO‹«Ô<ŒûÞ3tqûm8öldRe5»¦ì 0wà±‡­„F¯M¥ÔÁ§ö—N›ÿÄÎ®•S±Ïšï°p,Ž3> œ‚ò¼–]x‰´ÍŠ›8o]É@½1~Î¢©—ö/ãvóõ¯ï¾¶=Tï³}ÒM½¯9Œ5¿¦}³I{Õ mIà$ûñr$ó½øfAvÿŠ–3ü~X/ÝÌºöwì|sÿ…>ö1‘jAbãDçÛpbcpbãpccpccqããpcã‰%&K¼•”~+éð(2î‘d‰˜ƒ‚¶ÓÏÐNB‡(7$d1?¶‹+g@xøõ,ßLñ+OQj;ŽÌ15{ï­8ªç*¸s¦hªP2Y0Í¢«x[€{ïÍËØôc]»·q\²ãïÏ;Þ}N?Ð½+¦îé¥/7LSß3TåíÃq—ÝîÕ¼{ ËÌ<ºØNì#ýÄO¼ÓdÌÝŠrä9Av¬Ÿ¬Âœ,{sDßÚ“kC6†(±Œq¸žQŸŠæ›D®‹—†ál‚¬÷;®9¨k®²Že+ÜÙ .üë%Ûgzñ
+°P+[Œ.ó´DæÊÞ=±ä–=ò˜Û£ÜtåøÒçže8ÜÂPþúÕ¿[C‡ÿØ,L¹-Uõî'Ÿ\gW¬n'ªÜ[Éñþ¦ËXvýÊ{kÏ­èªý¡Ã»¿ÉOž8“db’NÏ¢¦L‹áýÀq~ü[Âž ²šíõ]o„h‚ÈÒúõ®Oíûùó3XcÎ¥}àÍ$ñ	["¢D©%q+;(gKð`C<8e‹^¾tÅ]·
+)(	23ñí•­Ïåñž$‘ØF¹7®ãñô¾"Ð]!ÒU"í£tˆRíXA;¶1'hÆi;‚ø@ªþöjeBíbK?a£†4e·Ic/já”“ß{®¾JßúÕæðO"Ü1shŒÛij}FÉhÇ7&ýì¡+a_œíqç#ÑèúØâ‘s‰§7% çU^{ü—‡ÒŸ‘óÇéÚk3dnBO¯ÆsT™ÞÌ›†®á±ô[øºoFiƒî©\á#}Qò›¿×”ž%aÆS˜ö˜,ÁëîúÉFª©©8OQYM@#¦9†¸Ja£Ml‹ˆ8Ê)ŽIÐP¨ÐÿVêS—åò•+,U©&é×vtò—xÅæ%<•…‹ø5N“{k„ùÙö©œþÁæ=ðÓãÈ\³«£y1ëdìX™í¡DÅÈÑ¥RÂ3Îãa.þ-=òñ”ï<‡ó‡>‡ùYá¬…]Š?u<y	ãdrÕ©¤·‡äôxŽ»’ÏnE¯²èœeQ6b3]`w±:|½ëcZ¶ñâO¾›ÜsSˆ%\TäQÙ­ðUÄCy;©Åöãq‹k.l	:®ð0t
+¿“Hg/ºˆ',ÑÏuÛ|Ëÿ+|áy|o#~b&Ù½ýøÒ/ÃR"2<”QWP­O¿ì¥à¨D&Z;¹fâîd’y2 jû)’Åö49Ò…mýöåtÜ6 óXz/Ÿ_Mß“!Xgç­'†4agøÎYíSÆÌ[$›æiÀá²wd	ï”„ï^ÓÃ‡'ÞÒU\ÃóÏìf×øOµ\6£‡Ç¿Ñ¼Ç¨“Yßí¼‰›CŸÓv:1:¢·ñ9ßãçIÊ“‰÷?N¨ƒ¨p•¥%w{]vhÒm­Ät„
+•©í4;U¨FX.Æ‰THiœ…ã(Ô´ð¹q ;žÅ9ÿJü.´°ð¯/gû_òd–{‚Ý!XÓ»]°b6¹Ÿ ¡Ÿg.¤j®ü
+Å•÷à·ÜMMþ`ñí–c%Æ¬Ìrþ{Ÿ-œt®îûê}÷¶õÈYç†]_»^dÕl[ÖvÈm_¤i2Ž)-cpâEÎéûwîÚ:‡ÅHŸý'Ö²ˆ9Ö!á£ù§XŸîºsÍtâµò{P*å°œ4¦î£êì"t•Eå­úÂoáKŸ>À€ u—ÝyÎÙ ~³ÞoÂciÐá¥·Sºvß'¢Yo&kaŠ)1,#EKg°u‡.=V™^Jþžk¡¢š'`÷äQØHµ†(âå²Ä «¶bÆÃ|ëMòî™Zp>·¹å‹Cm¡T;Žö£OŽñÇiŸ™=rÅ~~×8²T“¥WÔº‘XÀJ4Ú~úº.CvµLÜ¢Ÿøãýç rä§ÆXñÝ2ù°¢:æV÷¢Ž6ÌBš	‘I&û T³æÓøÖX¶aÿ~`¥œÊ<&™]ÿù‰6>|ƒoº¿Øƒ›…ÝÚÀŠa(ÓA¡X¢}­"ÂPYAR;Ù0 °ïïõáë^Ó@ ¿x}6“Ä75Ñû€2õù“©ªnãÅ1Eà>à?€?P¿hzPFöùŽoü˜<÷‹ôWjDƒXûý 8êÁ]<£ÆI¼I¨îþó.ð·éïÈÇVBm§Oåða¢éqbJˆÛ7û¢Ÿ+n>l«÷R{ÁxÁX¤±N–Fëª#aZB¯“ê‡ç:+'u\ŠB*G,Jãˆ`Y
+	mŸ(C*š(LâXq\Gcšt°ƒZe+•Ê>jÕ ™î`…‚a…èò ¡¿‹¨A;l˜àê?ëßŠ¾-üòñçÏQ8«Ž"ÑßÃðÎûfmð‰e±/_«{“–EÀpÖt­Wž(¢ß—ÐœY˜?kõjjm\™â-2Éþ‰šÂ<Èü0Îé»:¸,èáìÓ.¦ûŽ»x0åÑc—ù]S)]û¾SÜÛãñØ"´ÈÇÁøæTÚº¶ený{†6rà¤$v~«9Dv¯¥2f¡YB…‘5ˆ½!ÉiOÒ¾g=?ùçÖ’ìkÑµNA/×’aø¯Ý³²[œS87jÂMiÂ™š(©‰R 6_Î¦ïVŒdŒWUM:2ºø®ã¸ãodö‚oc5œiý(6§WÿìzÌWú|Õ@2;¦±AŸ˜õ•rÏ‘|¸l„hŒ„²úî uD0X¿5!ë6>f3n´ý®<5™LIaºyÃøa‰Ð²Æ¬æ0(Pž€—B¼ÌÚxÜ0ï(ÐòeK<>ƒx%åºK|K$¶l­|Ú=îaŸ6É?sFãÑ´‡YEy†	øg,œ@½9ºÞÿzçÊÁòg– <¯îösuåHžØ’åÜÁ¨(ü˜bÿä8gzûù™%8ÅÛùEÖaV¤(&-5T MÌ2Àc­bçÓ7ëö5”§ÅÙ[B§cH)†™hÅ)õ|Õ·@: âDìŸ0ƒo5ß¯w]=ÌnçÐêäßÙ`Çì!ÎXu`\±“AÍ®n¼pNR÷rµW÷û÷XÞ[k3ìØ*Ó 3|Ë•Ñe“êJ-Nl¹ß"Ü˜%œ@ü‰5‰n¢M-©üykžZu+08òÔÄ!‘J|„ta7sêV£™°C$K:²|›îR¬|óF†;RØ|4Z9P‰LÐÁ ªÝÂ4Ê÷	ka%$¨ÅhŽ9¤Söq†#Lß¢f ¡I-67ÑALE–¤œ;÷ˆê¤3øŒqÁ7Ç=>Lí£[0f¾'lhp!C0û„]%ÞÑIºýðÇìøÎNçìËPGùbx²Â½|jÀ¡c›ûŒÆŸ^á1ƒœÒØû|¬bX,ÂÓ¹a~ !
+µâÇÄ»¹Xxê"r¿ÞŒ¶‘È×À´/•š€SÒD‘gkq°´	Y›rJ9ƒÕÓ‡ÏÑe€ãçóµÛþ
+È&výÊj5¢S!üJ½Qù­.F<YHSW8yuQœ\ìKç.Gôò˜è-.þglä’rMyÙR­þÜ«[Æ¯›Ê›Lâ™Õ„«ãåß,¢ï”KŠ[×qÙï#^”µ­ðbÌìspNÞ³–ˆƒcŸ|ú#èS®àúAOíAÌ,I§X²DÔZÀk|]ÓHÕ'ªÖðƒP[àfq³­8§Û0NðÊ!±añbh’N‹²=Ó¯ífßðG;djDç®r—þÆOk?$j9V³öH²T¶ñ¡{Ï˜×"L÷tËÛJpòÀîå]Üo,[V@ÑóGrá9ÜÝm0áÁØîó|“E-2;ì±«1Å” "B/Txî
+Ì(Á$®û=T·zÔnÛO”0Á íf0ìF#)ÈEÐ?6N9¨1x,s	½‰þÉ†Ç³Þé!ÓAã:´²W
+#^-¢>Ì%ö*~¿Íù‹-Š6¼ýëZssB£­9ržûç_^Ò{.]è¹ƒ¼›¥ð¹;*‹DÏâÉ9½ì«^¸rô’<<|áû}<PK€g8ÃZÆe.÷ßÂ¢àšû:søê
+ÃKyßvˆ¹“I„Ôv"£aÚ!ÚPV„¶@Ùu™\å&!~íÑ[Uz¸(hÌ=”K½Tƒ%;I”H2} zÿL®>MJË&¿¯ïª»š‡î1«É£O¢ikÕã£\:¯‚þÏ&ÀÑB‹µ\²×Á>´Ø´z¤Q`D5èiå“¿‹lÖì<ˆ\üˆõæå,i²´”Bj‰…ã:qÐ0K]qw‹	ûü£³Á¿?GàÄ1÷†2Ð
+¢d»¶ªn€©‰C‡¥ð}!:áH³p¶©5¢_Ó9Û_|dÞ<bùÁUWá®]ûbh¸p!Ö¶mXëÖq°9Ø:Z½–X[£íËXÆ²ßZ1Î»¤¦…C¥e•Ôw¸?c¨ÓœÿÎé¶U4ýrxÒò'Äuîç…‘µØ#wãFÔÈúôÈFjtiTZØM}j´ÖVýóØdC%öÏ2ïÂ‰¤¯šLd§(¯ï¡¤}ì\‚D³Œ|VhÑ‚	jdJ²‰”"Ü¶Ž¼ù¨”'ôjL[š´K[oÄ¯íÃÏ%¹ùDZJ'á,}—ž°æžÛîM>|~vu;	oÅ¦‡¦•>Ñ½åú5ZöÁJ‰þÊ^èN#Ó‹"ÛË‹2P‡l¤î;yï£®â¶y\µ:¢Ïèà’hïÿFdlËqÑ)›ô÷?«mïëôÂåj$l±¾$²âh².ö±iÄ$Œö”§ÖÜ‹ãQ?¾k3ñÖ]ŒK9¼ëÏ]ùôâY˜ˆöQ3žmß>ìÎNôÚµÔN8¡>z¬£ƒ¦Ù³Q­­D#¹Œñ€þÈšÝW»véc/]~™ÒçßUÑ²P­œ&öÌß)Öüyb¿ÛI|Õotþ—;®Óp®~.÷ûà
+Æ×¯ÞéBÆÒÈú‚CŒ0	èÅ¢ë*¬ºK¡»L€c$Ý f” ®¾>§ðÝçØwÓýô·RÍ8“Û‰„ Ø˜FËJbÛ1LÓ@>¡®à=óeÂø,ÒÆ›u¶Ð‚ø†‰¯ˆjšÐ‡“n"¯œòøü³WÑûgÜ{Ô;îeàKL™÷,}ûÏ£qý	Ý™‹`p¾Q€ä¡Ón#Ê¢õâÄ¢EXZch\0òƒÜ•¶™Êç.[HèÜ.Bz'fds4LZ¥.—ƒŸ°Êt§è_ö¦&`ïê£*!?‘¸1ƒLÕ'Š\t”4Ð!•Ž$™ü0kÞ¶xzÓÿëiñdÛ¸‘ê+±ãÈ3ÙÇÑºoC‹C"6’Ë#»¿5²ó{#_à+«K.¾É^Ý‰ÀÃ¬ˆótìM»d÷ò›ŒÕ«:ÿì9›,o‰6ÙOìÕÒŸÅÛ¬ëôcIX¢É=Š²ªêR…¼pNG·$._€ûÅá<7æ´`õÉ€/ÿ„sƒVŸ)OŠVl$×€ëº8Í1ŒÐš‹xIÌ(†).bj0ª’Ç35†äiúÇfqs§‘Û9•Dd	AÀð†j#M)ïo$TysòwòxÇlxbÿ»O
+¿b`M>¶ÌQ3»ÚdÛZa\ý:ËÜ1ÔÉÔe¬%ÔN;­.%\¬ô ÛÕö2ÇÊ:«U~‘ÎóYšx–áòöÙÁG>úBA«þÚÇ·ç¾°•{ÑS°v!¬ä0­qØÅ°>£%³ï0—x)dàØí`.ý*™!É(FñêÃÔËÝqÌjd¿N¢µyö%Wè½…˜î¡¡vSõ
+Ú®ÂØ~#±ýw0nð“tÓ${I¶êÐ‘»õý¤ºÏ$}-OŸã0tfþLrútÜòø4[Ž0é¿ŒÆÞ¯Ñ±c²ƒ>ôeïåT€Ÿ3cþw˜öÄ×0ßùMJï"Nß%ctç+7t°61mY´šáŒFˆ¿¬¯	ö `Òœ{ŽÅØ;5Ú˜ÄOc‡‹ Ziì÷¸|è!&?{[o%,'Ö¿’–ò»ÔN£qàTÐï4ñßË±+§rÒïÉÍ:fÞ¹4k´ó7åÙFñzq’ÞÅsC´òÿ¯ùßnþG*=O°c9Cn½ƒÃõåhrÇi»ˆÝ+è7¦bb¨?¯ØáS¹}{U¬´e{ŸÞGì¨ù“‡&aÑË09ÂÄ˜¢9µ`Sy”Á›)î8Á¯Ø	~ûÍç³¼yýç6­ßJÿw–Ñìï?L4ûˆÓüµÙ¯|.*]%    IDAT_l/sªÀ0p÷»LõcÌÚgé5H=%¤º5è%/µõ~ï²úÕ›Y~/ƒmGê-ù1Ü¬öwÔÀD’n]3Ë,Qoî;fñmÿž³âõa¡¢K„eWÅøá-yY»”™]<ô/s£sJ³*IµñYÛ›üy·¯ý&ŠQÍ‘I¬gkcáŽ†6Æ1661†Ñ¿?3W4{ž‚|†tËùävLNÔû%­ü@y¶™Ä:)Ùg39_<“Zêé<÷ÞóÇ¬¾iøWTë*}‚–ïÝ­àt-xU9ñK,Ÿ|µÆ†XŠ“‡	e“¶~›±šjÐÏ‘à8õ2²	;ÞJu?ùÛ†°ZM$ŸÃÓÇ¨´#°cD£L~‚CÅK NžŽ>þ[òFÉö7Ž/'±d1°è³eÎº°™9‹DëÚ1­ô¹À¹¿šÈŠ±Aƒy±×´×ŠéêVgÀ,R5t™Œ?L®nÙïèì”¾Ô.L¤n ÿîUäŸÕÈ„OÐŸ®e2©aM¶DÔ«Á|>I¡	ì5ÜyÝE­í[ùñæÍó dâ¼å«åì£«yåÑÓáÚ­Ê"—³h]×cÓ»ÁŒ3ëÅ[ ¬æ-¯ž4Ø—ŽáÚ)·L Õ—GÙ’œA2l ª#e§ˆRÒ¦˜IàLêÇß _[SÃ(ÙþÆñóë?u}ü˜&@ë•ÿ¾GárAo¸S8]ùñv}Q	ã°Æ|µ–Æ¡ñšB£ÕkŠéáÖ1ìÜ‚FiÜÆ&Êê¤·øŽ±cýÆ¬Iêr=Úl(P=°åì‰Ÿª›z·*2CÀ¸s	CÝ¿àª±3tzX4†F‹\qsË«(!i€I“öémiåC©@HX&MžÂË*æ”ÿömD¢?ü#i?•›)Ü›&!;([m˜%qÇÛ€¥‹R-F~b#)‰Z KF=Û(^vŽu¸þsy&7¤ÚD†Èj0o•%Y-ä¾¬—ßþ›3{Ï÷(6\ï7ÇHÇ¶t8½kÚ9!/µi4DO;…xÿ¸ÆÇzv¶69¿K×žywìÆðÚžiâiJQ9Á“nÕ˜KCåÄ€ê®—87óÐMGO‘7ÃY²Z‹É·V½ŠÄWkŒžJŽSkØ%…®	vQ°kš ¢jl3—ÿ²íÆ]‡K½à„ª?Ø‰Î4`o „cÐ~!S–Eu\3qlÔ<nîrGÉ6ŠW‰ßBjÝ3\ß$c>Ý&îüxøç¼5þN—DÓ¯åíû¢y²tœ:óTùpZ«ã‹Aµ!Ž[Ä3®áI2ª§ÔöŽ½fbhvá.öOê¥2X"¥¬K×¨ú_Îîø±aºX(Hrˆ¹<ówèM=Ö¿¬Î­<yž´ÄàžW#;x‹¹d	 Ù&³œÙ`ï×„U…DI@‡ì5‰<_Ä®OŠ¼‰Ÿz“>â~ßEåù7‘Ú>LhUð£4$:Èz‚ÆT81‚l·)†1)ÑÅá£dÅ«†FÛ­–]†iýŠÿX‹š¯1ºõ£¥©S$	cÑ³I>Ä¯}ÿ–ußÔƒÃwŽ:sr¢lîu$Ù;%·5³m÷îŽ[‚ò‰ã,Óí‡7t÷`'V4öïX™,¾y—lw1ÓdÓ	×ÃÿÅ”Z`•fÒF~9ÆQo"uäy´žò|>}ÍOˆ-Ñrÿ¾W®F.®vuÞ|ÎÙ²¥ÀÝí6‡ï†(€@ƒrêIZù¿!î &2¼óúøó)"—á;,â­áö¼¸dr¸EASóÁ$ÀDµØ¸–[cÚkù¬eÔÜFñ
+p©78ðBAÀæ×™¸Ý¬L!Ôèfm¨‹ª"í„Vw•H+×Êà˜JFÙ—v˜ÄŠÞÏ„I°#gÙUÕ8ÝSHŽ÷AU‘|‰¾µ{Ñ/îäyÙø6ƒºÀ"¢»0XŒ9Fº¤^ 9çÂ8§¯
+xú“TM£N€¨r1[.^
+¡07ë^|¾þ}VËi %z}ëG?väðß¿ç<‚ÕÓ?w
+íñûèõÖÇƒœ®#Ö>
+C4<˜¢1|bËãÈ£˜KË•ÌÃäï±ø ÔF=Û(^kôãlÎ2ò÷mÀã‚ù,#*
+ýf…~·†¬ÖL5„§$k‚…Ò½(m ‰)t1@§+Dm0TF{F€·sÆ‚Á')Å6áe{ÇþóG|gâþA›ùZV8é¨ÌõL3åŸºœP÷l#ïÏ¬oÆ¾'–=Í\ñƒôãŠÀý-?h¨?m]ÈK„ïw9#›GõÏ–¾û]
+iÊßíIq\U@¹M8a£O…à@Ì!j©–a:O®˜;K@kX®Ñ¬"ââ—Þ
+%Û(^	/¿Fr°×üg]vXWD§jôl !à	ä5´ÙHÍÆh"[ˆÔ‘ò0$^#ÜS#*ÿQ†Ëû	ö‡¸ÒCUº	½­„þfªéMx­k8aÙ¦é—czâ._(úgóßô¡´nX\“5Z)Y¾fÍÂØÖ*+²šÐÜÍ?ìKpì}&*ÜÛxÈzÌºí/7!Qï•4¯?òKÃ ‰ÓÖC”j'S,ÒBŒÉQ¬j(“$ÚIt(Wó¥Ì©,Ôê
+ºLé÷¤µ ¢‘—6©’m¯„pÄNl^¼5aüyŸFÍÐ¨#@ª À€†8B?`’I`­tüp2J%0Í001«DeZ²C"}} >	Ý‹Õœ">XAÑC‰ûÍ}5?õh&þèƒ?å<áê¸žñ©¼ü´¼àm­ÎNtWUÞÑÛ¾9™íév¾¿Yã)-Ö166+XaÂ†,Q,™^Î-Ì’Kîf÷üÇ3d+
+]H`'Æ#©¤Šá'L‡”Ò±c ÙMg@Ç‰g/±³Þ(=J¶Q¼6¼|VËÁŽ÷¢‰»h9äy=hR@¢ú}ÔQF7Jo$RI¢ÈBÓ¬LJ•‹`8ûü½D}%tn"Y£Œê'À‹ˆ]ÅöR,_šü£¯ÈN—;§Ç¹uÐCéº ‰ÑÙ‰hM ñl“LË¤È¯o
+ƒ‚ ŒÀ˜EZžÓÒÝ–Ñ]«X¢àÜøpq¬9äæ²3æ"ŒxÇmÅò’ .q"3Km|fÇÇY2FƒbQ]{Œ‰+cÇór~’m¯g$ôR‡ê Xˆ$û  ë@·€v4LB3ˆÔˆ”G4ÆG½ÛÂxÄT²¥§¡t‘nHùJ»Z7UUÙC`äñ11[ZpŠ/°"FéÆøî¬C˜lfÌÍ—]Ø=[Ï-µ``¬ì¹Ü„”üJTâV§ÄO]MØa°bÅ‹EÁÙÌŠ`9L=Å„Õ¬âÑ´ôžÒ7jÜõ$~_³"a„8ãpu3¶ªÕh%ß@µñY~40µ ¸áã&“·©]ãþçäw£øŸ½ÌÃ¯n îvZ¸·I3G~ 5Œ÷íx¨ývú}&ø.ÆÍr´PÏ‹ƒ“TF­hªø>T°“²cmf_¬fØ3«67³Ë,S‰æNþÉyc§—ˆT«uòl|ò[6À,iŠ‡Uy$^cg ÐíÑëhÑÙy°/RËAÉ':PÉ£çût¬v4]µn:CD‡OàßA_HZp¬1˜~ E˜‹ÙÅ[£ïï`bŠµb]œ¾Aø^Ÿ·{ùœpÉ’Q²âµ“Í¦~pèiV€Q¥x¿u#Ð d…&	wLlËˆÐi (p´‹™Ka-s0#Ú1ÊXÚ°/ù»)UC"s,Näc¶Œ'éæp™ŠÅ}È¬å@|þíc¿võvš¯YE´bÆúµX—~öà˜‹ø Æk}Wõ5sAU0z¡¿ì²ƒ…¨1×^×r•',md ×›°ÜÜ[®ÿÔ/CŒ˜‰†hØnŽ_ÊÔŒ–mã·z'×Úwfñ±Þ|ñÁÏhŠêÚ;ç%Gk£çl£øS!‘Æ™à|]ÁI&Ò(ÏÐU!ˆ!ìAä‰8êÌ(t³BÜ‘1	Te2~a&áØ#¡ÿÂ¤ÇC›1(Zˆ_B7µbî9{é¬Ô®Í˜D“7nZ¥˜6MaÒ”OŒ±is…Aêsgú©O"É;ê—‹ÿGœ—áË¿-œxÚÕ<=¥³õprþ7íUÇwmÐ‰’ø”¡z˜6/ùÇýVºÖx,Fæ,cíah™ÿâd°QÏ6Š×‹ƒ•ÊJoS#ö¿,\2ŒÒ	””NéJ+”Né7ª“láA½F0öƒä´.£²ET0€¶LL‰a–’Xž‰3a}DcMtåîHO:žH¯Ùí1mÚóeæ¥ùÙ¦ÃY¬6 ½ü×cŒW¼/÷®4¿[Áî–#ÉTòø©õÎòcA îàbhñÑ†<gÀÃ]òB?çu·a†‘£øSBŒ2ÛÞ‡·Á@~ÇÈ‰t›H¯‰l0‘Í&R4‘-&²ÖD‚PsŒ‰L¢6E¤|T”'²ÐáN¢¸a[Žaj"Û@Üv9ödþu?ÿÄ¿à2‘ˆùïJÜ1Lžk88Ûñå¤:8¬úJ‹»øã<w{;œ†‚]|„¡†¹4&ªêQ}¸¬äQ çm3°µî2Âž/m|%Û(þžÍ(áËLw2˜ßR
+}”)zš%ºl‰6MÑí–èŠmè–è’mè­¦Á‰ªš¨aª)»Po7‘Ý¢•ƒY01-S'‰…
+eDˆk •$VµV“E?âHViæY´Œ	cÉŒ+>Jæ|36òp^SúôjûÆûÿÖMmÁØÒ—ŠcS‰WKxFˆ²5†Aë9'=ø~¼Î…bú†•x£dÅŸƒpÜÉ=e³/<a kö‡o·Lì˜Å:Ç¢ß6ñmƒ¹¡b^@x
+„­&QCb¾å”‡!Ðf±J+P³#46R±0ðð-ñ¬44ÞÚ—ÂñÖçY—eù÷ª¬^bwuæŒx6ú¨¿ÚÈÆðªÇÚž~)>ÊpÞÅö›¡í”ã‡‘°ÄPØh0-(o7ø {Ñ§5ŒxÒ—IJ’mŠ0Röd²KÙ[]Ár+‡}£ »ˆ0Q4 8A+Ž1iq¤Rœƒâ°HpE´m¡ûmô~”À0¼*V|³¡?žGSÛ×Ä&AÜ31*‚¡Û°ýAÔ¿Ècg|bž%ó…Í{´–	óñþéøE„×-¦0ÄàwûÑ-pöm$ïæÕ¦LÏÀªiÄ°D‡UÅY½ëiXô~´FËËýç(ÙFñzq°›$Èà S0ßË¸§úb&«L!
+­y‹ñnàM&TL¨Š‰§…Š Ä	ÂÚHƒ[VÄÊžAydüy-D›‚`"ÄÄLc(!2D.„ÕÛ--cñ
+Œ„ÎÈû”—G^qÀî&Y—´}õ×ƒ_…¨bª€"OÍ?šdÅÀP‚ 5I?$ýÝœÀý0,FÛµFñ'Æ9ÐÓì¯ \Ë®Úõl)5à\£5(8ž€²"*RÏ¥2~HI˜H`bD(`èÉV·†´F|0‚‰…HLT¬§ZBŸrÕµj»Ï·?˜àŠ…Îˆk9:†‡x´W³Æœ€­k²W´ í¨uÌšm¡vRu']S¶@äƒ´	vU8`—ÆþÛX{£x¨¬ö	¢y¨½T×ŒQÉÝ…†ÄÆfe¹¶«Ø’V~}˜x¦Mašar³¯’óX{ËõQî3RýQXÆ÷7d²ánÜ@s5$ŠT¥h”=EÍK¡ô>l_ãÄÇ`¥=¬Ï-¾™8~esíò@£_nßšÿ2ºüQ{`Ú¿×]º ü/gý:Mã˜¶0v`QC/÷8|;kúeI8Øf)v«¡_ÿXøñÝÙQ²âÃä{Ó8¬ÇU›,Æô†f-KÚ˜Ý±µÔœ5/*…#ÞÒ©€Bë!¬;$U—rShm BŸ CÁ[¿ôf­ýZiÐ^Ÿúë¹ÝIúûÃ]ËVš›VòèÓô?÷„@‘Èj"¡c‘‘ÈøD)£ém«“ogßºkÏ(’mo~ÐYºã(Ò}1O	²¸Cñ¢¬Íß¶#	R±Ã ©òE(­CD{DQ€Öu£1C„è„‰`A©H8vÕ ÎY‚ Íz’NÿSH,Þ‡ÏDÏ4ÿ¼‚3­Áeïz
+ÙF_¦Õ˜VU¢“ô½p”l£xÃ0~ùåj
+ÆçÒ~„-zãVÊ;§“&“3t¬a÷ˆs5:F=ó©K{ÕG1øZ…hŠDai,LC0DƒÖ¢B"'T£óÞoÐ®»0DÿI<[tuñŸ“ù|?¿~–*ÇyÉîí@¿šAòI°´òê…œ$ÜÈ*’mo2oH^­÷Ý8‹ØÃ§ë¦™6¡ì¡¼†²·%Wc²FµQoíòFr,KŸƒòVŽ<P%Â¨Li±1Lâ˜•žQÀwÓXUÕqO-þº:…‡n‹¿Þ÷ß:O’€·YÆ'04kÞ³ô~ëpZÃ¶SiI"ƒ)L<‚(–ñú¤.%Û(Þ0äWè‚ÜszÃSæö;“F¿“ÆÁ)ÎÐ4ì†zXxpPIP£mÀ!\‰0RõüH…Uêâƒ¦˜FˆÖ&D>Š–Ž#~#.ë‘a…ÉÛ¯Û¾ß5µHæêÙºSÐ:â²ó¶÷pó ´k…¿“(ÇœŠH`‘ˆÇèŸ1——åŒ£dÅŸjéé÷ý&ä×…•c1çž¿­Ú1)ìdpµ`ô€”¦ ›‰# j`Š6£&J×ê­ËÐhHÄ±”•±3XªŠ>û
+RÓá´×-éµt/ÁûYg	-Äa’â|ööQþcKÅtÓ@§an9!††™5ölÜô‚^Þ(ÙFñÆ@4ö"ù€ÃG‘bWï·R„ýŸdÚ)*³£Ç+ÁÜÔ4:3âÕ*#!¤:XÁ°$ÑZ×+“)@$è‚NE¨„ƒ¡ªTÍg¨NæOq…ì>Œy]ø°#Ø¢A_t}˜²Üx™b³°ÏÁÈ¶â†il3¡ñÿM}Ðeð³ÉŒ’mo!æï¸Ù‘ïéàÊÅz+Ù%¡¹˜Ô	×®ÛòÎfìTw}”L£dÊLãÆ¦‘jÎ!ÕÈõ§%ˆeÒA\p²ìLÇý-„ƒ!&Š¢é…ƒø¦BƒÉ¨€¶lÜÂ Ñ»wœ$‡†qõ†ä×DÀº'$èÒš?Û#šÂñ2Þ„Ëõåá5OÝõô»µùL– _ Ü˜%ª&b<pó“[äÃ]qýÁžÑjä(Þ8,Kpvy@è}Æ»„S–Ûñ	jzR5—ùšæ/@5µ<tG¹°×§ÛØ¦û3ö1S¼Ö«ªø["Ó­Õ²”+9…nP¨ÈBHF†m@­0b'0†©â¡SyäÂ	Ï¾ÄÆ}êÎƒzãæ«±ÿcÈªT#wf¢º×=²šÄúãdÆM=†6cV;YkA%¶¼õM”ù¾öd-£È£x±î{®,ÖÀí÷›¢ËÁ'õÞ¥EÊ×ŸA¹ãã4û!š.hÕ
+åXu2¥ÒÞlAÿz'‘49¿²ñ7å ?‰.h	ýAâ“Â°$›0öyöS•2BHÔo"öóñÓ¨Kñ¾\çí`NøŠ9Ý•¼»žwužRîòçF^{º7‡¦ÛA/bØž‡µu1GývËp™3Ú9Š7çE,[–á:d—{|mLó:¶å¾xy°Ä¤á^ØOÈ3¿ñ]µôi'Öß5¼­ù¤N·`NdŒ1Rª¸„Ãq›Ó&¬!†_?Ðv•H|t¡HH‘¨ÕFJ}ÈÑ@i„T6ÿµùUàóM˜w°iÙ)šèË<»m¿¹ó¢è¹ïüì«p]qÅ-,ùÖòÒCíÑ$£øóBk0hxWBßZ"Ñ¸«p¶´4ÿ2Ûw—›—öY4Æ…Xb~ï»Yã“Øå-­Cƒ¨j’ŒLž\³œ†ä	ñ ’Id_ªAØ Y0ã[	_îP^>þ¯]&º~^¦D/Ö\±0ÆµËƒ—üøù“[9<^à¦çb\ôÃÝÝ.Ó.¯ýT¶c¸+s>0êÙFñFÁA$ÐÃo*Èy—Æ©ÏW”ùB¼U°÷ŒEÝ¢×o$ÊôQ-…„cÏ&ÍiÄ§'œÂäÃ‹œÚ.$’&NZÈuÔp¦‘”Vb•Úˆš0£8¦™ÂJ$0}öX¢ÿ'`üH(ÉEÌ:B^];—‚ÅÍîç¢‘×kXçÇuï}gdïq—Ç÷ÃŸé¯h!¼˜IÁé|hp4ŒÅçØÖI çGw¼óÉØäI’Ôµ|2„õ•¯ê'ràï~èo~‚ªXÔv6R‘÷úé¹ã
+tŒ‡ÙíG’9d˜I¼7©éúœ¶æ°½–Ô`n`S²øÈÑ^~Ýe„0¯Ñ‹µ Z£E¯x.ÐËe!ZæEÇ¯èŽ˜¿*vWA—:jÝ*©VV€±šù6/»/7J¶Qüy1wZÎÿ&q>xje{OWMLç“\ëß)wû!þ¹›ôðçŸfîÝª÷ÝíämÝx4‰æY¨¾ÓÉNõ¥ßõ0Z†ç’é›MZ'î'*ÚÍ$q ‘Äô]ŒÒ>Ÿ÷ÌvSïµ<4Œ´G¯Æþt—±‚…ÆHÚeìaK5ìò.ãJO–^}oú€¾#¿°S¬ghwçu­Ñ/9zÍÙFñìùVa-ü*Ém¿§’ý|s”ÏÄ±ÏLb™g`Iz÷6)æö'i˜£xø°Jzj7S¤6|¥ö	Ä*a"°ü¬&¹v¯–°ÇÑ–þ"ûwCÑÜ?‡sj€½D¸àÞ,·<8ôF­u”l£ø?E¤k*B§pÙºT×ÒmÅÅÒ)§rïÂ½xKS9¡ƒ±X^¢#¼ØÛpîÂž“ÀjÞ½ÍˆJ%c3¡óbnÂÞ‡eéXØÉ‹Õz¹Ô5\›Ï®^Âj™Ž’mžN½B³¥þo]ªWÚâ¿ÃÉnlØ5õ?¾9¦Ä±—ÒÞÓ€´í`(}8ÑýÖŒ<éŠƒÊµ!^•ÙKè­Æk|ò[‘í!áÑˆñì}ë±—3äÌ	ëªn/×P%Û(þŠÉ¦M@¿	+lè€¨>nv›è……ìé]³Nÿ}âß.¢=máuäÉm«Ôí‡­“TC¦%KHy~bÕh½øë#ËB49CîìS8{Í­ü4_7|±Ñ:‘/|C0Z Åÿ)º9kd:×á²óœ¢˜râQ9XØßq^ùozwtBå¬ô‡!Vo’˜} 4'	¡-„•2>^˜€Ù›Cé&—–fÊÅªþíÝ[lTEÀñÿÌ9{öÒÝ-»-[Z-Ó€±–HH$4iE*}À£‰F‰˜CÂ“xÆ`4áÁ@B4SQn±@0ATµRµ($ÖÒ‚v[K·Ý³ç²ãÃniið­/óKöu³;g¾Ì|çœù>›Ìæ=´ë£H XÌxæè`Ón©ZÚœµl7H¶íÏR÷ª¤áá8ŸtI¾î¼&N^˜ÓwàCÕ½=ôÙñsƒ­Õ×žÚÁU3›KÂ´ðò&^fÛñðm‰4ç`øÕ¿Ê'Â5‘¶‹»(Lù¬Q­k ¤Bé`Óþ?Dízk;k]Å+~«@¶u%Eë·‡†ÕãwyÏ‰í’¥õ#Ü¿?ïÄØºÐ±{ÔÙ¡:{õWŒ<,·i*ò†‹Ÿwp}D£¬žˆ³Ð•"ˆÑÄ¶03.™YcMkžÂ)€™ý¯úrk·6iSË«¾<h´±Ê›4'‹%¼EX°$íÎ¯‚@õ²gÃœèýBl8IÙÞå(ñ¶?B.› l¤ˆG2ä£.ô´“)y3#çÉ6fñ}•J5rµ·!‚
+•+öÙÖÁ¦iÅÝ×ÔZ! H¾Kâø<¤QBÖñcWÄ%ÉYWv’ýq÷Ù
+û‡î»úëÁÞÏ¼áTù(íW&ÕÿÛƒÎÐ×Rû‡3˜xyxüHŒGálÚXÂ²Gúý@Så¿XùXÅÑpšPçaÔØ7È›¹½ŠáˆÏ ¡È˜à4F£§v:ý—Þ£=‘ã‚­s6M›¬ñp“ç«~œS;Î#¶DÖQæèÞ‰Êî3‚=Vr‘G"Ý¢~£@“’k®Ç:¥Ã|>¦s6Mûëùzãv¯rSdCÿ.ã,¿¿ øÄeDÿw©Dñš|e·S1Ä¥Ò¹¸ú4ÍñQ>µFÈðï¬aÞ™ô	qýû”^M»ùŽÌ Å¾Ø’DPOÏº÷±ö2¿n+Ué9TU„TK˜²Z8ZE2^j±1h‹[¼ñÁÊBS½èhZAø&÷®çq*I|“"‚jŽ7§‰«mäNJ*_b“
+-æ¡ª
+n_ÚÀÊT%åKˆ&"m€jŠ“ÔÁ¦i"S‚íÆ&†ª=¢Žb¦k‰+Epv+Ñ—Ÿ¤ÄBì&Û PrnK‘z4H(&r&FlK˜ð÷QB¯Ïd°éˆÖþmyÚx‘Âk]J¥”8ìA“#Òë%Éç“ ÒJ³çóâ‡i¼øê-ë´DöIŒË
+7ëá®È’½Gçlš6=6S¸s¹øÐD‰   ^IDATøèéáÑ´é ÖW®
+Þf·¨3F?ÔÖþëòÅ­·x+€Ÿ€>¦§›¦iSò¼q“[ïõÐhÚô¯¬-~Ì)Á§iÚ4ÛÍò³’™ü!ÜŒþ¿o³ÆÓ    IEND®B`‚
 
 =========================================
 File: nvim/.config/nvim/lazy-lock.json
@@ -8895,6 +9233,1002 @@ echo "Process complete. The contents of all files have been saved to $OUTPUT_FIL
 
 
 =========================================
+File: dotfiles_content.txt
+=========================================
+
+
+
+=========================================
+File: push.log
+=========================================
+
+========== 2025-08-01 21:28:02 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 7fce75f] Auto-commit: 2025-08-01 21:28:02
+ 2 files changed, 1 insertion(+)
+ create mode 100644 push.log
+ mode change 100644 => 100755 push.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 21:28:02] âœ… Push exitoso
+========== 2025-08-01 22:44:03 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9fefae3] Patata: 2025-08-01 22:44:03
+ 11 files changed, 710 insertions(+), 25 deletions(-)
+ create mode 100644 i3/.config/i3/config
+ create mode 100644 i3/.config/i3/i3blocks.conf
+ create mode 100644 i3/.config/i3/scripts/disk
+ create mode 100755 i3/.config/i3/scripts/lock
+ create mode 100644 i3/.config/i3/scripts/memory
+ create mode 100644 i3/.config/i3/scripts/spotify.py
+ create mode 100644 i3/.config/i3/scripts/volume
+ create mode 100644 i3status/.config/i3status/i3status.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 22:44:03]  Push exitoso
+========== 2025-08-01 22:55:04 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main ee95259] Patata: 2025-08-01 22:55:04
+ 4 files changed, 52 insertions(+), 37 deletions(-)
+ rename {i3/.config/i3 => i3status/.config/i3status}/i3blocks.conf (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-01 22:55:04]  Push exitoso
+========== 2025-08-02 21:17:53 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 4fd7513] Patata: 2025-08-02 21:17:53
+ 9 files changed, 175 insertions(+), 461 deletions(-)
+ rename i3/.config/i3/scripts/{lock => lock.sh} (100%)
+ create mode 100755 i3/.config/i3/scripts/natscroll.sh
+ create mode 100644 picom/.config/picom/picom.conf
+ delete mode 100644 r.md
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 21:17:53]  Push exitoso
+========== 2025-08-02 22:56:44 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 4db0ebc] Patata: 2025-08-02 22:56:44
+ 4 files changed, 23 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 22:56:44]  Push exitoso
+========== 2025-08-02 23:31:40 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main eaa4e5a] Patata: 2025-08-02 23:31:40
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-02 23:31:40]  Push exitoso
+========== 2025-08-03 22:34:16 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 54704d7] Patata: 2025-08-03 22:34:16
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-03 22:34:16]  Push exitoso
+========== 2025-08-04 11:23:37 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 325a214] Patata: 2025-08-04 11:23:37
+ 3 files changed, 224 insertions(+), 34 deletions(-)
+ create mode 100644 polybar/.config/polybar/config.ini
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 11:23:37]  Push exitoso
+========== 2025-08-04 16:11:22 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9464bf5] Patata: 2025-08-04 16:11:22
+ 5 files changed, 45 insertions(+), 2 deletions(-)
+ create mode 100644 rofimoji/.config/rofimoji.rc
+ create mode 100755 waybar/.config/waybar/wifi.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:11:22]  Push exitoso
+========== 2025-08-04 16:17:56 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 6673b8a] Patata: 2025-08-04 16:17:56
+ 3 files changed, 2 insertions(+), 1 deletion(-)
+ rename {waybar/.config/waybar => hypr/.config/hypr/scripts}/wifi.sh (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:17:56]  Push exitoso
+========== 2025-08-04 16:29:18 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 09e460d] Patata: 2025-08-04 16:29:18
+ 3 files changed, 11 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:29:18]  Push exitoso
+========== 2025-08-04 16:53:39 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main c7ed183] Patata: 2025-08-04 16:53:39
+ 6 files changed, 15 insertions(+), 21 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 16:53:39]  Push exitoso
+========== 2025-08-04 17:13:59 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 81c646e] Patata: 2025-08-04 17:13:59
+ 4 files changed, 23 insertions(+), 11 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 17:13:59]  Push exitoso
+========== 2025-08-04 20:01:20 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 10cb831] Patata: 2025-08-04 20:01:20
+ 4 files changed, 263 insertions(+), 310 deletions(-)
+ create mode 100644 aur_packages.txt
+ create mode 100644 pacman_packages.txt
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 20:01:20]  Push exitoso
+========== 2025-08-04 20:03:58 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 00df169] Patata: 2025-08-04 20:03:58
+ 2 files changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-04 20:03:58]  Push exitoso
+========== 2025-08-06 21:45:22 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main fac58f7] Patata: 2025-08-06 21:45:22
+ 7 files changed, 35 insertions(+), 4 deletions(-)
+ create mode 100644 eww/.config/eww/eww.css
+ create mode 100644 eww/.config/eww/eww.yuck
+ mode change 100644 => 100755 install.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:45:22]  Push exitoso
+========== 2025-08-06 21:53:02 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 99a85aa] Patata: 2025-08-06 21:53:02
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+ create mode 100644 .gitignore
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:53:02]  Push exitoso
+========== 2025-08-06 21:53:19 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e1456b3] Patata: 2025-08-06 21:53:19
+ 1 file changed, 137 deletions(-)
+ delete mode 100644 push.log
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 21:53:19]  Push exitoso
+========== 2025-08-06 22:18:04 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 6f1a72e] AÃ±adiendo config de swaync
+ 1 file changed, 21 insertions(+)
+ create mode 100644 swaync/.config/swaync/config.json
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-06 22:18:04]  Push exitoso
+========== 2025-08-07 08:55:16 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 27b3e52] Patata: 2025-08-07 08:55:16
+ 1 file changed, 26 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 08:55:16]  Push exitoso
+========== 2025-08-07 10:39:19 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 0194320] Patata: 2025-08-07 10:39:19
+ 1 file changed, 8 insertions(+), 17 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 10:39:19]  Push exitoso
+========== 2025-08-07 11:29:39 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 7a87c55] AÃ±adiendo compatibilidad de Markdown
+ 7 files changed, 248 insertions(+), 12 deletions(-)
+ create mode 100644 InstallArch.md
+ create mode 100644 InstallArch.md.pdf
+ create mode 100644 InstallArch.pdf
+ create mode 100644 nvim/.config/nvim/lua/plugins/markdown.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 11:29:39]  Push exitoso
+========== 2025-08-07 17:50:31 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main bae815e] Configurando swaync
+ 1 file changed, 25 insertions(+), 19 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-07 17:50:31]  Push exitoso
+========== 2025-08-08 22:13:41 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 1cbe56b] Added buttons to sway nc
+ 5 files changed, 183 insertions(+), 7 deletions(-)
+ delete mode 100644 InstallArch.pdf
+ create mode 100644 swaync/.config/swaync/style.css
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:13:41]  Push exitoso
+========== 2025-08-08 22:19:50 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 2f2fa50] Patata: 2025-08-08 22:19:50
+ 1 file changed, 9 insertions(+), 39 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:19:50]  Push exitoso
+========== 2025-08-08 22:22:05 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main db03d82] Patata: 2025-08-08 22:22:05
+ 1 file changed, 58 insertions(+), 42 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:22:05]  Push exitoso
+========== 2025-08-08 22:47:15 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 2359d7f] Better MD support
+ 5 files changed, 23 insertions(+), 51 deletions(-)
+ delete mode 100644 InstallArch.md.pdf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 22:47:15]  Push exitoso
+========== 2025-08-08 23:24:30 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9d925b2] Patata: 2025-08-08 23:24:30
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-08 23:24:30]  Push exitoso
+========== 2025-08-10 22:40:31 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 02cf940] Patata: 2025-08-10 22:40:31
+ 2 files changed, 84 insertions(+), 88 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-10 22:40:31]  Push exitoso
+========== 2025-08-11 12:39:30 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 01b3fa4] Patata: 2025-08-11 12:39:30
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 12:39:30]  Push exitoso
+========== 2025-08-11 15:24:27 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main afd4204] Patata: 2025-08-11 15:24:27
+ 5 files changed, 19 insertions(+), 21 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 15:24:27]  Push exitoso
+========== 2025-08-11 15:44:21 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b3ab51b] Added Copilot fucntuanily, but only in the compeltiton format, no inline text
+ 4 files changed, 48 insertions(+), 38 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 15:44:21]  Push exitoso
+========== 2025-08-11 22:24:18 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e765d06] Patata: 2025-08-11 22:24:18
+ 1 file changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-11 22:24:18]  Push exitoso
+========== 2025-08-12 11:51:49 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 62cae2c] Patata: 2025-08-12 11:51:49
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-12 11:51:49]  Push exitoso
+========== 2025-08-13 11:18:00 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main c46e068] Elimnando sugerencias de copilot
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 11:18:00]  Push exitoso
+========== 2025-08-13 15:16:16 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 90958a0] Added Hyprlock config
+ 3 files changed, 113 insertions(+)
+ create mode 100644 hypr/.config/hypr/hyprlock.conf
+ create mode 100644 hypr/.config/hypr/monitors.conf
+ create mode 100644 hypr/.config/hypr/workspaces.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:16:16]  Push exitoso
+========== 2025-08-13 15:29:06 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main da610e4] Agregando Hyprpaper, hypridle
+ 4 files changed, 83 insertions(+), 13 deletions(-)
+ create mode 100644 hypr/.config/hypr/hypridle.conf
+ create mode 100644 hypr/.config/hypr/hyprpaper.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:29:06]  Push exitoso
+========== 2025-08-13 15:30:59 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main d0b7a5f] added hyr ecosystem funcinality
+ 1 file changed, 3 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:30:59]  Push exitoso
+========== 2025-08-13 15:42:42 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 0034b2e] agerando
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:42:42]  Push exitoso
+========== 2025-08-13 15:47:17 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 1847c6e] Ageragando Hyprsunset
+ 3 files changed, 15 insertions(+)
+ create mode 100644 hypr/.config/hypr/hyprsunset.conf
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 15:47:17]  Push exitoso
+========== 2025-08-13 16:18:10 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e75ac3f] Added sources to tressiter
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:18:10]  Push exitoso
+========== 2025-08-13 16:37:58 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e2d379f] Adde none-ls
+ 2 files changed, 44 insertions(+), 7 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/none-ls.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:37:58]  Push exitoso
+========== 2025-08-13 16:47:46 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e3d1c23] Patata: 2025-08-13 16:47:46
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 16:47:46]  Push exitoso
+========== 2025-08-13 17:15:51 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b40f35a] Addes basic debugging
+ 3 files changed, 21 insertions(+), 15 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/debugging.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 17:15:51]  Push exitoso
+========== 2025-08-13 17:17:51 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 101fa23] Elimando suspendion de hypridle
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 17:17:51]  Push exitoso
+========== 2025-08-13 21:27:01 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main d39e537] Agragando busqueda en vivo
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-13 21:27:01]  Push exitoso
+========== 2025-08-14 21:47:17 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 972bd2c] Fixed Wallpaper isuue
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-14 21:47:17]  Push exitoso
+========== 2025-08-15 14:30:08 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 946d564] Patata: 2025-08-15 14:30:08
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-15 14:30:08]  Push exitoso
+========== 2025-08-16 20:34:30 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main c6aff09] Cmabio de none-ls a formatter.nvim
+ 3 files changed, 62 insertions(+), 29 deletions(-)
+ create mode 100644 nvim/.config/nvim/lua/plugins/formatter.lua
+ delete mode 100644 nvim/.config/nvim/lua/plugins/none-ls.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-16 20:34:30]  Push exitoso
+========== 2025-08-16 21:32:33 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e4139d4] agregando formatter para latex
+ 1 file changed, 50 insertions(+), 58 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-16 21:32:33]  Push exitoso
+========== 2025-08-17 22:52:21 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 85cf0e2] Fixed Formatter errors
+ 1 file changed, 44 insertions(+), 48 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-17 22:52:21]  Push exitoso
+========== 2025-08-17 23:39:20 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 35fcfcf] Elimanado modulos sobrante waybar
+ 1 file changed, 19 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-17 23:39:20]  Push exitoso
+========== 2025-08-18 20:43:11 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main a742cda] Mejorando la config
+ 4 files changed, 0 insertions(+), 0 deletions(-)
+ rename InstallArch.md => Install/InstallArch.md (100%)
+ rename aur_packages.txt => Install/aur_packages.txt (100%)
+ rename install.sh => Install/install.sh (100%)
+ rename pacman_packages.txt => Install/pacman_packages.txt (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-18 20:43:11]  Push exitoso
+========== 2025-08-18 22:11:03 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 44cc02a] Corrected lock porblemns
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-18 22:11:03]  Push exitoso
+========== 2025-08-19 08:53:11 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 787e3e7] Patata: 2025-08-19 08:53:11
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 08:53:11]  Push exitoso
+========== 2025-08-19 09:43:38 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main d238a38] Patata: 2025-08-19 09:43:38
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 09:43:38]  Push exitoso
+========== 2025-08-19 10:03:18 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 6d1dea9] Agragando wlogour
+ 2 files changed, 36 insertions(+)
+ create mode 100644 fastfetch/.config/fastfetch/Saviour.png
+ create mode 100644 wlogout/.config/wlogout/layout
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 10:03:18]  Push exitoso
+========== 2025-08-19 14:02:52 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 4d89e24] Cambiando soporte markdon
+ 4 files changed, 61 insertions(+), 52 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-19 14:02:52]  Push exitoso
+========== 2025-08-20 22:06:12 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 5c4175b] Arregalndo hypidle y hyprsunset
+ 3 files changed, 79 insertions(+), 77 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-20 22:06:12]  Push exitoso
+========== 2025-08-21 08:01:08 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 8bca09a] Agregando soporte EspaÃ±ol Latex
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-21 08:01:08]  Push exitoso
+========== 2025-08-21 19:10:14 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 2829b8d] Solved LAtex sninnpet error
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-21 19:10:14]  Push exitoso
+========== 2025-08-24 10:46:41 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 107fa83] Agregando al snippet de latex soprte para derechos de autor
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-24 10:46:41]  Push exitoso
+========== 2025-08-24 23:03:35 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 40c2012] added ipynb support
+ 1 file changed, 28 insertions(+)
+ create mode 100644 nvim/.config/nvim/lua/plugins/ipynb.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-24 23:03:35]  Push exitoso
+========== 2025-08-25 14:37:22 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main df09c1d] Resolved Ipynb error
+ 2 files changed, 32 insertions(+), 18 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-25 14:37:22]  Push exitoso
+========== 2025-08-26 10:55:14 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main f71ecb1] Patata: 2025-08-26 10:55:14
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-26 10:55:14]  Push exitoso
+========== 2025-08-29 21:20:13 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 5c80f43] Patata: 2025-08-29 21:20:13
+ 5 files changed, 69 insertions(+), 79 deletions(-)
+ delete mode 100644 nvim/.config/nvim/lua/plugins/ipynb.lua
+ create mode 100644 nvim/.config/nvim/lua/plugins/jupyter.lua
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-29 21:20:13]  Push exitoso
+========== 2025-08-29 21:39:47 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 1b159f9] Patata: 2025-08-29 21:39:47
+ 1 file changed, 2 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-29 21:39:47]  Push exitoso
+========== 2025-08-31 16:29:44 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main bf6adda] Patata: 2025-08-31 16:29:44
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-08-31 16:29:44]  Push exitoso
+========== 2025-09-01 20:03:33 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 8e3c891] Patata: 2025-09-01 20:03:33
+ 3 files changed, 87 insertions(+)
+ create mode 100755 hypr/.config/hypr/scripts/env.sh
+ create mode 100755 hypr/.config/hypr/scripts/selector.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:03:33]  Push exitoso
+========== 2025-09-01 20:09:47 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 71cd574] Patata: 2025-09-01 20:09:47
+ 1 file changed, 20 insertions(+), 11 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:09:47]  Push exitoso
+========== 2025-09-01 20:29:26 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 88ab8ed] Configurando activaodr de ambiente
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 20:29:26]  Push exitoso
+========== 2025-09-01 21:39:13 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b564bc9] Patata: 2025-09-01 21:39:13
+ 2 files changed, 24 insertions(+), 16 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:39:13]  Push exitoso
+========== 2025-09-01 21:42:09 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 929f618] Patata: 2025-09-01 21:42:09
+ 2 files changed, 8 insertions(+), 16 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:42:09]  Push exitoso
+========== 2025-09-01 21:42:20 ==========
+[2025-09-01 21:42:20] No hay cambios para commitear.
+========== 2025-09-01 21:42:29 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main a1a1b90] Patata: 2025-09-01 21:42:29
+ 1 file changed, 36 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:42:29]  Push exitoso
+========== 2025-09-01 21:44:56 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main ff8cfca] Patata: 2025-09-01 21:44:56
+ 1 file changed, 36 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:44:56]  Push exitoso
+========== 2025-09-01 21:45:54 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main a7a7f40] Patata: 2025-09-01 21:45:54
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:45:54]  Push exitoso
+========== 2025-09-01 21:54:15 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 22989d6] Patata: 2025-09-01 21:54:15
+ 2 files changed, 27 insertions(+), 36 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-01 21:54:15]  Push exitoso
+========== 2025-09-01 21:55:39 ==========
+[2025-09-01 21:55:39] No hay cambios para commitear.
+========== 2025-09-02 21:47:38 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 3af687b] Patata: 2025-09-02 21:47:38
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-02 21:47:38]  Push exitoso
+========== 2025-09-02 21:58:17 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 20e4f30] Patata: 2025-09-02 21:58:17
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-02 21:58:17]  Push exitoso
+========== 2025-09-04 14:51:08 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 6cc14d6] Reconfiguardo swaync
+ 1 file changed, 122 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-04 14:51:08]  Push exitoso
+========== 2025-09-04 15:12:30 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 4b0bec7] Patata: 2025-09-04 15:12:30
+ 2 files changed, 104 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-04 15:12:30]  Push exitoso
+========== 2025-09-06 15:44:42 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 918fdfc] Patata: 2025-09-06 15:44:42
+ 2 files changed, 49 insertions(+), 99 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 15:44:42]  Push exitoso
+========== 2025-09-06 16:39:57 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 8dd7383] Patata: 2025-09-06 16:39:57
+ 2 files changed, 14 insertions(+), 10 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 16:39:57]  Push exitoso
+========== 2025-09-06 17:39:09 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b6ae40a] Patata: 2025-09-06 17:39:09
+ 2 files changed, 46 insertions(+), 49 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 17:39:09]  Push exitoso
+========== 2025-09-06 20:02:24 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main bb5fa10] cant seem to finish the sway nc theme
+ 1 file changed, 21 insertions(+), 25 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:02:24]  Push exitoso
+========== 2025-09-06 20:02:58 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b23cd4f] Patata: 2025-09-06 20:02:58
+ 1 file changed, 77 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:02:58]  Push exitoso
+========== 2025-09-06 20:34:26 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 174c28a] Patata: 2025-09-06 20:34:26
+ 2 files changed, 162 insertions(+), 37 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 20:34:26]  Push exitoso
+========== 2025-09-06 23:39:36 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 885dc0b] Patata: 2025-09-06 23:39:36
+ 1 file changed, 65 insertions(+), 71 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-06 23:39:36]  Push exitoso
+========== 2025-09-07 01:19:13 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 72c32bd] Patata: 2025-09-07 01:19:13
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-07 01:19:13]  Push exitoso
+========== 2025-09-08 16:37:10 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9f60895] Patata: 2025-09-08 16:37:10
+ 1 file changed, 89 insertions(+), 62 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:37:10]  Push exitoso
+========== 2025-09-08 16:39:29 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main ecc902e] Patata: 2025-09-08 16:39:29
+ 1 file changed, 43 insertions(+), 29 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:39:29]  Push exitoso
+========== 2025-09-08 16:41:55 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main ddf21ec] Patata: 2025-09-08 16:41:55
+ 1 file changed, 42 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:41:55]  Push exitoso
+========== 2025-09-08 16:42:25 ==========
+[2025-09-08 16:42:25] No hay cambios para commitear.
+========== 2025-09-08 16:45:25 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 1a0cda2] Patata: 2025-09-08 16:45:25
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:45:25]  Push exitoso
+========== 2025-09-08 16:50:24 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main e501a1b] Patata: 2025-09-08 16:50:24
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:50:24]  Push exitoso
+========== 2025-09-08 16:53:59 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 5716559] Patata: 2025-09-08 16:53:59
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-08 16:53:59]  Push exitoso
+========== 2025-09-09 22:32:20 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 022fc51] Agrgar config a waybar
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-09 22:32:20]  Push exitoso
+========== 2025-09-10 23:30:09 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main b1ec128] Patata: 2025-09-10 23:30:09
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-10 23:30:09]  Push exitoso
+========== 2025-09-12 19:57:48 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main d353f84] solved workspace swipe gesture not working after hyprland upgrade to 0.51
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-12 19:57:48]  Push exitoso
+========== 2025-09-14 18:43:31 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main f3e4af3] Patata: 2025-09-14 18:43:31
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:43:31]  Push exitoso
+========== 2025-09-14 18:50:00 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 7734971] mejorando colores del hyprsunset
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+ create mode 100755 hypr/.config/hypr/scripts/nigthligth.sh
+ create mode 100755 hypr/.config/hypr/scripts/resetsunset.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:50:00]  Push exitoso
+========== 2025-09-14 18:56:25 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main dbda0dd] Patata: 2025-09-14 18:56:25
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-14 18:56:25]  Push exitoso
+========== 2025-09-15 20:41:51 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main edbcb77] Romved reset hypraunset script
+ 3 files changed, 10 insertions(+), 15 deletions(-)
+ delete mode 100755 hypr/.config/hypr/scripts/resetsunset.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-15 20:41:51]  Push exitoso
+========== 2025-09-16 22:23:59 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 8b258ab] Patata: 2025-09-16 22:23:59
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-16 22:23:59]  Push exitoso
+========== 2025-09-21 21:30:55 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main c52a6fd] Devolviedno el hyprsusnet
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-21 21:30:55]  Push exitoso
+========== 2025-09-23 19:08:54 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main f84fa17] Mejorando la eficiancia ne bateria
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+Haciendo push...
+[2025-09-23 19:08:54] âŒ Error al hacer push
+========== 2025-09-23 23:13:29 ==========
+[2025-09-23 23:13:29] No hay cambios para commitear.
+========== 2025-09-24 09:59:11 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 22f2738] cmabiando config de neovim para compliar un poquito mejor documentos
+ 1 file changed, 4 insertions(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 09:59:11]  Push exitoso
+========== 2025-09-24 10:04:21 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 32b8f9e] devolvioedo a como era
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 10:04:21]  Push exitoso
+========== 2025-09-24 22:03:13 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 3800ba1] addes the hyprexpo plugin
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-24 22:03:13]  Push exitoso
+========== 2025-09-25 08:47:49 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9c848a4] solved hyprexpo not loading
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-25 08:47:49]  Push exitoso
+========== 2025-09-26 15:24:16 ==========
+[2025-09-26 15:24:16] No hay cambios para commitear.
+========== 2025-09-26 21:19:28 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 30c504a] Added my pamd files
+ 35 files changed, 332 insertions(+)
+ create mode 100644 pamd/etc/pam.d/chfn
+ create mode 100644 pamd/etc/pam.d/chpasswd
+ create mode 100644 pamd/etc/pam.d/chsh
+ create mode 100644 pamd/etc/pam.d/crond
+ create mode 100644 pamd/etc/pam.d/cups
+ create mode 100644 pamd/etc/pam.d/gdm-autologin
+ create mode 100644 pamd/etc/pam.d/gdm-fingerprint
+ create mode 100644 pamd/etc/pam.d/gdm-launch-environment
+ create mode 100644 pamd/etc/pam.d/gdm-password
+ create mode 100644 pamd/etc/pam.d/gdm-smartcard
+ create mode 100644 pamd/etc/pam.d/greetd
+ create mode 100644 pamd/etc/pam.d/groupmems
+ create mode 100644 pamd/etc/pam.d/gtklock
+ create mode 100644 pamd/etc/pam.d/hyprlock
+ create mode 100644 pamd/etc/pam.d/i3lock
+ create mode 100644 pamd/etc/pam.d/login
+ create mode 100644 pamd/etc/pam.d/newusers
+ create mode 100644 pamd/etc/pam.d/other
+ create mode 100644 pamd/etc/pam.d/passwd
+ create mode 100644 pamd/etc/pam.d/polkit-1
+ create mode 100644 pamd/etc/pam.d/remote
+ create mode 100644 pamd/etc/pam.d/runuser
+ create mode 100644 pamd/etc/pam.d/runuser-l
+ create mode 100644 pamd/etc/pam.d/sshd
+ create mode 100644 pamd/etc/pam.d/su
+ create mode 100644 pamd/etc/pam.d/su-l
+ create mode 100644 pamd/etc/pam.d/sudo
+ create mode 100644 pamd/etc/pam.d/swaylock
+ create mode 100644 pamd/etc/pam.d/swaylock.pacsave
+ create mode 100644 pamd/etc/pam.d/system-auth
+ create mode 100644 pamd/etc/pam.d/system-local-login
+ create mode 100644 pamd/etc/pam.d/system-login
+ create mode 100644 pamd/etc/pam.d/system-remote-login
+ create mode 100644 pamd/etc/pam.d/system-services
+ create mode 100644 pamd/etc/pam.d/vlock
+Haciendo push...
+[2025-09-26 21:19:28] âŒ Error al hacer push
+========== 2025-09-30 19:17:45 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 6bb4d31] Adede update sh
+ 1 file changed, 6 insertions(+)
+ create mode 100755 hypr/.config/hypr/scripts/update.sh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 19:17:45]  Push exitoso
+========== 2025-09-30 19:25:52 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 64b16c7] mad ebetter the uopdate script
+ 1 file changed, 53 insertions(+), 4 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 19:25:52]  Push exitoso
+========== 2025-09-30 21:27:54 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 2f14bf3] Patatas
+ 1 file changed, 3 insertions(+)
+ create mode 100644 hypr/.config/hypr/scripts/.gitignore
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-09-30 21:27:54]  Push exitoso
+========== 2025-09-30 21:36:06 ==========
+[2025-09-30 21:36:06] No hay cambios para commitear.
+========== 2025-10-01 16:45:29 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 9677739] moviendo alias y shorcuts para q funionen
+ 2 files changed, 33 insertions(+)
+ create mode 100644 zsh/custom/aliases.zsh
+ create mode 100644 zsh/custom/shorcuts.zsh
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:45:29]  Push exitoso
+========== 2025-10-01 16:46:42 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 08f785b] mejorando
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:46:42]  Push exitoso
+========== 2025-10-01 16:57:49 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 61702fa] Ahora si
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+ rename zsh/{ => .zsh}/custom/aliases.zsh (100%)
+ rename zsh/{ => .zsh}/custom/shorcuts.zsh (100%)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 16:57:49]  Push exitoso
+========== 2025-10-01 17:05:03 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 1721f23] Patata: 2025-10-01 17:05:03
+ 1 file changed, 1 insertion(+)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:05:03]  Push exitoso
+========== 2025-10-01 17:07:15 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 844edf5] Patata: 2025-10-01 17:07:15
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:07:15]  Push exitoso
+========== 2025-10-01 17:08:45 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 436bf95] Patata: 2025-10-01 17:08:45
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-01 17:08:45]  Push exitoso
+========== 2025-10-02 20:01:19 ==========
+Mensaje de commit (dejar vacÃ­o para 'Auto-commit'): Haciendo commit...
+[main 138e3d3] Patata: 2025-10-02 20:01:19
+ 35 files changed, 332 deletions(-)
+ delete mode 100644 pamd/etc/pam.d/chfn
+ delete mode 100644 pamd/etc/pam.d/chpasswd
+ delete mode 100644 pamd/etc/pam.d/chsh
+ delete mode 100644 pamd/etc/pam.d/crond
+ delete mode 100644 pamd/etc/pam.d/cups
+ delete mode 100644 pamd/etc/pam.d/gdm-autologin
+ delete mode 100644 pamd/etc/pam.d/gdm-fingerprint
+ delete mode 100644 pamd/etc/pam.d/gdm-launch-environment
+ delete mode 100644 pamd/etc/pam.d/gdm-password
+ delete mode 100644 pamd/etc/pam.d/gdm-smartcard
+ delete mode 100644 pamd/etc/pam.d/greetd
+ delete mode 100644 pamd/etc/pam.d/groupmems
+ delete mode 100644 pamd/etc/pam.d/gtklock
+ delete mode 100644 pamd/etc/pam.d/hyprlock
+ delete mode 100644 pamd/etc/pam.d/i3lock
+ delete mode 100644 pamd/etc/pam.d/login
+ delete mode 100644 pamd/etc/pam.d/newusers
+ delete mode 100644 pamd/etc/pam.d/other
+ delete mode 100644 pamd/etc/pam.d/passwd
+ delete mode 100644 pamd/etc/pam.d/polkit-1
+ delete mode 100644 pamd/etc/pam.d/remote
+ delete mode 100644 pamd/etc/pam.d/runuser
+ delete mode 100644 pamd/etc/pam.d/runuser-l
+ delete mode 100644 pamd/etc/pam.d/sshd
+ delete mode 100644 pamd/etc/pam.d/su
+ delete mode 100644 pamd/etc/pam.d/su-l
+ delete mode 100644 pamd/etc/pam.d/sudo
+ delete mode 100644 pamd/etc/pam.d/swaylock
+ delete mode 100644 pamd/etc/pam.d/swaylock.pacsave
+ delete mode 100644 pamd/etc/pam.d/system-auth
+ delete mode 100644 pamd/etc/pam.d/system-local-login
+ delete mode 100644 pamd/etc/pam.d/system-login
+ delete mode 100644 pamd/etc/pam.d/system-remote-login
+ delete mode 100644 pamd/etc/pam.d/system-services
+ delete mode 100644 pamd/etc/pam.d/vlock
+Haciendo push...
+branch 'main' set up to track 'origin/main'.
+[2025-10-02 20:01:19]  Push exitoso
+
+
+=========================================
 File: push.sh
 =========================================
 
@@ -9157,191 +10491,196 @@ File: Install/install.sh
 #!/bin/bash
 
 # ===================================================================================
-# THE ULTIMATE DOTFILES INSTALLATION SCRIPT V3.0
+# THE ULTIMATE DOTFILES INSTALLATION SCRIPT V4.0
+# Author: F-Patata2008, with revisions by your AI assistant
 # ===================================================================================
 
 # --- SCRIPT CONFIGURATION AND SAFETY ---
 set -e; set -u; set -o pipefail
-cd "$(dirname "$0")" # Always run from the script's directory
+# Ensure the script is run from the 'Install' directory within Dotfiles
+cd "$(dirname "$0")"
+readonly LOG_FILE="$PWD/install_log_$(date +%F_%H-%M-%S).txt"
+exec > >(tee -a "$LOG_FILE") 2>&1 # Redirect all output to log file and stdout
 
 # --- CONFIGURATION ---
 readonly GITHUB_USER="F-Patata2008"
 readonly STOW_PACKAGES=(fastfetch hypr i3 i3status kitty nvim ohmyzsh picom polybar rofi rofimoji swaylock wal waybar zsh)
-readonly PERSONAL_REPOS=(Apunte Arduino-Codes Progra)
+readonly PERSONAL_REPOS=(Apunte Progra Arduino-Codes F-Patata2008) # Corrected repo names
 readonly SERVICES_TO_ENABLE=(
-    NetworkManager.service
-    bluetooth.service
-    tlp.service
-    fprintd.service
-    cups.service
-    powertop.service
-    swayosd-libinput-backend.service # The new, crucial addition
+    NetworkManager.service bluetooth.service tlp.service cups.service
+    powertop.service swayosd-libinput-backend.service check-bat.timer
 )
 
 # --- HELPER FUNCTIONS AND COLORS ---
 readonly GREEN='\033[0;32m'; readonly RED='\033[0;31m'; readonly YELLOW='\033[1;33m'; readonly NC='\033[0m'
 print_header() { echo -e "\n${YELLOW}========================================\n $1 \n========================================${NC}\n"; }
+log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # --- SCRIPT EXECUTION ---
+# Request sudo privileges upfront and keep them alive.
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 print_header "STARTING FULL ARCH LINUX SYSTEM SETUP"
+log_info "Full installation log will be saved to: $LOG_FILE"
 
 # --- FASE 0: PRE-FLIGHT CHECKS ---
 print_header "FASE 0: PRE-FLIGHT CHECKS"
 if ! ping -c 1 archlinux.org &> /dev/null; then
-    echo -e "${RED}ERROR: No internet connection. Please connect to the internet and try again.${NC}"
+    log_error "No internet connection. Please connect and try again."
     exit 1
 fi
-echo -e "${GREEN}âœ”ï¸ Internet connection confirmed.${NC}"
+log_info "âœ”ï¸ Internet connection confirmed."
 
-# --- FASE 1: PACKAGE INSTALLATION (ROBUST METHOD) ---
+# --- FASE 1: PACKAGE INSTALLATION ---
 print_header "FASE 1: INSTALLING PACMAN & AUR PACKAGES"
 if ! grep -q "\[multilib\]" /etc/pacman.conf || grep -q "^#\[multilib\]" /etc/pacman.conf; then
-    echo "Enabling multilib repository..."
+    log_info "Enabling multilib repository..."
     sudo sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
     sudo pacman -Syy
 fi
-echo "Installing packages from 'pacman_packages.txt' one by one..."
-while read -r package; do
-    if [[ -z "$package" || "$package" =~ ^# ]]; then continue; fi
-    sudo pacman -S --needed --noconfirm "$package" || echo -e "${RED}--> FAILED to install '$package'. Continuing...${NC}"
-done < pacman_packages.txt
 
+log_info "Installing Pacman packages..."
+sudo pacman -S --needed --noconfirm - < pacman_packages.txt || log_warn "Some pacman packages failed to install. Check the log."
+
+log_info "Installing or updating yay..."
 if ! command -v yay &> /dev/null; then
-    (cd .. && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm && cd .. && rm -rf yay)
+    sudo pacman -S --needed --noconfirm git base-devel
+    (cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm && cd / && rm -rf /tmp/yay)
 fi
-yay -S --needed --noconfirm - < aur_packages.txt
-echo -e "${GREEN}âœ”ï¸ All packages installed successfully.${NC}"
 
-# --- FASE 2: OH MY ZSH & POWERLEVEL10K ---
-print_header "FASE 2: SETTING UP OH MY ZSH & POWERLEVEL10K"
-git submodule update --init --recursive
-P10K_DIR="../ohmyzsh/.oh-my-zsh/custom/themes/powerlevel10k"
+log_info "Installing AUR packages..."
+yay -S --needed --noconfirm - < aur_packages.txt || log_warn "Some AUR packages failed to install. Check the log."
+log_info "âœ”ï¸ All packages installed."
+
+# --- FASE 2: SPICETIFY SETUP ---
+print_header "FASE 2: SETTING UP SPICETIFY"
+if command -v spicetify &> /dev/null; then
+    log_info "Configuring Spicetify..."
+    sudo chmod a+wr /opt/spotify/Apps -R
+    spicetify backup apply
+    log_info "Installing Spicetify Marketplace..."
+    (cd "$(spicetify -c | grep 'Custom apps')/.." && curl -fL "https://github.com/spicetify/spicetify-marketplace/releases/latest/download/spicetify-marketplace.zip" -o spicetify-marketplace.zip && unzip -o spicetify-marketplace.zip)
+    spicetify apply
+    log_info "âœ”ï¸ Spicetify setup complete."
+else
+    log_warn "Spicetify not found. Skipping setup."
+fi
+
+# --- FASE 3: ZSH, OH MY ZSH & POWERLEVEL10K ---
+print_header "FASE 3: SETTING UP ZSH & POWERLEVEL10K"
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    log_info "Oh My Zsh not found, installing..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+    log_info "Oh My Zsh already installed."
+fi
+P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 if [ ! -d "$P10K_DIR" ]; then
+    log_info "Cloning Powerlevel10k..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
 fi
-echo -e "${GREEN}âœ”ï¸ Oh My Zsh & P10k are ready.${NC}"
-
-# --- FASE 3: EXPERIMENTAL GOODIX FINGERPRINT FIRMWARE ---
-print_header "FASE 3: OPTIONAL GOODIX FINGERPRINT FIRMWARE"
-read -p "Do you want to install the Goodix fingerprint firmware? (y/n): " FINGERPRINT_CHOICE
-if [[ "$FINGERPRINT_CHOICE" =~ ^[Yy]$ ]]; then
-    ( # Run in a subshell to keep our main script clean
-        cd /tmp
-        git clone --recurse-submodules https://github.com/goodix-fp-linux-dev/goodix-fp-dump.git
-        cd goodix-fp-dump
-        python3 -m venv .venv
-        source .venv/bin/activate
-        pip install -r requirements.txt
-        echo -e "${YELLOW}Please find your device's idProduct below:${NC}"
-        sudo lsusb -vd "27c6:" | grep "idProduct"
-        read -p "Enter the ID of your device (e.g., 55b4): " DEVICE_ID
-        sudo .venv/bin/python3 run_"$DEVICE_ID".py
-        deactivate
-        rm -rf /tmp/goodix-fp-dump
-    )
-    echo -e "${GREEN}âœ”ï¸ Firmware installation complete.${NC}"
-else
-    echo "Skipping fingerprint firmware installation."
+if [[ "$SHELL" != "/bin/zsh" ]]; then
+    log_info "Changing default shell to Zsh..."
+    chsh -s "$(which zsh)"
 fi
+log_info "âœ”ï¸ Zsh setup complete."
 
-# --- FASE 4: SAFE SYSTEM CONFIGURATION ---
-print_header "FASE 4: APPLYING SAFE SYSTEM CONFIGURATIONS"
-echo "Setting TTY keymap to la-latin1..."
-echo "KEYMAP=la-latin1" | sudo tee /etc/vconsole.conf
-
-print_header "Enabling Fingerprint Authentication (PAM)"
-FP_LINE="auth      sufficient      pam_fprintd.so"
-for pam_file in sudo gdm-password polkit-1; do
-    if ! grep -q "pam_fprintd.so" "/etc/pam.d/$pam_file"; then
-        sudo sed -i "1s,^,$FP_LINE\n," "/etc/pam.d/$pam_file"
+# --- FASE 4: CONDITIONAL FINGERPRINT SETUP ---
+print_header "FASE 4: FINGERPRINT READER CONFIGURATION"
+FINGERPRINT_ID="27c6:55b4"
+if lsusb | grep -q "$FINGERPRINT_ID"; then
+    log_info "Goodix $FINGERPRINT_ID fingerprint reader detected."
+    read -p "Do you want to install the experimental community driver? (y/n): " choice
+    if [[ "$choice" =~ ^[Yy]$ ]]; then
+        yay -S --needed --noconfirm libfprint-goodixtls-55x4
+        log_info "Enabling fingerprint authentication (PAM)..."
+        FP_LINE="auth      sufficient      pam_fprintd.so"
+        for pam_file in sudo gdm-password polkit-1; do
+            if ! grep -q "pam_fprintd.so" "/etc/pam.d/$pam_file"; then
+                sudo sed -i "1s,^,$FP_LINE\n," "/etc/pam.d/$pam_file"
+                log_info "Patched /etc/pam.d/$pam_file"
+            fi
+        done
+        sudo systemctl enable fprintd.service
+        log_info "âœ”ï¸ Fingerprint setup complete. Please enroll your fingerprints after reboot with 'fprintd-enroll'."
+    else
+        log_warn "Skipping fingerprint driver installation."
     fi
-done
-echo -e "${GREEN}âœ”ï¸ Fingerprint authentication configured.${NC}"
-
-# --- FASE 5: HARDWARE OPTIMIZATIONS ---
-print_header "FASE 5: APPLYING HARDWARE OPTIMIZATIONS"
-echo "Creating powertop auto-tune service..."
-sudo tee /etc/systemd/system/powertop.service > /dev/null <<'EOF'
-[Unit]
-Description=Powertop tunings
-
-[Service]
-Type=oneshot
-RemainAfterExit=no
-ExecStart=/usr/bin/powertop --auto-tune
-
-[Install]
-WantedBy=multi-user.target
-EOF
-sudo systemctl enable powertop.service
-echo -e "${GREEN}âœ”ï¸ Powertop service created and enabled.${NC}"
-
-# --- FASE 6: RESTORE THEMES & BOOT CONFIGS ---
-print_header "FASE 6: RESTORING THEMES & BOOT CONFIGS"
-if [ -d "system-files" ]; then
-    sudo cp -r ./system-files/* /
-    echo -e "${GREEN}âœ”ï¸ System files restored.${NC}"
 else
-    echo -e "${YELLOW}Warning: 'system-files' directory not found. Skipping restore.${NC}"
+    log_info "No Goodix $FINGERPRINT_ID reader detected. Skipping."
 fi
 
-# --- FASE 7: ENABLING CORE SYSTEM SERVICES ---
-print_header "FASE 7: ENABLING CORE SYSTEM SERVICES"
+# --- FASE 5: SYSTEM CONFIGURATION & THEMES ---
+print_header "FASE 5: APPLYING SYSTEM CONFIGS, THEMES & OPTIMIZATIONS"
+log_info "Copying system-wide files (GRUB, Plymouth, services, etc.)..."
+if [ -d "system-files" ]; then
+    sudo cp -rT ./system-files/ / # -T treats source as a file, copying its contents
+    log_info "âœ”ï¸ System files restored."
+else
+    log_error "'system-files' directory not found. Cannot proceed with critical configs."
+    exit 1
+fi
+log_info "Setting TTY keymap to la-latin1..."
+sudo localectl set-keymap la-latin1
+log_info "Setting Plymouth theme..."
+sudo plymouth-set-default-theme -R minecraft-theme || log_warn "Failed to set Plymouth theme."
+log_info "âœ”ï¸ System configuration applied."
+
+# --- FASE 6: ENABLING SYSTEM SERVICES ---
+print_header "FASE 6: ENABLING CORE SYSTEM SERVICES"
 for service in "${SERVICES_TO_ENABLE[@]}"; do
     if ! sudo systemctl is-enabled --quiet "$service"; then
-        echo "Enabling service: $service"
+        log_info "Enabling service: $service"
         sudo systemctl enable "$service"
     else
-        echo "Service $service is already enabled."
+        log_info "Service $service is already enabled."
     fi
 done
-echo -e "${GREEN}âœ”ï¸ Core services enabled.${NC}"
+log_info "âœ”ï¸ Core services enabled."
 
-# --- FASE 8: REBUILD SYSTEM IMAGES ---
-print_header "FASE 8: REBUILDING SYSTEM IMAGES (GRUB & MKINITCPIO)"
+# --- FASE 7: REBUILD SYSTEM IMAGES ---
+print_header "FASE 7: REBUILDING SYSTEM IMAGES (GRUB & MKINITCPIO)"
+log_info "Updating initramfs..."
 sudo mkinitcpio -P
+log_info "Updating GRUB configuration..."
 sudo grub-mkconfig -o /boot/grub/grub.cfg
-echo -e "${GREEN}âœ”ï¸ System images rebuilt successfully.${NC}"
+log_info "âœ”ï¸ System images rebuilt successfully."
 
-# --- FASE 9: HYPRLAND PLUGINS ---
-print_header "FASE 9: INSTALLING HYPRLAND PLUGINS"
-if command -v hyprpm &> /dev/null; then
-    HYPRPM_CONFIG="$HOME/.config/hypr/hyprpm.toml"
-    mkdir -p "$(dirname "$HYPRPM_CONFIG")"
-    tee "$HYPRPM_CONFIG" > /dev/null <<'EOF'
-[hyprexpo]
-source = "https://github.com/hyprwm/hyprland-plugins/tree/main/hyprexpo"
-EOF
-    hyprpm update
-    echo -e "${GREEN}âœ”ï¸ Hyprland plugins updated.${NC}"
-fi
-
-# --- FASE 10: CLONE PERSONAL REPOSITORIES ---
-print_header "FASE 10: CLONING PERSONAL REPOSITORIES"
+# --- FASE 8: CLONE PERSONAL REPOSITORIES ---
+print_header "FASE 8: CLONING PERSONAL REPOSITORIES"
+mkdir -p "$HOME/Progra" "$HOME/Arduino" # Ensure parent directories exist
 for repo in "${PERSONAL_REPOS[@]}"; do
-    if [ ! -d "$HOME/$repo" ]; then
-        git clone "https://github.com/$GITHUB_USER/$repo.git" "$HOME/$repo"
-        echo -e "${GREEN}âœ”ï¸ Cloned '$repo' successfully.${NC}"
+    # Handle specific target directories
+    TARGET_DIR="$HOME"
+    if [[ "$repo" == "Progra" || "$repo" == "Arduino" ]]; then
+        TARGET_DIR="$HOME/$repo"
+    fi
+
+    if [ ! -d "$TARGET_DIR/$(basename $repo)" ]; then
+        log_info "Cloning '$repo'..."
+        git clone "https://github.com/$GITHUB_USER/$repo.git" "$TARGET_DIR/$(basename $repo)"
+    else
+        log_info "Repository '$repo' already exists. Skipping."
     fi
 done
 
-# --- FASE 11: APPLY USER DOTFILES WITH STOW ---
-print_header "FASE 11: APPLYING USER DOTFILES WITH GNU STOW"
+# --- FASE 9: APPLY USER DOTFILES WITH STOW ---
+print_header "FASE 9: APPLYING USER DOTFILES WITH GNU STOW"
+log_info "This will overwrite existing configs in your home directory."
+# Navigate to the parent directory of 'Install' to run stow
 (cd .. && stow --restow --verbose "${STOW_PACKAGES[@]}")
-echo -e "${GREEN}âœ”ï¸ All user dotfiles have been stowed.${NC}"
+log_info "âœ”ï¸ All user dotfiles have been stowed."
 
-# --- FASE 12: SET ZSH AS DEFAULT SHELL ---
-print_header "FASE 12: SETTING ZSH AS DEFAULT SHELL"
-if [[ "$SHELL" != "/bin/zsh" ]]; then
-    chsh -s "$(which zsh)"
-    echo -e "${GREEN}âœ”ï¸ Shell changed to Zsh.${NC}"
-fi
-
+# --- FASE 10: Final Steps ---
 print_header "ðŸŽ‰ INSTALLATION COMPLETE! ðŸŽ‰"
-echo "It is highly recommended to REBOOT NOW to apply all changes."
+log_info "It is highly recommended to REBOOT NOW to apply all changes."
+log_info "After reboot, remember to:"
+log_info "  - Run 'fprintd-enroll' to add your fingerprints."
+log_info "  - Launch Spotify once to let Spicetify finish its setup."
+log_info "  - Enjoy your new system!"
 
 
 =========================================

@@ -91,6 +91,7 @@ i3status
 jre-openjdk
 just
 kdeconnect
+kio-fuse
 kitty
 libreoffice-fresh
 libva-utils

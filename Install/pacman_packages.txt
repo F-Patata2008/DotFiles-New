@@ -105,6 +105,7 @@ lvm2
 malcontent
 meson
 nano
+nautilus-python
 neovim
 network-manager-applet
 networkmanager
@@ -138,6 +139,7 @@ seahorse
 showtime
 simple-scan
 snapshot
+sshfs
 steam
 stow
 strace

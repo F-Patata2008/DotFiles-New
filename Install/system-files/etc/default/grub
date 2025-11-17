@@ -3,7 +3,7 @@
 GRUB_DEFAULT=saved
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Arch"
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet splash resume=UUID=c31298ee-22d7-4944-8d76-70038e8b2b41 amd_pstate=active"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet splash resume=UUID=de3935b4-f816-47e9-8c38-853091fb1642 amd_pstate=active rtc_cmos.use_acpi_alarm=1"
 GRUB_CMDLINE_LINUX=""
 # Preload both GPT and MBR modules so that they are not missed
 GRUB_PRELOAD_MODULES="part_gpt part_msdos"

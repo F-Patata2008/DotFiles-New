@@ -3,6 +3,7 @@
   "logo": {
     "type": "kitty-direct",
     "source": "~/Dotfiles/fastfetch/.config/fastfetch/Saviour.png",
+    "type": "kitty",
     "width": 60,
     "height": 40,
     "padding": {
@@ -24,8 +25,7 @@
     },
     {
       "type": "title",
-      "key": "│  User",
-      "format": "{user}@{host-name}",
+      "key": "│  PC",
       "keyColor": "red"
     },
     {

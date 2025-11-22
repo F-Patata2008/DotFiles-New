@@ -3,9 +3,10 @@
   "logo": {
     "type": "kitty-direct",
     "source": "~/Dotfiles/fastfetch/.config/fastfetch/Saviour.png",
-    "width": 32,
+    "width": 60,
+    "height": 40,
     "padding": {
-      "top": 2,
+      "top": 1,
       "left": 2,
       "right": 4
     }
@@ -15,35 +16,36 @@
     "color": "white"
   },
   "modules": [
-    // Title
-    {
-      "type": "title",
-      "key": " PC",
-      "format": "{user}@{host-name}",
-      "keyColor": "red"
-    },
-    {
-      "type": "custom",
-      "format": "\u001b[35m-< Blame this on the misfortune of your birth >-",
-      "outputColor": "magenta"
-    },
-    "break",
-
-    // ---------------- HARDWARE (Red) ----------------
+    // ---------------- HARDWARE (Red Borders & Keys) ----------------
     {
       "type": "custom",
       "format": "┌────────────────────── Hardware ──────────────────────┐",
       "outputColor": "red"
     },
     {
+      "type": "title",
+      "key": "│  User",
+      "format": "{user}@{host-name}",
+      "keyColor": "red"
+    },
+    {
       "type": "host",
-      "key": "│ ├ 󰌢 Model",
+      "key": "│ ├ 󰌢 Host",
+      "keyColor": "red"
+    },
+    {
+      "type": "board",
+      "key": "│ ├ 󰘚 Mobo",
+      "keyColor": "red"
+    },
+    {
+      "type": "chassis",
+      "key": "│ ├ 󰆧 Case",
       "keyColor": "red"
     },
     {
       "type": "cpu",
       "key": "│ ├ 󰍛 CPU",
-      "showPeCoreCount": true,
       "keyColor": "red"
     },
     {
@@ -57,16 +59,30 @@
       "keyColor": "red"
     },
     {
+      "type": "physicalmemory",
+      "key": "│ ├ 󰑭 Phys",
+      "keyColor": "red"
+    },
+    {
+      "type": "swap",
+      "key": "│ ├ 󰓡 Swap",
+      "keyColor": "red"
+    },
+    {
       "type": "disk",
       "key": "│ ├ 󰋊 Disk",
       "keyColor": "red"
     },
     {
+      "type": "physicaldisk",
+      "key": "│ ├ 󰋊 Phys",
+      "keyColor": "red"
+    },
+    {
       "type": "battery",
-      "key": "└ └  Batt",
+      "key": "│ └  Batt",
       "keyColor": "red",
-      // Using named placeholders fixes the weird hex output
-      "format": "{capacity}% [{status}] {time}" 
+      "format": "{capacity}% [{status}] {time}"
     },
     {
       "type": "custom",
@@ -75,20 +91,25 @@
     },
     "break",
 
-    // ---------------- SOFTWARE (Yellow) ----------------
+    // ---------------- SOFTWARE (Yellow Borders & Keys) ----------------
     {
       "type": "custom",
       "format": "┌────────────────────── Software ──────────────────────┐",
-      "outputColor": "red"
+      "outputColor": "yellow"
     },
     {
       "type": "os",
-      "key": "│ ├  OS",
+      "key": "│  OS",
       "keyColor": "yellow"
     },
     {
       "type": "kernel",
-      "key": "│ ├  Kernel",
+      "key": "│ ├  Kern",
+      "keyColor": "yellow"
+    },
+    {
+      "type": "bootmgr",
+      "key": "│ ├  Boot",
       "keyColor": "yellow"
     },
     {
@@ -98,61 +119,136 @@
     },
     {
       "type": "shell",
-      "key": "│ ├  Shell",
+      "key": "│ ├  Shll",
       "keyColor": "yellow"
     },
     {
       "type": "uptime",
-      "key": "└ └ 󰅐 Uptime",
+      "key": "│ └ 󰅐 Time",
       "keyColor": "yellow"
     },
     {
       "type": "custom",
       "format": "└──────────────────────────────────────────────────────┘",
-      "outputColor": "red"
+      "outputColor": "yellow"
     },
     "break",
 
-    // ---------------- INTERFACE (White/Silver) ----------------
+    // ---------------- ENVIRONMENT (Blue Borders & Keys) ----------------
     {
       "type": "custom",
-      "format": "┌────────────────────── Interface ─────────────────────┐",
-      "outputColor": "red"
+      "format": "┌──────────────────── Environment ─────────────────────┐",
+      "outputColor": "blue"
     },
-    {
-      "type": "de",
-      "key": "│ ├  DE",
-      "keyColor": "white"
-    },
+    // Using WM as root because Hyprland is a WM
     {
       "type": "wm",
-      "key": "│ ├  WM",
-      "keyColor": "white"
+      "key": "│  WM",
+      "keyColor": "blue"
+    },
+    {
+      "type": "display",
+      "key": "│ ├ 󰍹 Disp",
+      "keyColor": "blue"
     },
     {
       "type": "wmtheme",
-      "key": "│ ├ 󰉼 Theme",
-      "keyColor": "white"
+      "key": "│ ├ 󰉼 WThm",
+      "keyColor": "blue"
+    },
+    {
+      "type": "theme",
+      "key": "│ ├ 󰉼 Thme",
+      "keyColor": "blue"
+    },
+    {
+      "type": "icons",
+      "key": "│ ├ 󰀻 Icon",
+      "keyColor": "blue"
+    },
+    {
+      "type": "font",
+      "key": "│ ├  Font",
+      "keyColor": "blue"
+    },
+    {
+      "type": "cursor",
+      "key": "│ ├  Curs",
+      "keyColor": "blue"
     },
     {
       "type": "terminal",
       "key": "│ ├  Term",
-      "keyColor": "white"
+      "keyColor": "blue"
     },
     {
-      "type": "localip",
-      "key": "└ └ 󰩟 IP",
-      "keyColor": "white"
+      "type": "terminalfont",
+      "key": "│ └  TFnt",
+      "keyColor": "blue"
     },
     {
       "type": "custom",
       "format": "└──────────────────────────────────────────────────────┘",
-      "outputColor": "red"
+      "outputColor": "blue"
+    },
+    "break",
+
+    // ---------------- CONNECTIVITY (Cyan Borders & Keys) ----------------
+    {
+      "type": "custom",
+      "format": "┌──────────────────── Connectivity ────────────────────┐",
+      "outputColor": "cyan"
+    },
+    {
+      "type": "custom",
+      "key": "│ Quote",
+      "keyColor": "magenta",
+      "format": "\u001b[35m-< Blame this on the misfortune of your birth >-"
+    },
+    {
+      "type": "localip",
+      "key": "│ ├ 󰩟 IP",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "wifi",
+      "key": "│ ├  Wifi",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "sound",
+      "key": "│ ├ 󰓃 Vol",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "bluetooth",
+      "key": "│ ├  Blue",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "camera",
+      "key": "│ ├ 󰄀 Cam",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "locale",
+      "key": "│ ├  Lang",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "weather",
+      "key": "│ └ 󰖐 Wthr",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "custom",
+      "format": "└──────────────────────────────────────────────────────┘",
+      "outputColor": "cyan"
     },
     "break",
     {
         "type": "colors",
-        "paddingLeft": 18,
+        "paddingLeft": 20,
         "symbol": "circle"
     }
   ]

@@ -3,251 +3,157 @@
   "logo": {
     "type": "kitty-direct",
     "source": "~/Dotfiles/fastfetch/.config/fastfetch/Saviour.png",
-    "width": 60,
-    "height": 40
+    "width": 32,
+    "padding": {
+      "top": 2,
+      "left": 2,
+      "right": 4
+    }
   },
   "display": {
-    "separator": " -→  ",
-    "color": "red"
+    "separator": " ➜  ",
+    "color": "white"
   },
   "modules": [
+    // Title
     {
       "type": "title",
-      "color": {
-        "user": "white",
-        "at": "white",
-        "host": "white"
-      }
+      "key": " PC",
+      "format": "{user}@{host-name}",
+      "keyColor": "red"
     },
-    "separator",
     {
       "type": "custom",
-      "format": "-<Blame this on the misfortune of your birth>-",
+      "format": "\u001b[35m-< Blame this on the misfortune of your birth >-",
       "outputColor": "magenta"
     },
     "break",
 
-    // Hardware Section
+    // ---------------- HARDWARE (Red) ----------------
     {
       "type": "custom",
-      "format": "┌────────────── Hardware ──────────────┐",
+      "format": "┌────────────────────── Hardware ──────────────────────┐",
       "outputColor": "red"
     },
     {
       "type": "host",
-      "key": "├ Host",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "board",
-      "key": "├ Motherboard",
-      "keyColor": "red"
-    },
-    {
-      "type": "chassis",
-      "key": "├ Chassis",
+      "key": "│ ├ 󰌢 Model",
       "keyColor": "red"
     },
     {
       "type": "cpu",
-      "key": "├ CPU",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰍛 CPU",
+      "showPeCoreCount": true,
+      "keyColor": "red"
     },
     {
       "type": "gpu",
-      "key": "├ GPU",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰍛 GPU",
+      "keyColor": "red"
     },
     {
       "type": "memory",
-      "key": "├ Memory",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "physicalmemory",
-      "key": "├ Physical Memory",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "swap",
-      "key": "├ Swap",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰑭 RAM",
+      "keyColor": "red"
     },
     {
       "type": "disk",
-      "key": "├ Disk",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰋊 Disk",
+      "keyColor": "red"
     },
     {
-      "type": "physicaldisk",
-      "key": "├ Physical Disk",
-      "keyColor": "magenta"
-    },
-    {
-        "type": "battery",
-        "key": "└ Battery",
-        "keyColor": "red"
+      "type": "battery",
+      "key": "└ └  Batt",
+      "keyColor": "red",
+      // Using named placeholders fixes the weird hex output
+      "format": "{capacity}% [{status}] {time}" 
     },
     {
       "type": "custom",
-      "format": "└──────────────────────────────────────┘",
+      "format": "└──────────────────────────────────────────────────────┘",
       "outputColor": "red"
     },
     "break",
 
-    // Software Section
+    // ---------------- SOFTWARE (Yellow) ----------------
     {
       "type": "custom",
-      "format": "┌────────────── Software ──────────────┐",
+      "format": "┌────────────────────── Software ──────────────────────┐",
       "outputColor": "red"
     },
     {
       "type": "os",
-      "key": "├ OS",
-      "keyColor": "magenta"
+      "key": "│ ├  OS",
+      "keyColor": "yellow"
     },
     {
       "type": "kernel",
-      "key": "├ Kernel",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "bootmgr",
-      "key": "├ Boot Manager",
-      "keyColor": "magenta"
+      "key": "│ ├  Kernel",
+      "keyColor": "yellow"
     },
     {
       "type": "packages",
-      "key": "├ Packages",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰏖 Pkgs",
+      "keyColor": "yellow"
     },
     {
       "type": "shell",
-      "key": "├ Shell",
-      "keyColor": "magenta"
+      "key": "│ ├  Shell",
+      "keyColor": "yellow"
     },
     {
       "type": "uptime",
-      "key": "└ Uptime",
-      "keyColor": "magenta"
+      "key": "└ └ 󰅐 Uptime",
+      "keyColor": "yellow"
     },
     {
       "type": "custom",
-      "format": "└──────────────────────────────────────┘",
+      "format": "└──────────────────────────────────────────────────────┘",
       "outputColor": "red"
     },
     "break",
 
-    // Appearance & Environment Section
+    // ---------------- INTERFACE (White/Silver) ----------------
     {
       "type": "custom",
-      "format": "┌──────────── Environment ─────────────┐",
+      "format": "┌────────────────────── Interface ─────────────────────┐",
       "outputColor": "red"
-    },
-    {
-      "type": "display",
-      "key": "├ Display",
-      "keyColor": "magenta"
     },
     {
       "type": "de",
-      "key": "├ DE",
-      "keyColor": "magenta"
+      "key": "│ ├  DE",
+      "keyColor": "white"
     },
     {
       "type": "wm",
-      "key": "├ WM",
-      "keyColor": "magenta"
+      "key": "│ ├  WM",
+      "keyColor": "white"
     },
     {
       "type": "wmtheme",
-      "key": "├ WM Theme",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "theme",
-      "key": "├ Theme",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "icons",
-      "key": "├ Icons",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "font",
-      "key": "├ Font",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "cursor",
-      "key": "├ Cursor",
-      "keyColor": "magenta"
+      "key": "│ ├ 󰉼 Theme",
+      "keyColor": "white"
     },
     {
       "type": "terminal",
-      "key": "├ Terminal",
-      "keyColor": "magenta"
+      "key": "│ ├  Term",
+      "keyColor": "white"
     },
     {
-      "type": "terminalfont",
-      "key": "└ Terminal Font",
-      "keyColor": "magenta"
-    },
-    {
-      "type": "custom",
-      "format": "└──────────────────────────────────────┘",
-      "outputColor": "red"
-    },
-    "break",
-
-    // Connectivity & Devices
-    {
-        "type": "custom",
-        "format": "┌────────── Connectivity & Devices ───────────┐",
-        "outputColor": "red"
-    },
-    {
-        "type": "localip",
-        "key": "├ Local IP",
-        "keyColor": "magenta"
-    },
-    {
-        "type": "wifi",
-        "key": "├ WiFi",
-        "keyColor": "magenta"
-    },
-    {
-        "type": "sound",
-        "key": "├ Sound",
-        "keyColor": "magenta"
-    },
-    {
-        "type": "bluetooth",
-        "key": "├ Bluetooth",
-        "keyColor": "cyan"
-    },
-    {
-        "type": "camera",
-        "key": "├ Camera",
-        "keyColor": "magenta"
-    },
-    {
-        "type": "locale",
-        "key": "├ Locale",
-        "keyColor": "magenta"
-    },
-    {
-        "type": "weather",
-        "key": "└ Weather",
-        "keyColor": "magenta"
+      "type": "localip",
+      "key": "└ └ 󰩟 IP",
+      "keyColor": "white"
     },
     {
       "type": "custom",
-      "format": "└────────────────────────────────────────────┘",
+      "format": "└──────────────────────────────────────────────────────┘",
       "outputColor": "red"
     },
     "break",
-    "colors"
+    {
+        "type": "colors",
+        "paddingLeft": 18,
+        "symbol": "circle"
+    }
   ]
 }

@@ -82,7 +82,7 @@
       "type": "battery",
       "key": "│ └  Batt",
       "keyColor": "red",
-      "format": "{capacity}% [{status}] {time}"
+      "format": "{capacity}% [{status}] [{time-formatted}]"
     },
     {
       "type": "custom",

@@ -24,6 +24,7 @@ efibootmgr
 endeavour
 eog
 epiphany
+evince
 extension-manager
 fastfetch
 firefox
@@ -33,7 +34,6 @@ gdb
 gimp
 git
 gnome-2048
-gnome-backgrounds
 gnome-calculator
 gnome-calendar
 gnome-characters
@@ -42,7 +42,6 @@ gnome-color-manager
 gnome-connections
 gnome-console
 gnome-contacts
-gnome-control-center
 gnome-disk-utility
 gnome-font-viewer
 gnome-keyring
@@ -105,6 +104,7 @@ lvm2
 malcontent
 meson
 nano
+nautilus
 nautilus-python
 neovim
 network-manager-applet
@@ -116,12 +116,15 @@ nwg-look
 nwg-shell
 obs-studio
 orca
+os-prober
 papers
 pavucontrol
 perl-file-homedir
 perl-yaml-tiny
 picom
+pipewire-pulse
 plymouth
+polkit-gnome
 polybar
 powertop
 python-black
@@ -135,6 +138,7 @@ reflector
 rofi
 rofimoji
 rygel
+sddm
 seahorse
 showtime
 simple-scan
@@ -186,6 +190,7 @@ vim
 waybar
 wget
 wtype
+xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-wlr
 xf86-video-amdgpu

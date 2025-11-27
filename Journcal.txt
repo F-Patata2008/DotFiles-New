@@ -1,0 +1,206 @@
+Nov 27 19:59:32 Saviour-Arch systemd[1]: Started Simple Desktop Display Manager.
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Initializing...
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Starting...
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Logind interface found
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Adding new display...
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Loaded empty theme configuration
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Xauthority path: "/run/sddm/xauth_MFnquV"
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Using VT 2
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Display server starting...
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Writing cookie to "/run/sddm/xauth_MFnquV"
+Nov 27 19:59:32 Saviour-Arch sddm[760]: Running: /usr/bin/X -nolisten tcp -background none -seat seat0 vt2 -auth /run/sddm/xauth_MFnquV -noreset -displayfd 16
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Setting default cursor
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Running display setup script  "/usr/share/sddm/scripts/Xsetup"
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Display server started.
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Socket server starting...
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Socket server started.
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Loading theme configuration from "/usr/share/sddm/themes/sugar-candy/theme.conf"
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Greeter starting...
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: [PAM] Starting...
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: [PAM] Authenticating...
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: [PAM] returning.
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: pam_unix(sddm-greeter:session): session opened for user sddm(uid=949) by (uid=0)
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: Writing cookie to "/tmp/xauth_ZfpjxT"
+Nov 27 19:59:33 Saviour-Arch sddm-helper[954]: Starting X11 session: "" "/usr/bin/sddm-greeter --socket /tmp/sddm-:0-GjzXcF --theme /usr/share/sddm/themes/sugar-candy"
+Nov 27 19:59:33 Saviour-Arch sddm[760]: Greeter session started successfully
+Nov 27 19:59:34 Saviour-Arch sddm[760]: Message received from greeter: Connect
+Nov 27 19:59:43 Saviour-Arch sddm[760]: Message received from greeter: Login
+Nov 27 19:59:43 Saviour-Arch sddm[760]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 19:59:43 Saviour-Arch sddm[760]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 1
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: [PAM] Starting...
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: [PAM] Authenticating...
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: pam_faillock(sddm:auth): User unknown
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: [PAM] Preparing to converse...
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: [PAM] Conversation with 1 messages
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 19:59:43 Saviour-Arch sddm-helper[1041]: pam_faillock(sddm:auth): User unknown
+Nov 27 19:59:45 Saviour-Arch sddm-helper[1041]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 19:59:45 Saviour-Arch sddm-helper[1041]: [PAM] returning.
+Nov 27 19:59:45 Saviour-Arch sddm[760]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 19:59:45 Saviour-Arch sddm[760]: Authentication for user  ""  failed
+Nov 27 19:59:45 Saviour-Arch sddm-helper[1041]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 19:59:45 Saviour-Arch sddm-helper[1041]: [PAM] Ended.
+Nov 27 19:59:45 Saviour-Arch sddm[760]: Auth: sddm-helper exited with 1
+Nov 27 19:59:46 Saviour-Arch sddm[760]: Message received from greeter: Login
+Nov 27 19:59:46 Saviour-Arch sddm[760]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 19:59:46 Saviour-Arch sddm[760]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 1
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: [PAM] Starting...
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: [PAM] Authenticating...
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: pam_faillock(sddm:auth): User unknown
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: [PAM] Preparing to converse...
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: [PAM] Conversation with 1 messages
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 19:59:47 Saviour-Arch sddm-helper[1067]: pam_faillock(sddm:auth): User unknown
+Nov 27 19:59:48 Saviour-Arch sddm-helper[1067]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 19:59:48 Saviour-Arch sddm-helper[1067]: [PAM] returning.
+Nov 27 19:59:48 Saviour-Arch sddm[760]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 19:59:48 Saviour-Arch sddm[760]: Authentication for user  ""  failed
+Nov 27 19:59:48 Saviour-Arch sddm-helper[1067]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 19:59:48 Saviour-Arch sddm-helper[1067]: [PAM] Ended.
+Nov 27 19:59:48 Saviour-Arch sddm[760]: Auth: sddm-helper exited with 1
+Nov 27 20:00:03 Saviour-Arch sddm[760]: Message received from greeter: Login
+Nov 27 20:00:03 Saviour-Arch sddm[760]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:00:03 Saviour-Arch sddm[760]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 1
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: [PAM] Starting...
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: [PAM] Authenticating...
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: [PAM] Preparing to converse...
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: [PAM] Conversation with 1 messages
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 20:00:03 Saviour-Arch sddm-helper[1080]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:00:04 Saviour-Arch sddm[760]: Message received from greeter: Login
+Nov 27 20:00:04 Saviour-Arch sddm[760]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:00:04 Saviour-Arch sddm[760]: Existing authentication ongoing, aborting
+Nov 27 20:00:05 Saviour-Arch sddm-helper[1080]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 20:00:05 Saviour-Arch sddm-helper[1080]: [PAM] returning.
+Nov 27 20:00:05 Saviour-Arch sddm[760]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 20:00:05 Saviour-Arch sddm-helper[1080]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 20:00:05 Saviour-Arch sddm[760]: Authentication for user  ""  failed
+Nov 27 20:00:05 Saviour-Arch sddm-helper[1080]: [PAM] Ended.
+Nov 27 20:00:05 Saviour-Arch sddm[760]: Auth: sddm-helper exited with 1
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Signal received: SIGTERM
+Nov 27 20:57:58 Saviour-Arch systemd[1]: Stopping Simple Desktop Display Manager...
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Greeter stopping...
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Auth: sddm-helper exited with 255
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Greeter stopped. SDDM::Auth::HelperExitStatus(255)
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Socket server stopping...
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Socket server stopped.
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Display server stopping...
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Display server stopped.
+Nov 27 20:57:58 Saviour-Arch sddm[760]: Running display stop script  QList("/usr/share/sddm/scripts/Xstop")
+Nov 27 20:57:58 Saviour-Arch systemd[1]: sddm.service: Deactivated successfully.
+Nov 27 20:57:58 Saviour-Arch systemd[1]: Stopped Simple Desktop Display Manager.
+Nov 27 20:57:58 Saviour-Arch systemd[1]: sddm.service: Consumed 1.450s CPU time, 255M memory peak.
+Nov 27 20:57:58 Saviour-Arch systemd[1]: Started Simple Desktop Display Manager.
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Initializing...
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Starting...
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Logind interface found
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Adding new display...
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Loaded empty theme configuration
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Xauthority path: "/run/sddm/xauth_IQfVAZ"
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Using VT 1
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Display server starting...
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Writing cookie to "/run/sddm/xauth_IQfVAZ"
+Nov 27 20:57:58 Saviour-Arch sddm[24228]: Running: /usr/bin/X -nolisten tcp -background none -seat seat0 vt1 -auth /run/sddm/xauth_IQfVAZ -noreset -displayfd 16
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Setting default cursor
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Running display setup script  "/usr/share/sddm/scripts/Xsetup"
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Display server started.
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Socket server starting...
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Socket server started.
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Loading theme configuration from "/usr/share/sddm/themes/sugar-candy/theme.conf"
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Greeter starting...
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: [PAM] Starting...
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: [PAM] Authenticating...
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: [PAM] returning.
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: pam_unix(sddm-greeter:session): session opened for user sddm(uid=949) by (uid=0)
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: Writing cookie to "/tmp/xauth_ApRJBm"
+Nov 27 20:57:59 Saviour-Arch sddm-helper[24286]: Starting X11 session: "" "/usr/bin/sddm-greeter --socket /tmp/sddm-:0-Bgmgmh --theme /usr/share/sddm/themes/sugar-candy"
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Greeter session started successfully
+Nov 27 20:57:59 Saviour-Arch sddm[24228]: Message received from greeter: Connect
+Nov 27 20:58:05 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:05 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:05 Saviour-Arch sddm[24228]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 2
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: [PAM] Starting...
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: [PAM] Authenticating...
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: [PAM] Preparing to converse...
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: [PAM] Conversation with 1 messages
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 20:58:05 Saviour-Arch sddm-helper[24326]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:07 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:07 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:07 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:08 Saviour-Arch sddm-helper[24326]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 20:58:08 Saviour-Arch sddm-helper[24326]: [PAM] returning.
+Nov 27 20:58:08 Saviour-Arch sddm-helper[24326]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 20:58:08 Saviour-Arch sddm[24228]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 20:58:08 Saviour-Arch sddm[24228]: Authentication for user  ""  failed
+Nov 27 20:58:08 Saviour-Arch sddm-helper[24326]: [PAM] Ended.
+Nov 27 20:58:08 Saviour-Arch sddm[24228]: Auth: sddm-helper exited with 1
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 2
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: [PAM] Starting...
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: [PAM] Authenticating...
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: [PAM] Preparing to converse...
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: [PAM] Conversation with 1 messages
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 20:58:16 Saviour-Arch sddm-helper[24328]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:16 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:17 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24328]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24328]: [PAM] returning.
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Authentication for user  ""  failed
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24328]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24328]: [PAM] Ended.
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Auth: sddm-helper exited with 1
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:18 Saviour-Arch sddm[24228]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "Hyprland" for VT 2
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: [PAM] Starting...
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: [PAM] Authenticating...
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: [PAM] Preparing to converse...
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: [PAM] Conversation with 1 messages
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: pam_unix(sddm:auth): check pass; user unknown
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: pam_unix(sddm:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=
+Nov 27 20:58:18 Saviour-Arch sddm-helper[24330]: pam_faillock(sddm:auth): User unknown
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:19 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Message received from greeter: Login
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Existing authentication ongoing, aborting
+Nov 27 20:58:20 Saviour-Arch sddm-helper[24330]: [PAM] authenticate: User not known to the underlying authentication module
+Nov 27 20:58:20 Saviour-Arch sddm-helper[24330]: [PAM] returning.
+Nov 27 20:58:20 Saviour-Arch sddm-helper[24330]: [PAM] Asked to close the session but it wasn't previously open
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Authentication error: SDDM::Auth::ERROR_AUTHENTICATION "User not known to the underlying authentication module"
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Authentication for user  ""  failed
+Nov 27 20:58:20 Saviour-Arch sddm-helper[24330]: [PAM] Ended.
+Nov 27 20:58:20 Saviour-Arch sddm[24228]: Auth: sddm-helper exited with 1

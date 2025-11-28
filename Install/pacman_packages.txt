@@ -63,6 +63,7 @@ gnome-tweaks
 gnome-user-docs
 gnome-user-share
 gnome-weather
+go
 grilo-plugins
 grub
 gvfs-afc

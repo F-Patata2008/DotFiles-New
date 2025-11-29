@@ -108,7 +108,7 @@ if lsusb | grep -q "$FINGERPRINT_ID"; then
         yay -S --needed --noconfirm libfprint-goodixtls-55x4
         log_info "Enabling fingerprint authentication (PAM)..."
         FP_LINE="auth      sufficient      pam_fprintd.so"
-        for pam_file in sudo gdm-password polkit-1; do
+        for pam_file in sudo sddm polkit-1; do
             if ! grep -q "pam_fprintd.so" "/etc/pam.d/$pam_file"; then
                 sudo sed -i "1s,^,$FP_LINE\n," "/etc/pam.d/$pam_file"
                 log_info "Patched /etc/pam.d/$pam_file"

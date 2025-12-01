@@ -10,6 +10,7 @@ biber
 blueman
 bluez-utils
 bpytop
+breeze
 brightnessctl
 cava
 clang
@@ -93,6 +94,7 @@ just
 kdeconnect
 kio-fuse
 kitty
+libplasma
 libreoffice-fresh
 libva-utils
 linux
@@ -125,6 +127,7 @@ perl-file-homedir
 perl-yaml-tiny
 picom
 pipewire-pulse
+plasma5support
 plymouth
 polkit-gnome
 polybar

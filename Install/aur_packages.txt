@@ -11,6 +11,7 @@ opera
 opera-ffmpeg-codecs-bin
 python-jupytext
 python-pywal16
+sddm-sugar-candy-git
 spicetify-cli
 spotify
 swaylock-effects

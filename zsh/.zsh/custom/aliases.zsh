@@ -13,6 +13,7 @@ alias tl='java -jar ~/Desktop/TLauncher.v16/TLauncher.jar'
 alias cl='clear; tree'
 alias arduino='sudo chmod a+rw /dev/ttyACM0'
 
+alias icat="kitty +kitten icat"
 
 alias wifi='nmcli dev wifi list --rescan yes'
 alias celu='nmcli dev wifi connect "Doxiado" --ask'

@@ -1,3 +1,4 @@
+ags-hyprpanel-git
 arduino-ide
 ckan
 clipse

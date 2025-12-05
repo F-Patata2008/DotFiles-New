@@ -1,11 +1,13 @@
-ags-hyprpanel-git
 arduino-ide
 ckan
 clipse
 electron30-bin
+epson-inkjet-printer-escpr2
 flat-remix-gtk
+grimblast-git
 http-parser
 libfprint-goodixtls-55x4
+matugen-bin
 modrinth-app-bin
 nordic-theme
 opera
@@ -17,6 +19,7 @@ spicetify-cli
 spotify
 swaylock-effects
 tty-clock
+wf-recorder-git
 wlogout
 yay
 zen-browser-bin

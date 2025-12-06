@@ -132,6 +132,7 @@ wich will be detailed later in the file.
         - Bluetooth
         - Fingerprint in case pc has
         - TLP (for power managment)
+        - SDDM
         - Network Manager
         - Cups
         - Powertop

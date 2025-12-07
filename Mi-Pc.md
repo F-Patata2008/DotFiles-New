@@ -14,6 +14,16 @@ I mostly use Hyprland for my day to day tasks, as it suits better my own workflo
 - **Screen:** 1366x768 14", 60 Hz
 - **Fingerprint Reader:** 27c6:55b4 Shenzhen Goodix Technology Co.,Ltd. Fingerprint Reader
 
+### My partition scheme
+NAME                  MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+nvme0n1               259:0    0 465.8G  0 disk
+├─nvme0n1p1           259:1    0     1G  0 part /boot
+└─nvme0n1p2           259:2    0 464.8G  0 part
+  ├─ssdm2-swap        254:0    0    24G  0 lvm  [SWAP]
+  ├─ssdm2-arch--root  254:1    0  48.8G  0 lvm  /
+  ├─ssdm2-linux--home 254:2    0   344G  0 lvm  /home
+  └─ssdm2-zorin       254:3    0    48G  0 lvm
+
 ## Current System Setup
 I do have my Hyprland setup for my own workflow, wich includes the following:
 

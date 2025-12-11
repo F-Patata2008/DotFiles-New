@@ -81,11 +81,14 @@ gvfs-wsdd
 hplip
 hypridle
 hyprland
+hyprland-protocols
 hyprlang
+hyprlauncher
 hyprlock
 hyprpaper
 hyprpicker
 hyprpolkitagent
+hyprpwcenter
 hyprshot
 hyprsunset
 hyprutils

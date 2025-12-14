@@ -55,10 +55,11 @@ I do have my Hyprland setup for my own workflow, wich includes the following:
     - Clipse
     - SwayOSD
     - SwayNC
+    - SDDM with a customized theme
     - Some Gnome Apps
         - Nautilus
         - Document Scanner
-        - Calenda
+        - Calendar
         - Among others
 
 - **Gnome:** Only a selection of a few apps wich are indispensable for my workflow

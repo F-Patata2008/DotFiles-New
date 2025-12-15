@@ -147,6 +147,7 @@ python-pip
 python-pynvim
 python-pyqt5
 qt6-tools
+qt6-virtualkeyboard
 reflector
 rofi
 rofimoji

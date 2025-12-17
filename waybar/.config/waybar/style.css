@@ -16,7 +16,7 @@
     border: none;
     border-radius: 9px; /* Changed corner radius to 9px */
     font-family: "JetBrainsMono Nerd Font", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 9px;   /* Changed global font size to 9px */
+    font-size: 8px;   /* Changed global font size to 9px */
     min-height: 0;
     transition: background-color .3s ease-out; /* Smooth transitions */
 }
@@ -164,4 +164,3 @@ window#waybar {
 #custom-suspend.pmode-normal { color: #3498db; }
 #custom-suspend.pmode-school { color: #8e44ad; }
 #custom-suspend.pmode-unk { color: #95a5a6; }
-

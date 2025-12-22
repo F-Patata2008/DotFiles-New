@@ -10,7 +10,7 @@ alias update='sh $HOME/Dotfiles/hypr/.config/hypr/scripts/update.sh'
 
 alias 'exec zsh'='clear; exec zsh'
 alias tl='java -jar ~/Desktop/TLauncher.v16/TLauncher.jar'
-alias cl='clear; tree'
+alias cl='clear; tree -d'
 alias arduino='sudo chmod a+rw /dev/ttyACM0'
 
 alias icat="kitty +kitten icat"

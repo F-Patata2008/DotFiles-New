@@ -102,6 +102,7 @@ kdeconnect
 kio-fuse
 kitty
 libplasma
+libratbag
 libreoffice-fresh
 libva-utils
 linux
@@ -134,6 +135,7 @@ pavucontrol
 perl-file-homedir
 perl-yaml-tiny
 picom
+piper
 pipewire-pulse
 plasma5support
 plymouth

@@ -160,6 +160,7 @@ showtime
 simple-scan
 smartmontools
 snapshot
+solaar
 sshfs
 steam
 stow

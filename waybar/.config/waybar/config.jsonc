@@ -17,6 +17,8 @@
     ],
     "modules-right": [
         "power-profiles-daemon",
+        "custom/separator",
+        "tray",
         //"custom/separator",
         //"custom/suspend",
         "custom/separator",
@@ -148,5 +150,14 @@
         "return-type": "json",
         "interval": 60, // Check every 30 seconds
         "exec": "$HOME/.config/hypr/scripts/phone.sh"
+    },
+    "tray": {
+        "icon-size": 12,
+        "spacing": 10,
+        "icons": {
+            "blueman": "bluetooth",
+            "Solaar": "󰦋",
+            "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
+        }
     }
 }

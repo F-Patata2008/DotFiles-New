@@ -1,0 +1,968 @@
+==================================================================
+ DUMP DE CONFIGURACIÓN: /home/F-Patata/Dotfiles/hypr/.config/hypr
+ Fecha: Fri Dec 26 05:25:19 PM -03 2025
+==================================================================
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/aesthetics.conf
+################################################################################
+
+# Aesthetics
+
+layerrule = blur, wlogout
+layerrule = blur, ~/Dotfiles/hypr/.config/hypr/scripts/loguot.sh
+layerrule = blur,logout_dialog
+
+decoration {
+    rounding = 5
+
+    blur {
+        enabled = true
+        passes = 2
+        size = 2
+
+        ignore_opacity = true
+        new_optimizations = on
+        noise = 0.02
+        contrast = 1.1
+        brightness = 1.0
+    }
+
+    shadow {
+        enabled = false
+    }
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/animations.conf
+################################################################################
+
+# Animations
+animations {
+    enabled = yes
+
+    bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+    animation = windows, 1, 7, myBezier
+    animation = windowsOut, 1, 7, default, popin 80%
+    animation = border, 1, 10, default
+    animation = borderangle, 1, 8, default
+    animation = fade, 1, 7, default
+    animation = workspaces, 1, 6, default
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/binds.conf
+################################################################################
+
+# Keybindings
+$mainMod = SUPER
+
+# Application and utility binds
+bind = $mainMod, T, exec, kitty
+bind = $mainMod, R, exec, rofi -show drun -show-icons
+bind = $mainMod, C, killactive,
+bind = $mainMod, E, exec, nautilus
+bind = $mainMod, L, exec, pidof hyprlock || hyprlock
+bind = $mainMod, W, exec, ~/.config/hypr/scripts/reset_waybar.sh
+bind = $mainMod, Q, exec, rofi -show run
+bind = $mainMod, B, exec, opera
+bind = $mainMod, S, exec, spotify
+
+# Hyprland and script binds
+#bind = $mainMod SHIFT, return, hyprexpo:expo, toggle
+#bind = $mainMod SHIFT, N, exec, ~/.config/hypr/scripts/nigthligth.sh
+bind = $mainMod SHIFT, L, exec, $HOME/.config/hypr/scripts/loguot.sh
+bind = $mainMod SHIFT, P, exec, hyprpicker -a
+bind = $mainMod SHIFT, E, exec, rofi -show filebrowser
+bind = $mainMod SHIFT, R, exec, rofi -modi "emoji:rofimoji" -show emoji
+bind = $mainMod SHIFT, N, exec, kitty --class Notas -e sh -c "nvim $HOME/Notas.md"
+bind = $mainMod SHIFT, F, fullscreen
+
+
+# Screenshot binds
+bind = , PRINT, exec, ~/.config/hypr/scripts/screenshot.sh
+bind = shift, PRINT, exec, hyprshot -m output
+
+# Window and layout binds
+bind = $mainMod, P, pseudo,
+bind = $mainMod, J, togglesplit,
+bind = $mainMod, V, togglefloating,
+
+# Focus binds
+bind = $mainMod, left, movefocus, l
+bind = $mainMod, right, movefocus, r
+bind = $mainMod, up, movefocus, u
+bind = $mainMod, down, movefocus, d
+
+# Workspace binds
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, 6, workspace, 6
+bind = $mainMod, 7, workspace, 7
+bind = $mainMod, 8, workspace, 8
+bind = $mainMod, 9, workspace, 9
+bind = $mainMod, 0, workspace, 10
+
+# Move to workspace binds
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
+bind = $mainMod SHIFT, 6, movetoworkspace, 6
+bind = $mainMod SHIFT, 7, movetoworkspace, 7
+bind = $mainMod SHIFT, 8, movetoworkspace, 8
+bind = $mainMod SHIFT, 9, movetoworkspace, 9
+bind = $mainMod SHIFT, 0, movetoworkspace, 10
+
+# Cambiar workspace con Super + Scroll del mouse
+bind = SUPER, mouse_down, workspace, e-1
+bind = SUPER, mouse_up, workspace, e+1
+
+# Mouse binds
+bindm = $mainMod, mouse:272, movewindow
+bindm = $mainMod, mouse:273, resizewindow
+
+# Multimedia keys
+bindel = ,XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise
+bindel = ,XF86AudioLowerVolume, exec, swayosd-client --output-volume lower
+bindel = ,XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
+bindel = ,XF86AudioMicMute, exec, swayosd-client --input-volume mute-toggle
+bindel = ,XF86MonBrightnessUp, exec, swayosd-client --brightness raise
+bindel = ,XF86MonBrightnessDown, exec, swayosd-client --brightness lower
+
+# Player controls
+bindl = , XF86AudioNext, exec, playerctl next
+bindl = , XF86AudioPause, exec, playerctl play-pause
+bindl = , XF86AudioPlay, exec, playerctl play-pause
+bindl = , XF86AudioPrev, exec, playerctl previous
+
+# Clipboard manager
+bind = SUPER SHIFT, V, exec,  kitty --class clipse -e 'clipse'
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/general.conf
+################################################################################
+
+# General
+general {
+    gaps_in = 2
+    gaps_out = 4
+    border_size = 1
+
+    col.active_border = $color4
+    col.inactive_border = $color0
+
+    layout = dwindle
+}
+
+dwindle {
+    pseudotile = yes
+    preserve_split = yes
+}
+
+misc {
+    vfr = true
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/input.conf
+################################################################################
+
+# Input
+input {
+    kb_layout = latam
+    follow_mouse = 1
+
+    touchpad {
+        natural_scroll = yes
+    }
+
+    sensitivity = 0
+}
+
+gesture = 3, horizontal, workspace
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/plugins.conf
+################################################################################
+
+# Plugins
+#plugin {
+#    hyprexpo {
+#        rows = 1
+#        cols = 0
+#        workspace_method = center
+#        gap_size = 8
+#        bg_col = rgba(10, 10, 10, 0.8)
+#    }
+#}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/startup.conf
+################################################################################
+
+# --- PLugins ---
+#exec-once = hyprpm reload -n
+
+
+# --- Theming & OSD ---
+exec-once = wal -R
+exec-once = swayosd-server
+exec-once = swaync
+exec-once = hyprpaper
+
+# --- Hardware & System Tray ---
+exec-once = nm-applet &
+exec-once = blueman-applet &  # <--- NUEVO (Bluetooth)
+exec-once = udiskie &         # <--- NUEVO (USB Automount)
+exec-once = solaar --window=hide --battery-icons=symbolic > /dev/null 2>&1 &
+exec-once = waybar &
+exec-once = kdeconnect-indicator
+
+# --- Idle & Screen Protection ---
+exec-once = hypridle &
+# Santiago de Chile Coordinates (-33.4, -70.6)
+exec-once = wlsunset -t 3600 -T 6500 -d 1800 -l -33.4 -L -70.6
+
+# --- Backend Services ---
+exec-once = /usr/lib/evolution-data-server/evolution-alarm-notify
+exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec-once = kdeconnectd
+exec-once = clipse -listen
+
+# --- Session & Portals (Orden Importante) ---
+exec-once = dbus-update-activation-environment --systemd --all
+exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP # <--- Fix para OBS/Screen Share
+exec-once = /usr/lib/xdg-desktop-portal-hyprland
+# Descomentado para guardar claves SSH/Git/Spotify
+#exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
+
+# --- User Apps ---
+exec-once = kitty --class "Dotfiles" --directory ~/Dotfiles
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/window.conf
+################################################################################
+
+# Window Rules
+windowrulev2 = float, class:^(blueman-manager)$
+windowrulev2 = float, class:^(pavucontrol)$
+windowrulev2 = float, class:^(nm-connection-editor)$
+windowrulev2 = opaque, class:^(kitty)$
+windowrulev2 = float, size 300 200, center, class:^(Notas)$
+
+windowrulev2 = workspace 2, class:^(spotify)$
+windowrulev2 = workspace 2, class:^(discord)$
+windowrulev2 = float, title:^(Picture in Picture)$
+windowrulev2 = float,class:(clipse)
+windowrulev2 = size 622 652,class:(clipse)
+
+windowrulev2 = workspace 3, class:^(Dotfiles)$
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hypridle.conf
+################################################################################
+
+# ===================================================================
+# HYPRIDLE CONFIGURATION (OPTIMIZED FOR BATTERY LIFE)
+#
+# This config will:
+# 1. Dim the screen after 5 minutes.
+# 2. Lock the screen after 10 minutes.
+# 3. Suspend-then-hibernate after 15 minutes.
+# ===================================================================
+
+general {
+    lock_cmd = pidof hyprlock || hyprlock
+    before_sleep_cmd = pidof hyprlock || hyprlock
+    after_sleep_cmd = hyprctl dispatch dpms on
+}
+
+# Listener 1: Dim after 3 minutes
+listener {
+    timeout = 180
+    on-timeout = hyprctl dispatch dpms off
+    on-resume = hyprctl dispatch dpms on
+}
+
+# Listener 2: Lock after 5 minutes
+listener {
+    timeout = 300
+    on-timeout = pidof hyprlock || hyprlock
+}
+
+# Listener 3: Suspend-then-hibernate after 15 minutes
+listener {
+    timeout = 900
+    # CHANGE THIS LINE
+    on-timeout = systemctl suspend-then-hibernate   # Use the new battery-saving action
+    on-resume = hyprctl dispatch dpms on
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprland.conf
+################################################################################
+
+# -----------------------------------------------------
+# Main Hyprland Config
+# -----------------------------------------------------
+
+# --- Environment Variables ---
+# (You might have these in a separate file like scripts/env.sh, 
+# but if they are here, leave them at the top)
+# env = HYPRCURSOR_THEME,Sweet-cursors
+# env = HYPRCURSOR_SIZE,20
+# ...etc
+
+# Variables para que Hyprland arranque bien desde SDDM
+env = XDG_CURRENT_DESKTOP,Hyprland
+env = XDG_SESSION_TYPE,wayland
+env = XDG_SESSION_DESKTOP,Hyprland
+env = QT_QPA_PLATFORM,wayland;xcb
+env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
+
+# --- THE FIX: Source Theme and Colors FIRST ---
+# This line MUST come before any file that uses color variables.
+source = ~/.cache/wal/colors-hyprland.conf
+
+# --- Source Monitor and Workspace Configs ---
+# Monitor config generated by nwg-displays
+source = ~/.config/hypr/monitors.conf
+
+# Workspace rules
+source = ~/.config/hypr/workspaces.conf
+
+# --- Source All Configuration Files in 'conf/' ---
+source = ~/.config/hypr/conf/startup.conf
+source = ~/.config/hypr/conf/input.conf
+source = ~/.config/hypr/conf/general.conf
+source = ~/.config/hypr/conf/aesthetics.conf
+source = ~/.config/hypr/conf/animations.conf
+source = ~/.config/hypr/conf/binds.conf
+source = ~/.config/hypr/conf/window.conf
+source = ~/.config/hypr/conf/plugins.conf # You created a plugins.conf, let's add it!
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprlock.conf
+################################################################################
+
+# ===================================================================
+# FINAL WORKING HYPRLOCK CONFIGURATION (v0.9.1)
+#
+# - Removes invalid configuration blocks for this version.
+# - Adds a static label as a visual cue for fingerprint scanning.
+# ===================================================================
+
+# -------------------------------------------------------------------
+# Define a variable for the font for easy reuse
+# -------------------------------------------------------------------
+$font = JetBrainsMono Nerd Font
+
+
+# -------------------------------------------------------------------
+# GENERAL
+# -------------------------------------------------------------------
+general {
+    hide_cursor = true
+}
+
+# -------------------------------------------------------------------
+# BACKGROUND
+# -------------------------------------------------------------------
+background {
+    monitor =
+    path = $HOME/Dotfiles//Wallpapers/Gundam/33.jpg
+    color = rgba(25, 20, 20, 1.0)
+    blur_passes = 0
+}
+
+# -------------------------------------------------------------------
+# CLOCK & DATE (TOP RIGHT)
+# -------------------------------------------------------------------
+label {
+    monitor =
+    text = cmd[update:30000] echo "$(date +"%R")"
+    color = rgb(255, 255, 255)
+    font_size = 90
+    font_family = $font
+    position = -30, 0
+    halign = right
+    valign = top
+}
+
+label {
+    monitor =
+    text = cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"
+    color = rgb(255, 255, 255)
+    font_size = 25
+    font_family = $font
+    position = -30, -150
+    halign = right
+    valign = top
+}
+
+# -------------------------------------------------------------------
+# CUSTOM "Mundo Hola" LABEL
+# -------------------------------------------------------------------
+label {
+    monitor =
+    text = Mundo Hola
+    color = rgb(255, 255, 255)
+    font_size = 20
+    font_family = "Sans Bold"
+    position = 0, -110
+    halign = center
+    valign = center
+}
+
+# -------------------------------------------------------------------
+# FINGERPRINT HINT LABEL (REPLACES the invalid fingerprint block)
+# -------------------------------------------------------------------
+label {
+    monitor =
+    text = Scan Fingerprint or Enter Password
+    color = rgb(200, 200, 200) # A slightly dimmer white
+    font_size = 16
+    font_family = $font
+    position = 0, 40 # Positioned just below the input box
+    halign = center
+    valign = center
+}
+
+
+# -------------------------------------------------------------------
+# INPUT FIELD
+# -------------------------------------------------------------------
+input-field {
+    monitor =
+    size = 450, 60
+    outline_thickness = 3
+    inner_color = rgba(0, 0, 0, 0.0)
+    rounding = 15
+
+    # --- Gradient colors ---
+    outer_color = rgba(33ccffee) rgba(00ff99ee) 45deg
+    check_color = rgba(00ff99ee) rgba(ff6633ee) 120deg
+    fail_color = rgba(ff6633ee) rgba(ff0066ee) 40deg
+
+    # --- Font and dynamic text ---
+    font_color = rgb(143, 143, 143)
+    fade_on_empty = false
+    hide_input = false
+    dots_center = true
+    # FIXED: Pango markup with ##RRGGBBAA hex format
+    placeholder_text = <span foreground="##8F8F8FB2"><i>󰌾 Logged in as </i><span foreground="##33CCFFE5">$USER</span></span>
+    fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
+    capslock_color = rgb(255, 204, 0)
+
+    # --- Positioning ---
+    position = 0, -20
+    halign = center
+    valign = center
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprpaper.conf
+################################################################################
+
+# ===================================================================
+# HYPRPAPER CONFIGURATION
+#
+# This file sets the initial wallpaper and enables IPC (Inter-Process
+# Communication) so that scripts can change the wallpaper later.
+# ===================================================================
+
+# Set a preload wallpaper. This is the image that will be loaded
+# into memory when hyprpaper starts.
+# I'm using the path from your example.
+preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/10.jpg
+
+# Set the wallpaper for all monitors. The leading comma means it
+# applies to any monitor that doesn't have a specific rule.
+# This will be your wallpaper at login.
+wallpaper = , /home/F-Patata/Dotfiles/Wallpapers/Gundam/10.jpg
+
+# THIS IS THE MOST IMPORTANT LINE
+# It allows hyprpaper to be controlled by the command line (hyprctl).
+ipc = on
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprsunset.conf
+################################################################################
+
+max-gamma = 150
+
+# This profile resets the color temperature at 7:00 AM
+profile {
+    time = 07:00
+    identity = true
+}
+
+# This profile applies a warm color temperature at 7:00 PM (19:00)
+profile {
+    time = 21:00
+    temperature = 3600
+    gamma = 0.8
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/monitors.conf
+################################################################################
+
+# Generated by nwg-displays on 2025-09-16 at 22:22:45. Do not edit manually.
+
+monitor=eDP-1,1366x768@60.0,0x144,1.0
+monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/README.md
+################################################################################
+
+# HOLA PAtata
+
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/env.sh
+################################################################################
+
+#!/bin/bash
+
+# Check if a path argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <path/to/your/project>"
+  exit 1
+fi
+
+PROJECT_PATH="$1"
+
+# --- Tiling Layout Script ---
+
+# 1. Launch the main code window first. It will occupy the entire workspace.
+#    We use --class to identify it in hyprland.conf.
+kitty --class code_window --working-directory "$PROJECT_PATH" nvim . &
+sleep 0.5 # Wait for the window to open and be focused
+
+# 2. Set the split ratio for the NEXT window.
+#    A value of 0.34 means the new window will take 34% of the space,
+#    leaving the current 'code_window' with 66%.
+hyprctl dispatch splitratio 0.34
+
+# 3. Launch the first of the smaller windows. This will create the split.
+kitty --class input_window --working-directory "$PROJECT_PATH" nvim input &
+sleep 0.5 # Wait a moment
+
+# 4. Launch the remaining windows. The dwindle layout will automatically
+#    stack them vertically in the smaller pane.
+kitty --class compile_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
+sleep 0.3 # Wait a moment
+
+kitty --class exec_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/.gitignore
+################################################################################
+
+
+# Ignore update script log
+update.log
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/loguot.sh
+################################################################################
+
+#!/usr/bin/env bash
+
+#// Check if wlogout is already running
+if pgrep -x "wlogout" >/dev/null; then
+    pkill -x "wlogout"
+    exit 0
+fi
+
+#// Set file variables
+confDir="$HOME/.config"
+wLayout="${confDir}/wlogout/layout"
+wlTmplt="${confDir}/wlogout/style.css"
+
+#// Detect monitor resolution
+x_mon=$(hyprctl -j monitors | jq '.[] | select(.focused==true) | .width')
+y_mon=$(hyprctl -j monitors | jq '.[] | select(.focused==true) | .height')
+hypr_scale=$(hyprctl -j monitors | jq '.[] | select (.focused == true) | .scale' | sed 's/\.//')
+
+#// Scale config layout and style
+wlColms=6
+export mgn=$((y_mon * 28 / hypr_scale))
+export hvr=$((y_mon * 23 / hypr_scale))
+
+#// Scale font size
+export fntSize=$((y_mon * 2 / 100))
+
+#// Detect wallpaper brightness
+export BtnCol="white"
+
+#// Eval hypr border radius
+hypr_border="${hypr_border:-10}"
+export active_rad=$((hypr_border * 5))
+export button_rad=$((hypr_border * 8))
+
+#// Eval config files
+wlStyle="$(envsubst <"${wlTmplt}")"
+
+#// Launch wlogout
+wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlStyle}") --protocol layer-shell
+
+
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/nigthligth.sh
+################################################################################
+
+#!/bin/bash
+
+# This is the compatible version that works on all Hyprland versions
+
+if pgrep -x "hyprsunset" > /dev/null
+then
+    # If hyprsunset is running, kill it and notify
+    killall hyprsunset
+    notify-send "Night Light Disabled" -h string:x-canonical-private-synchronous:nightlight-toggle
+else
+    # If hyprsunset is not running, start it and notify
+    hyprsunset &
+    notify-send "Night Light Enabled" -h string:x-canonical-private-synchronous:nightlight-toggle
+fi
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/phone.sh
+################################################################################
+
+#!/bin/zsh
+
+# Find the specific ID for the "Galaxy S8"
+DEVICE_ID=$(kdeconnect-cli -a | grep "Galaxy S8" | awk -F': ' '{print $2}' | awk '{print $1}')
+
+ICON="" # Nerd Font icon for phone
+
+if [ -n "$DEVICE_ID" ]; then
+    # Use qdbus and crucially, ignore the stderr error messages with 2>/dev/null
+    BATTERY_LEVEL=$(qdbus6 org.kde.kdeconnect /modules/kdeconnect/devices/$DEVICE_ID/battery org.kde.kdeconnect.device.battery.charge 2>/dev/null)
+
+    # Check if the command was successful and returned a number
+    if [[ -n "$BATTERY_LEVEL" && "$BATTERY_LEVEL" -ge 0 ]]; then
+        echo "{\"text\": \"$ICON $BATTERY_LEVEL%\", \"tooltip\": \"Phone Battery: $BATTERY_LEVEL%\"}"
+    else
+        # This will now correctly trigger if the command fails or phone is truly unreachable
+        echo "{\"text\": \"$ICON --%\", \"tooltip\": \"Phone Disconnected\"}"
+    fi
+else
+    # No device named "Galaxy S8" found
+    echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"Phone Not Found\"}"
+fi
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/random_wallpaper.sh
+################################################################################
+
+#!/bin/bash
+
+WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
+
+# Find a random wallpaper from the directory
+RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
+
+# Set the wallpaper using our main script
+~/.config/hypr/scripts/set_wallpaper.sh "$RANDOM_WALLPAPER"
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/README.md
+################################################################################
+
+# Aqui estan mis sricots de hyprland
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/reset_waybar.sh
+################################################################################
+
+#!/bin/bash
+killall -q waybar
+waybar &
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/screenshot.sh
+################################################################################
+
+#!/bin/bash
+
+# Directory to save screenshots
+dir="$HOME/Pictures/Screenshots"
+# Create the directory if it doesn't exist
+mkdir -p "$dir"
+
+# Filename for the screenshot with timestamp
+file="screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
+
+# Options for Rofi menu
+options="󰹑 Fullscreen\n󰆞 Area\n󰖵 Window"
+
+# Show Rofi menu and get the user's choice
+choice=$(echo -e "$options" | rofi -dmenu -i -p "Screenshot")
+
+# Execute the command based on the choice.
+# hyprshot will handle the notification, preview, and clipboard copy.
+case $choice in
+    "󰹑 Fullscreen")
+        hyprshot -m output -o "$dir" -f "$file"
+        ;;
+    "󰆞 Area")
+        hyprshot -m region -o "$dir" -f "$file"
+        ;;
+    "󰖵 Window")
+        hyprshot -m window -o "$dir" -f "$file"
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/selector.sh
+################################################################################
+
+#!/bin/bash
+
+BASE_PROJECTS_DIR="$HOME/Progra"
+
+# Check if the base directory exists
+if [ ! -d "$BASE_PROJECTS_DIR" ]; then
+    echo "Base project directory '$BASE_PROJECTS_DIR' not found." >&2
+    exit 1
+fi
+
+TEMP_ROFI_INPUT=$(mktemp)
+
+find "$BASE_PROJECTS_DIR" -mindepth 1 -type d -print0 | \
+    grep -vzP "^$(printf '%q' "$BASE_PROJECTS_DIR")\/.git($|\/)" | \
+    sort -rz | \
+    sed -z "s|^$(printf '%q' "$BASE_PROJECTS_DIR")/||" | \
+    tr '\0' '\n' | \
+    rofi -dmenu -p "Select Project Directory:" -location 0 -display-drun "" > "$TEMP_ROFI_INPUT"
+
+read -r SELECTED_RELATIVE_PATH < "$TEMP_ROFI_INPUT"
+
+rm "$TEMP_ROFI_INPUT"
+
+if [ -n "$SELECTED_RELATIVE_PATH" ]; then
+    # Construct the full path with explicit quoting for the shell.
+    # This is more robust if SELECTED_RELATIVE_PATH has tricky characters.
+    FULL_PROJECT_PATH="$(printf '%q' "$BASE_PROJECTS_DIR")/$SELECTED_RELATIVE_PATH"
+
+    # Execute env.sh, ensuring the path is passed as a single, quoted argument.
+    # We can even try executing env.sh with bash -c to be very explicit about quoting.
+    bash -c "~/.config/hypr/scripts/env.sh $(printf '%q' \"$BASE_PROJECTS_DIR/$SELECTED_RELATIVE_PATH\")"
+else
+    echo "No project directory selected."
+fi
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/set_wallpaper.sh
+################################################################################
+
+#!/bin/bash
+
+# A script to update the system theme using Pywal and Hyprpaper
+
+# Check if a wallpaper path is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 /path/to/wallpaper"
+    exit 1
+fi
+
+WALLPAPER_PATH="$1"
+
+# --- Pywal and Oomox ---
+# Run Pywal to generate the color scheme from the new wallpaper
+wal -q -n -i "$WALLPAPER_PATH"
+
+# Apply the generated Pywal theme with oomox-cli
+oomox-cli -o pywal ~/.cache/wal/colors-oomox
+
+# --- Hyprpaper Integration ---
+# Preload the new wallpaper into hyprpaper's memory for a smooth transition
+hyprctl hyprpaper preload "$WALLPAPER_PATH"
+
+# Set the preloaded wallpaper as the active wallpaper for all monitors
+hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
+
+# --- Reload Applications ---
+# Reload Hyprland to apply theme changes like border colors
+hyprctl reload
+
+echo "Wallpaper and theme updated successfully!"
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/sunset.sh
+################################################################################
+
+#!/bin/bash
+
+# Uso: ./smooth_sunset.sh on  (para activar)
+#      ./smooth_sunset.sh off (para desactivar)
+
+TARGET_TEMP=4000   # Temperatura objetivo (cálida)
+NORMAL_TEMP=6500   # Temperatura normal
+STEP=100           # Cuánto baja por paso (más bajo = más suave pero más CPU)
+DELAY=0.01         # Velocidad de la animación
+
+current=$(hyprsunset --current | awk '{print $1}') # (Esto es pseudo-código, hyprsunset no siempre reporta bien, asumimos estados)
+
+if [ "$1" == "on" ]; then
+    # Bucle para bajar de 6500 a 4000
+    for (( i=$NORMAL_TEMP; i>=$TARGET_TEMP; i-=$STEP )); do
+        hyprsunset -t $i
+        sleep $DELAY
+    done
+elif [ "$1" == "off" ]; then
+    # Bucle para subir de 4000 a 6500
+    for (( i=$TARGET_TEMP; i<=$NORMAL_TEMP; i+=$STEP )); do
+        hyprsunset -t $i
+        sleep $DELAY
+    done
+    # Asegurar que quede apagado el filtro
+    hyprsunset -i
+fi
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/update.sh
+################################################################################
+
+#!/bin/zsh
+
+# Go to the script's directory to ensure log files are created locally
+cd "$(dirname "$0")"
+
+# --- Configuration ---
+LOG_FILE="$PWD/update.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+GITIGNORE_FILE="$PWD/.gitignore"
+
+# --- Function for sending notifications ---
+# D-Bus is needed for notify-send to work correctly from a script run with sudo
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+
+notify() {
+  notify-send "Pacman Updater" "$1" -i "system-software-update"
+}
+
+# --- Automatically ignore the log file in git ---
+# Check if the log file is already in .gitignore and add it if not
+if ! grep -q "^$(basename "$LOG_FILE")$" "$GITIGNORE_FILE" 2>/dev/null; then
+  echo "\n# Ignore update script log" >> "$GITIGNORE_FILE"
+  echo "$(basename "$LOG_FILE")" >> "$GITIGNORE_FILE"
+fi
+
+# --- Main Script Logic ---
+# Redirect all output (stdout and stderr) to both the console and the log file
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "========== Starting Update: $TIMESTAMP =========="
+
+# 1. Update Mirrorlist with Reflector
+echo "Updating mirrorlist for best performance..."
+if sudo reflector --country 'Chile,Argentina,Brazil,Peru' --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist; then
+  echo "[OK] Mirrorlist updated successfully."
+else
+  echo "[ERROR] Failed to update mirrorlist with reflector."
+  notify "❌ Error: Failed to update mirrorlist."
+  exit 1 # Exit the script with an error code
+fi
+
+# 2. Perform Full System Upgrade (Official Repos + AUR)
+echo "Starting full system upgrade (Official Repos + AUR)..."
+# We remove --noconfirm for safety. It's better to manually confirm packages.
+if yay -Syuu --sudoloop; then
+  echo "[SUCCESS] System upgrade completed successfully at $(date '+%Y-%m-%d %H:%M:%S')."
+  notify "✅ System is up-to-date!"
+else
+  echo "[ERROR] The update process failed."
+  notify "❌ Error: The update process failed. Check the log."
+  exit 1 # Exit the script with an error code
+fi
+
+echo "=================================================="
+echo ""
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/wifi.sh
+################################################################################
+
+#!/usr/bin/env bash
+
+notify-send "Getting list of available Wi-Fi networks..."
+# Get a list of available wifi connections and morph it into a nice-looking list
+wifi_list=$(nmcli --fields "SECURITY,SSID" device wifi list | sed 1d | sed 's/  */ /g' | sed -E "s/WPA*.?\S/ /g" | sed "s/^--/ /g" | sed "s/  //g" | sed "/--/d")
+
+connected=$(nmcli -fields WIFI g)
+if [[ "$connected" =~ "enabled" ]]; then
+	toggle="󰖪  Disable Wi-Fi"
+elif [[ "$connected" =~ "disabled" ]]; then
+	toggle="󰖩  Enable Wi-Fi"
+fi
+
+# Use rofi to select wifi network
+chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "Wi-Fi SSID: " )
+# Get name of connection
+read -r chosen_id <<< "${chosen_network:3}"
+
+if [ "$chosen_network" = "" ]; then
+	exit
+elif [ "$chosen_network" = "󰖩  Enable Wi-Fi" ]; then
+	nmcli radio wifi on
+elif [ "$chosen_network" = "󰖪  Disable Wi-Fi" ]; then
+	nmcli radio wifi off
+else
+	# Message to show when connection is activated successfully
+  	success_message="You are now connected to the Wi-Fi network \"$chosen_id\"."
+	# Get saved connections
+	saved_connections=$(nmcli -g NAME connection)
+	if [[ $(echo "$saved_connections" | grep -w "$chosen_id") = "$chosen_id" ]]; then
+		nmcli connection up id "$chosen_id" | grep "successfully" && notify-send "Connection Established" "$success_message"
+	else
+		if [[ "$chosen_network" =~ "" ]]; then
+			wifi_password=$(rofi -dmenu -p "Password: " )
+		fi
+		nmcli device wifi connect "$chosen_id" password "$wifi_password" | grep "successfully" && notify-send "Connection Established" "$success_message"
+    fi
+fi
+

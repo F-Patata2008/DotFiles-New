@@ -1,64 +1,67 @@
 #!/bin/bash
 
-# Directorios
-DOTFILES_DIR="$HOME/Dotfiles"
-OUTPUT_FILE="$HOME/Dotfiles/dotfiles_content.txt"
-OUTPUT_FILENAME=$(basename "$OUTPUT_FILE")
-
-# Check if directory exists
-if [ ! -d "$DOTFILES_DIR" ]; then
-  echo "Error: Directory $DOTFILES_DIR does not exist."
-  exit 1
+# 1. Verificar si se pasó un argumento
+if [ -z "$1" ]; then
+    echo "❌ Error: Debes indicar la carpeta."
+    echo "Uso: ./dump_config.sh <ruta_de_carpeta>"
+    echo "Ejemplo: ./dump_config.sh ~/.config/nvim"
+    exit 1
 fi
 
-# Limpiar archivo de salida
-> "$OUTPUT_FILE"
+# 2. Definir rutas
+TARGET_DIR="${1%/}" # Elimina el slash final si existe
+DIR_NAME=$(basename "$TARGET_DIR")
+OUTPUT_FILE="$TARGET_DIR/_DUMP_${DIR_NAME}.txt"
 
-echo "Generando reporte en $OUTPUT_FILE..."
+# 3. Verificar que la carpeta existe
+if [ ! -d "$TARGET_DIR" ]; then
+    echo "❌ Error: La carpeta '$TARGET_DIR' no existe."
+    exit 1
+fi
 
-# Find mejorado:
-# 1. Usa -prune para ignorar carpetas enteras eficientemente.
-# 2. Excluye explícitamente el archivo de salida.
-# 3. Usa -print0 para manejar nombres de archivo con espacios.
+# 4. Crear/Limpiar el archivo de salida
+echo "==================================================================" > "$OUTPUT_FILE"
+echo " DUMP DE CONFIGURACIÓN: $TARGET_DIR" >> "$OUTPUT_FILE"
+echo " Fecha: $(date)" >> "$OUTPUT_FILE"
+echo "==================================================================" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
 
-find "$DOTFILES_DIR" \
-  \( \
-     -path "*/.git" -o \
-     -path "*/ohmyzsh" -o \
-     -path "*/Wallpapers" -o \
-     -path "*/Install/system-files/boot" -o \
-     -path "*/Install/system-files/usr/share" \
-  \) -prune \
-  -o -type f \
-  -not -name "$OUTPUT_FILENAME" \
-  -not -name "push.log" \
-  -not -name "*.png" \
-  -not -name "*.jpg" \
-  -not -name "*.otf" \
-  -not -name "*.ttf" \
-  -print0 | while IFS= read -r -d '' file; do
+echo "📂 Escaneando: $TARGET_DIR"
+echo "📄 Guardando en: $OUTPUT_FILE"
 
-    # Chequeo extra: Si el archivo es binario (imágenes, ejecutables), saltarlo.
-    # Si no tienes 'file' instalado, puedes borrar este bloque if/fi, pero es recomendable.
-    if file "$file" | grep -qE 'image|data|font'; then
-        continue
+# 5. Buscar archivos y procesar
+# Ignoramos: .git, el propio archivo de salida, imágenes comunes y lazy-lock
+find "$TARGET_DIR" -type f \
+    -not -path '*/.git/*' \
+    -not -path '*/node_modules/*' \
+    -not -name "$(basename "$OUTPUT_FILE")" \
+    -not -name "lazy-lock.json" \
+    -not -name "*.png" \
+    -not -name "*.jpg" \
+    -not -name "*.jpeg" \
+    -not -name "*.ico" \
+    -not -name "*.woff2" \
+    -not -name "*.pdf" \
+    | sort | while read -r file; do
+
+    # Verificamos si es un archivo de texto (para evitar binarios raros)
+    if file "$file" | grep -q "text"; then
+        echo "procesando: $file"
+
+        # Formato bonito en el TXT
+        echo "" >> "$OUTPUT_FILE"
+        echo "################################################################################" >> "$OUTPUT_FILE"
+        echo "AR-CHIVO: $file" >> "$OUTPUT_FILE"
+        echo "################################################################################" >> "$OUTPUT_FILE"
+        echo "" >> "$OUTPUT_FILE"
+
+        # Volcar contenido
+        cat "$file" >> "$OUTPUT_FILE"
+        echo "" >> "$OUTPUT_FILE"
+    else
+        echo "⚠️  Saltando binario: $file"
     fi
-
-    # Calcular ruta relativa
-    relative_path=${file#$DOTFILES_DIR/}
-
-    # Escribir al archivo
-    echo "=========================================" >> "$OUTPUT_FILE"
-    echo "File: $relative_path" >> "$OUTPUT_FILE"
-    echo "=========================================" >> "$OUTPUT_FILE"
-    echo "" >> "$OUTPUT_FILE"
-
-    cat "$file" >> "$OUTPUT_FILE"
-
-    echo "" >> "$OUTPUT_FILE"
-    echo "" >> "$OUTPUT_FILE"
-    
-    echo "Procesado: $relative_path"
 done
 
-echo "¡Listo! Todo guardado en $OUTPUT_FILE"
+echo "✅ ¡Listo! Archivo creado en:"
+echo "   $OUTPUT_FILE"

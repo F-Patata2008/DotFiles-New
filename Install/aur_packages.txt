@@ -18,6 +18,7 @@ sddm-sugar-candy-git
 spicetify-cli
 spotify
 swaylock-effects
+themix-theme-oomox-git
 tty-clock
 wf-recorder-git
 wlogout

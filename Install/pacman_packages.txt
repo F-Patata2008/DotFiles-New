@@ -93,9 +93,7 @@ hyprshot
 hyprsunset
 hyprutils
 hyprwayland-scanner
-i3-wm
 i3blocks
-i3status
 jre-openjdk
 just
 kdeconnect
@@ -136,12 +134,10 @@ papers
 pavucontrol
 perl-file-homedir
 perl-yaml-tiny
-picom
 pipewire-pulse
 plasma5support
 plymouth
 polkit-gnome
-polybar
 powertop
 python-black
 python-ipykernel

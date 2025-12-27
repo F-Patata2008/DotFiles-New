@@ -14,7 +14,7 @@ exec > >(tee -a "$LOG_FILE") 2>&1 # Redirect all output to log file and stdout
 
 # --- CONFIGURATION ---
 readonly GITHUB_USER="F-Patata2008"
-readonly STOW_PACKAGES=(fastfetch hypr i3 i3status kitty nvim ohmyzsh picom polybar rofi rofimoji swaylock wal waybar zsh)
+readonly STOW_PACKAGES=(fastfetch hypr kitty nvim ohmyzsh rofi rofimoji swaylock waybar zsh)
 readonly PERSONAL_REPOS=(Apunte Progra Arduino-Codes F-Patata2008) # Corrected repo names
 readonly SERVICES_TO_ENABLE=(
     NetworkManager.service bluetooth.service tlp.service cups.service

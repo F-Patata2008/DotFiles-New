@@ -1,20 +1,14 @@
-/**
- * Sway Notification Center CSS
- *
- * Based on your Waybar theme
- */
-
 /* --- Import your pywal color palette --- */
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
-/* --- Define our color scheme based on your Waybar --- */
-/* ADJUSTED: Set to your specific color #1C1D26 */
-@define-color bar-bg rgba(28, 29, 38, 0.85);
-@define-color module-bg rgba(0, 0, 8, 0.7);
-@define-color module-hover-bg rgba(26, 27, 38, 0.9);
-@define-color text-main #c0caf5;
-@define-color text-hover #cdd6f4;
-@define-color workspace-active-bg #13131d;
+/* --- Define our color scheme based on pywal --- */
+@define-color bar-bg alpha(@background, 0.85);
+@define-color module-bg alpha(@color0, 0.7);
+@define-color module-hover-bg alpha(@color8, 0.9);
+@define-color text-main @foreground;
+@define-color text-hover @foreground;
+@define-color workspace-active-bg @color1;
+
 
 /* --- General --- */
 * {

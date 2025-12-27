@@ -1,14 +1,14 @@
-/* Import the pywal color palette first */
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
 
 /* --- Define our color scheme --- */
-@define-color bar-bg rgba(26, 27, 38, 0.75);       /* Bar background with transparency */
-@define-color module-bg rgba(0, 0, 8, .7);         /* Module group background */
-@define-color module-hover-bg rgba(26, 27, 38, 0.9); /* Module background on hover */
-@define-color text-main #c0caf5;                  /* Main text color */
-@define-color text-hover #cdd6f4;                 /* Text color on hover */
-@define-color workspace-active-bg #13131d;       /* Active workspace background */
-@define-color workspace-hover-bg #11111b;       /* Workspace hover background */
+/* AHORA USAMOS LAS VARIABLES DE PYWAL */
+@define-color bar-bg alpha(@background, 0.75);
+@define-color module-bg alpha(@color0, 0.7);
+@define-color module-hover-bg alpha(@color8, 0.9);
+@define-color text-main @foreground;
+@define-color text-hover @foreground;
+@define-color workspace-active-bg @color1;
+@define-color workspace-hover-bg @color8;
 @define-color arch-icon-hover #1793d1;            /* Arch icon hover color */
 
 /* --- Global Settings --- */

@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: /home/F-Patata/Dotfiles/nvim/.config/nvim
- Fecha: Fri Dec 26 09:28:20 PM -03 2025
+ Fecha: Fri Dec 26 09:46:25 PM -03 2025
 ==================================================================
 
 
@@ -942,36 +942,6 @@ return json
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/nvim/.config/nvim/lua/init.lua
-################################################################################
-
---require("core.keybinds")
---require("core.autostart")
-
-
-require("plugins.alpha")
-require("plugins.autopairs")
-require("plugins.completion")
-
-require("plugins.latex")
-require("plugins.lsp")
-require("plugins.lualine")
-
-require("plugins.luasnip")
-require("plugins.neo-tree")
-require("plugins.telescope")
-
-require("plugins.themes")
-require("plugins.treesitter")
-require("plugins.trouble")
-
-require("custom.copilot")
-
-
-
-
-
-################################################################################
 AR-CHIVO: /home/F-Patata/Dotfiles/nvim/.config/nvim/lua/plugins/alpha.lua
 ################################################################################
 
@@ -1501,6 +1471,32 @@ return {
     config = function()
       require("render-markdown").setup({
         -- Your custom configuration goes here
+      })
+    end,
+  },
+}
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/nvim/.config/nvim/lua/plugins/mini.lua
+################################################################################
+
+-- lua/plugins/mini.lua
+return {
+  {
+    "echasnovski/mini.indentscope",
+    version = false, -- usually not needed unless you are tracking nightly Neovim
+    event = "BufReadPre",
+    opts = {
+      -- symbol = "▏", -- Puedes cambiar el caracter de la línea si quieres
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy" },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
       })
     end,
   },

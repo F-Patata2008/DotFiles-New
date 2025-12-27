@@ -99,6 +99,7 @@ i3status
 jre-openjdk
 just
 kdeconnect
+keyd
 kio-fuse
 kitty
 libplasma
@@ -120,6 +121,7 @@ nautilus-python
 neovim
 network-manager-applet
 networkmanager
+nodejs
 npm
 nss-mdns
 ntfs-3g
@@ -135,7 +137,6 @@ pavucontrol
 perl-file-homedir
 perl-yaml-tiny
 picom
-piper
 pipewire-pulse
 plasma5support
 plymouth

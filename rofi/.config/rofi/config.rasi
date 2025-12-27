@@ -12,7 +12,7 @@ configuration {
     modi: "drun,run,window,filebrowser, emoji:rofimoji";
 
     /* --- General settings --- */
-    font: "JetBrainsMono Nerd Font 10";
+    font: "JetBrainsMono Nerd Font 8";
     show-icons: true; /* Required for mode-switcher icons to display */
 
     /* --- Display names and icons for modes --- */

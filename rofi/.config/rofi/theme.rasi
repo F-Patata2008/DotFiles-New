@@ -4,7 +4,7 @@
  */
 
 configuration {
-    font: "JetBrainsMono Nerd Font 12";
+    font: "JetBrainsMono Nerd Font 8";
     show-icons: true;
 }
 
@@ -26,7 +26,7 @@ window {
 }
 
 mainbox {
-    children: [ inputbar, listview ];
+    children: [ inputbar,mode-switcher, listview ];
     spacing:  20px; /* This adds the space you wanted */
 }
 

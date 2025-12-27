@@ -1,128 +1,57 @@
-# Arch Setup
-Hello, I use Arch (BTW), with Hyprland and SDDM, no full DE, as I find it more cumbersome.
+# 💻 Mi Setup: "Saviour-Arch" en un Lenovo E41-55
 
-I do prefer Gnome's Aesthetic, but i do like KDE better customization and integration.
+Este documento detalla la configuración de hardware y software de mi máquina principal, un setup minimalista y altamente optimizado basado en Arch Linux y Hyprland.
 
-I mostly use Hyprland for my day to day tasks, as it better suits my own workflow
+## Hardware Specifications
 
-## My machine spec are as following:
-- **Model:** Lenovo E41-55
-- **RAM:** 2 x 8 DDR4 3200 SODDIM Memory + 24 GB Swap
-- **Processor:** Ryzen 3 3250U 2 Cores 4 Threads
-- **GPU:** Vega 3 Integrated Graphics
-- **SSD:** 500 GB M2 NVME Gen 3 WD Black
-- **Screen:** 1366x768 14", 60 Hz
-- **Fingerprint Reader:** 27c6:55b4 Shenzhen Goodix Technology Co.,Ltd. Fingerprint Reader
+| Componente         | Especificación                                      |
+| ------------------ | --------------------------------------------------- |
+| **Modelo**         | Lenovo E41-55                                       |
+| **Procesador**     | AMD Ryzen 3 3250U (2 Cores, 4 Threads @ 2.60 GHz)   |
+| **Gráficos**       | AMD Radeon Vega 3 (Integrada)                       |
+| **Memoria RAM**    | 16 GB DDR4 3200MHz (2x8 GB)                         |
+| **Almacenamiento** | 500 GB NVMe Gen 3 SSD (WD Black)                    |
+| **Pantalla**       | 14" 1366x768 @ 60 Hz                                |
+| **Lector Huellas** | Goodix `27c6:55b4`                                  |
 
-### My partition scheme
-NAME                  MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-nvme0n1               259:0    0 465.8G  0 disk
-├─nvme0n1p1           259:1    0     1G  0 part /boot
-└─nvme0n1p2           259:2    0 464.8G  0 part
-  ├─ssdm2-swap        254:0    0    24G  0 lvm  [SWAP]
-  ├─ssdm2-arch--root  254:1    0  48.8G  0 lvm  /
-  ├─ssdm2-linux--home 254:2    0   344G  0 lvm  /home
-  └─ssdm2-zorin       254:3    0    48G  0 lvm
+## 💾 Estructura de Particionado (LVM sobre GPT)
 
-## Current System Setup
-I do have my Hyprland setup for my own workflow, wich includes the following:
+El sistema utiliza **LVM (Logical Volume Management)** para una gestión de disco flexible y escalable, permitiendo redimensionar particiones sin esfuerzo.
 
-- **Mobile integration:** I use KDE Connect, but have some issues, wich include:
-    - Can not answer rcs chats
-    - Can not mount my phone's filesystem in Nautilus, having to use dolphin
-    - Use a custom Script for checking my phone's battery, but it does not allow me to monitor if its charging or not
+```plaintext
+nvme0n1 (465.8G)
+├─ nvme0n1p1 (1G, ext4)  -> /boot (Partición EFI)
+└─ nvme0n1p2 (464.8G)    -> LVM Physical Volume
+   ├─ ssdm2-swap (24G)      -> [SWAP]
+   ├─ ssdm2-arch--root (48.8G) -> / (Arch Linux)
+   ├─ ssdm2-linux--home (344G) -> /home (Arch Linux)
+   └─ ssdm2-zorin (48G)       -> / (Zorin OS - Fallback)
+```
 
-- **Dotfiles + Stow:** My config makes use of the stow functionality, so I have everything all in one place, wich is my ~/Dotfiles/ folder, wich is also a public Github repository
+## 🐧 Stack de Software y Filosofía
 
-- **Batery and suspension optimizations:** Another part of my configuration, is the ability to hibernate and suspend to RAM, wich allows me to, after 15 minutes of idling, at least in my Hyprland session, suspend to RAM my pc, and shutdown to preserve Battery
+Mi entorno está construido sobre la filosofía "hágalo usted mismo" de Arch. No utilizo un Entorno de Escritorio completo (DE); en su lugar, he ensamblado un sistema a partir de componentes de Wayland que se ajustan a mi flujo de trabajo, con un fuerte enfoque en la eficiencia y la personalización dinámica.
 
-- **Plymouth and Grub Themes:** A big part of my customization are the Grub and Plymouth Themes, wich correspond to Minecarft 1.16 and Minecraft world loading screen respectively.
+- **Compositor y UI:**
+  - **Hyprland:** Como compositor principal, aprovechando sus animaciones fluidas y su extensa configuración.
+  - **Waybar & Rofi:** Para la barra de estado y el lanzador de aplicaciones, ambos con temas dinámicos.
+  - **SDDM:** Como Display Manager, con un tema personalizado para una experiencia de login cohesiva.
+  - **Aplicaciones GTK:** Utilizo una selección curada de aplicaciones de GNOME (como Nautilus) por su funcionalidad, temadas con `oomox` para que coincidan con el resto del sistema.
 
-- **I use the Hypr suite of addons:** My config makes use of the Hypr suite, plus some addons, wich includes
-    - HyprSunset
-    - HyprIdle
-    - HyprLock
-    - HyprPaper
-    - HyprShot
-    - HyprColorPicker
-    - Waybar
-    - Kitty
-    - Wal
-    - Opera (I do want to migrate to Zen Browser, as Opera consumes to much resources)
-    - Neovim
-    - Rofi
-    - Rofi-moji
-    - Clipse
-    - SwayOSD
-    - Wlsunset
-    - SwayNC
-    - SDDM with a customized theme
-    - Some Gnome Apps
-        - Nautilus
-        - Document Scanner
-        - Calendar
-        - Among others
+- **Theming y Estética:**
+  - **Pywal:** Es el cerebro del theming. Todo el sistema, desde la terminal hasta la barra, adapta sus colores al fondo de pantalla actual.
+  - **Temas de Arranque:** GRUB (`minegrub`) y Plymouth (`minecraft-theme`) están personalizados para una experiencia de arranque única.
 
-- **Gnome:** Only a selection of a few apps wich are indispensable for my workflow
+- **Integración y Productividad:**
+  - **KDE Connect:** Para la integración total con mi dispositivo móvil. A pesar de algunos problemas con el montaje de archivos en Nautilus, la funcionalidad de notificaciones y control remoto es indispensable.
+  - **Gestión de Energía:** El sistema está optimizado para la portabilidad, utilizando `tlp` para perfiles de energía, `hypridle` para la inactividad, y `systemctl hibernate` para una suspensión profunda que preserva la batería.
 
-- **LVM:** My setup makes use of LVM for better partition sizing and mounting, plus better rezing and less hassle with ssd blocks
+- **Gestión de Configuración:**
+  - **Dotfiles + Stow:** Todas las configuraciones residen en este repositorio de GitHub y son desplegadas mediante enlaces simbólicos con GNU Stow, garantizando una configuración 100% reproducible.
 
+## 🚧 Desafíos y Mejoras Pendientes
 
-### My Dotfiles Structure
-.
-├── eww
-├── fastfetch
-├── hypr
-├── i3
-├── i3status
-├── Install
-│   └── system-files
-│       ├── boot
-│       │   └── grub
-│       │       └── themes
-│       │           └── minegrub
-│       │               ├── assets
-│       │               └── backgrounds
-│       ├── etc
-│       │   ├── cron.d
-│       │   ├── cups
-│       │   │   └── ppd
-│       │   ├── default
-│       │   ├── systemd
-│       │   │   └── system
-│       │   ├── udev
-│       │   │   └── rules.d
-│       │   └── ufw
-│       │       └── applications.d
-│       └── usr
-│           ├── local
-│           │   └── bin
-│           └── share
-│               └── plymouth
-│                   └── themes
-│                       └── mc
-├── kitty
-├── MDS
-├── nvim
-├── ohmyzsh
-├── picom
-├── polybar
-├── rofi
-├── rofimoji
-├── screenshots
-├── swaylock
-├── swaync
-├── wal
-├── Wallpapers
-│   ├── Gundam
-│   └── Macross
-├── waybar
-├── wlogout
-└── zsh
-
-50 directories
-
-
-
-## My dotfiles repo:
-https://github.com/F-Patata2008/DotFiles-New
+- **KDE Connect:**
+  - El montaje de archivos (filesystem) solo funciona correctamente en Dolphin, no en Nautilus (un problema conocido de GVFS).
+  - El script de batería del teléfono en Waybar actualmente no puede detectar si el dispositivo está cargando.
+- **Migración de Navegador:** Planeo migrar de Opera a un navegador más ligero como **Zen Browser** para reducir el consumo de recursos.

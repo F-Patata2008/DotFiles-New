@@ -54,6 +54,7 @@ I do have my Hyprland setup for my own workflow, wich includes the following:
     - Rofi-moji
     - Clipse
     - SwayOSD
+    - Wlsunset
     - SwayNC
     - SDDM with a customized theme
     - Some Gnome Apps
@@ -71,7 +72,6 @@ I do have my Hyprland setup for my own workflow, wich includes the following:
 .
 ├── eww
 ├── fastfetch
-├── GitHub-Recovery
 ├── hypr
 ├── i3
 ├── i3status
@@ -102,6 +102,7 @@ I do have my Hyprland setup for my own workflow, wich includes the following:
 │                   └── themes
 │                       └── mc
 ├── kitty
+├── MDS
 ├── nvim
 ├── ohmyzsh
 ├── picom
@@ -118,6 +119,7 @@ I do have my Hyprland setup for my own workflow, wich includes the following:
 ├── waybar
 ├── wlogout
 └── zsh
+
 50 directories
 
 

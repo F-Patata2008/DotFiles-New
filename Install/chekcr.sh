@@ -11,7 +11,7 @@ fi
 # 2. Definir rutas
 TARGET_DIR="${1%/}" # Elimina el slash final si existe
 DIR_NAME=$(basename "$TARGET_DIR")
-OUTPUT_FILE="$TARGET_DIR/_DUMP_${DIR_NAME}.txt"
+OUTPUT_FILE="$TARGET_DIR/DUMP_${DIR_NAME}.md"
 
 # 3. Verificar que la carpeta existe
 if [ ! -d "$TARGET_DIR" ]; then

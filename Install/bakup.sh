@@ -55,6 +55,12 @@ find "$SYSTEM_FILES_DIR" -type f -print0 | while IFS= read -r -d '' repo_file; d
     fi
 done
 
+print_header "Fixing file ownership"
+log_info "Ensuring all files in the Dotfiles repo belong to you..."
+# This prevents git permission errors after copying files with sudo
+sudo chown -R "$(logname)":"$(id -gn "$(logname)")" "$DOTFILES_DIR"
+log_info "✔️ Permissions fixed."
+
 echo ""
 print_header "Backup complete!"
 log_info "You can now review the changes with 'git diff' in your Dotfiles directory."

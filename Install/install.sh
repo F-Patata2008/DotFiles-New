@@ -14,12 +14,34 @@ exec > >(tee -a "$LOG_FILE") 2>&1 # Redirect all output to log file and stdout
 
 # --- CONFIGURATION ---
 readonly GITHUB_USER="F-Patata2008"
+# Limpiamos la lista de stow, ya no necesitas los de X11
 readonly STOW_PACKAGES=(fastfetch hypr kitty nvim ohmyzsh rofi rofimoji swaylock waybar zsh)
-readonly PERSONAL_REPOS=(Apunte Progra Arduino-Codes F-Patata2008) # Corrected repo names
+readonly PERSONAL_REPOS=(Apunte Progra Arduino-Codes F-Patata2008)
+
+# Lista de servicios de SISTEMA
 readonly SERVICES_TO_ENABLE=(
-    NetworkManager.service bluetooth.service tlp.service cups.service
-    powertop.service swayosd-libinput-backend.service check-bat.timer
+    NetworkManager.service
+    bluetooth.service
+    tlp.service
+    cups.service
+    powertop.service
+    swayosd-libinput-backend.service
+    check-bat.timer
+    sddm.service
+    ufw.service
+    keyd.service
+    ratbagd.service
+    cronie.service
+    avahi-daemon.service
 )
+
+# NUEVA LISTA: Servicios de USUARIO
+readonly USER_SERVICES_TO_ENABLE=(
+    pipewire.service
+    pipewire-pulse.service
+    wireplumber.service
+)
+
 
 # --- HELPER FUNCTIONS AND COLORS ---
 readonly GREEN='\033[0;32m'; readonly RED='\033[0;31m'; readonly YELLOW='\033[1;33m'; readonly NC='\033[0m'
@@ -139,17 +161,29 @@ log_info "Setting Plymouth theme..."
 sudo plymouth-set-default-theme -R minecraft-theme || log_warn "Failed to set Plymouth theme."
 log_info "✔️ System configuration applied."
 
-# --- FASE 6: ENABLING SYSTEM SERVICES ---
-print_header "FASE 6: ENABLING CORE SYSTEM SERVICES"
+# --- FASE 6: ENABLING SYSTEM AND USER SERVICES ---
+print_header "FASE 6: ENABLING CORE SERVICES"
+
+log_info "Enabling SYSTEM services..."
 for service in "${SERVICES_TO_ENABLE[@]}"; do
     if ! sudo systemctl is-enabled --quiet "$service"; then
-        log_info "Enabling service: $service"
+        log_info "Enabling: $service"
         sudo systemctl enable "$service"
     else
-        log_info "Service $service is already enabled."
+        log_info "Already enabled: $service"
     fi
 done
+
+# --- NUEVO BLOQUE PARA SERVICIOS DE USUARIO ---
+log_info "Enabling USER services..."
+for service in "${USER_SERVICES_TO_ENABLE[@]}"; do
+    # OJO: Aquí se necesita ejecutar como el usuario, no como root.
+    # El `runuser` se asegura de eso.
+    runuser -l $SUDO_USER -c "systemctl --user is-enabled --quiet '$service' || (systemctl --user enable '$service' && echo 'Enabled user service: $service')"
+done
+
 log_info "✔️ Core services enabled."
+
 
 # --- FASE 7: REBUILD SYSTEM IMAGES ---
 print_header "FASE 7: REBUILDING SYSTEM IMAGES (GRUB & MKINITCPIO)"

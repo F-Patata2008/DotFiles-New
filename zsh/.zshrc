@@ -76,3 +76,5 @@ run_fastfetch_once() {
 }
 #precmd_functions+=(run_fastfetch_once)
 #
+#
+bindkey '^W' backward-kill-word

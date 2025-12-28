@@ -20,7 +20,6 @@ spotify
 swaylock-effects
 themix-theme-oomox-git
 tty-clock
-wf-recorder-git
 wlogout
 yay
 zen-browser-bin

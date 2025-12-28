@@ -204,6 +204,7 @@ v4l2loopback-dkms
 vi
 vim
 waybar
+wf-recorder
 wget
 wtype
 xdg-desktop-portal-gtk

@@ -1,0 +1,95 @@
+==================================================================
+ DUMP DE CONFIGURACIÓN: /home/F-Patata/Dotfiles/wlogout/.config/wlogout
+ Fecha: Sat Dec 27 11:16:56 PM -03 2025
+==================================================================
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/wlogout/.config/wlogout/layout
+################################################################################
+
+{ "label": "lock", "action": "pidof hyprlock || hyprlock", "text": "Lock", "keybind": "l" }
+{ "label": "logout", "action": "loginctl terminate-user $USER", "text": "Logout", "keybind": "e" }
+{ "label": "suspend", "action": "systemctl suspend", "text": "Suspend", "keybind": "u" }
+{ "label": "shutdown", "action": "systemctl poweroff", "text": "Shutdown", "keybind": "s" }
+{ "label": "hibernate", "action": "systemctl hibernate", "text": "Hibernate", "keybind": "h" }
+{ "label": "reboot", "action": "systemctl reboot", "text": "Reboot", "keybind": "r" }
+
+
+################################################################################
+AR-CHIVO: /home/F-Patata/Dotfiles/wlogout/.config/wlogout/style.css
+################################################################################
+
+* {
+    background-image: none;
+    transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682); /* Smooth transition from HyDE */
+    font-size: 16px;
+    border: none;
+    box-shadow: none;
+}
+
+window {
+    background-color: transparent;
+}
+
+button {
+    color: #c0caf5;
+    /* This semi-transparent background is what allows the blur (frost) to work */
+    background-color: rgba(26, 27, 38, 0.75);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 35%;
+}
+
+/* --- Frost Effect on Hover --- */
+/* This ONLY changes the color. It does not grow. */
+button:hover {
+    background-color: rgba(65, 72, 104, 0.85); /* Lighter, frosted color */
+}
+
+/* --- Grow Effect on Focus --- */
+/* This changes the color AND the margins, making the selected button bigger. */
+button:focus {
+    background-color: rgba(80, 88, 129, 0.9); /* A slightly more active/focused color */
+    background-size: 40%;
+}
+
+/* --- Default Positioning (Seamless Bar) --- */
+#lock {
+    margin: ${mgn}px 0px ${mgn}px ${mgn}px;
+    border-radius: 25px 0 0 25px;
+}
+#logout, #suspend, #shutdown, #hibernate {
+    margin: ${mgn}px 0px;
+    border-radius: 0;
+}
+#reboot {
+    margin: ${mgn}px ${mgn}px ${mgn}px 0px;
+    border-radius: 0 25px 25px 0;
+}
+
+/* --- Focus State Margins (The "Grow" effect) --- */
+button:focus#lock {
+    margin: ${hvr}px -5px ${hvr}px ${mgn}px; /* Negative margin pulls neighbors closer */
+    border-radius: 25px;
+}
+button:focus#logout,
+button:focus#suspend,
+button:focus#shutdown,
+button:focus#hibernate {
+    margin: ${hvr}px -5px; /* Negative margin on both sides */
+    border-radius: 25px;
+}
+button:focus#reboot {
+    margin: ${hvr}px ${mgn}px ${hvr}px -5px;
+    border-radius: 25px;
+}
+
+/* --- Icons --- */
+#lock { background-image: image(url("/usr/share/wlogout/icons/lock.png")); }
+#logout { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
+#suspend { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
+#shutdown { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
+#hibernate { background-image: image(url("/usr/share/wlogout/icons/hibernate.png")); }
+#reboot { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }
+

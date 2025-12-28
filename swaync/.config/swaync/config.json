@@ -12,7 +12,7 @@
     "widgets": [
         "title",
         "mpris",
-        "buttons-grid",
+        /*"buttons-grid",*/
         "dnd",
         "notifications"
     ],
@@ -34,7 +34,7 @@
                 { "label": "", "command": "blueman-manager", "tooltip": "Bluetooth" },
                 { "label": "󰈙", "command": "nautilus", "tooltip": "Files" },
                 { "label": "󰻠", "command": "gnome-system-monitor", "tooltip": "System Monitor" },
-                { "label": "", "command": "swaylock", "tooltip": "Lock" },
+                { "label": "", "command": "pidof hyprlock || hyprlock", "tooltip": "Lock", "tooltip": "Lock" },
                 { "label": "󰜉", "command": "reboot", "tooltip": "Reboot" },
                 { "label": "⏻", "command": "systemctl hibernate", "tooltip": "Hibernate PC" }
             ]

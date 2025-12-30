@@ -93,7 +93,7 @@
 
     "custom/wallpaper": {
         "format": "󰋩",
-        "on-click": "$HOME/.config/hypr/scripts/wallpaper-selector.sh",
+        "on-click": "kitty --class Select-Wallpaper -e bash $HOME/.config/hypr/scripts/wallpaper-selector.sh",
         "tooltip": false
     },
 

@@ -27,5 +27,8 @@ hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
 # --- Reload Applications ---
 # Reload Hyprland to apply theme changes like border colors
 hyprctl reload
+swaync-client -R
+killall -9 swaync
+swaync &
 
 echo "Wallpaper and theme updated successfully!"

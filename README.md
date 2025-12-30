@@ -5,10 +5,20 @@
 ![Terminal](https://img.shields.io/badge/Terminal-Kitty-924298?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![Shell](https://img.shields.io/badge/Shell-Zsh_&_P10k-yellow?style=for-the-badge&logo=powershell&logoColor=white)
 ![Editor](https://img.shields.io/badge/Editor-Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)
-
+![Desktop Screenshot](assets/hero.png)
 Este repositorio contiene mi configuración personal completa para un entorno de escritorio en **Arch Linux**, centrado en **Hyprland**. El objetivo es un sistema minimalista, rápido y estéticamente cohesivo, donde cada componente se adapta dinámicamente al fondo de pantalla.
 
 Todo está gestionado con [GNU Stow](https://www.gnu.org/software/stow/) y un script de instalación maestro que automatiza el despliegue de cero a un sistema funcional.
+
+---
+
+## 🎬 Workflow en Acción
+
+*Cambio de workspaces, Rofi, animaciones y transparencia en tiempo real.*
+
+![Workflow Demo](assets/Hyprland-Colli.mp4)
+
+---
 
 ## ✨ Características Destacadas
 

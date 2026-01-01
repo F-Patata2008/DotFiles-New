@@ -201,6 +201,7 @@ tree-sitter-cli
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols-mono
 ufw
+unzip
 v4l2loopback-dkms
 vi
 vim

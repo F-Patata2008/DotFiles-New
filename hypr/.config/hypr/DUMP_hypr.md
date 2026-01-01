@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Wed Dec 31 10:07:59 PM -03 2025
+ Fecha: Thu Jan  1 12:24:17 PM -03 2026
 ==================================================================
 
 
@@ -607,6 +607,7 @@ input-field {
 AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
+ipc = on
 # ===================================================================
 # HYPRPAPER CONFIGURATION
 #
@@ -923,58 +924,68 @@ AR-CHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
 
 #!/bin/bash
 
-# A script to update the system theme using Pywal and Hyprpaper
+# =============================================================================
+# SCRIPT DE TEMATIZACIÓN DINÁMICA (Hyprland v0.53+)
+# =============================================================================
 
-# 1. Validar que pasaron un archivo
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
     exit 1
 fi
 
-WALLPAPER_PATH="$1"
-echo "Changing wallpaper to: $WALLPAPER_PATH"
+WALLPAPER_PATH=$(realpath "$1")
+THEME_NAME="pywal" # Nombre consistente para evitar confusiones
 
-# --- 1. HYPRPAPER (LO PRIMERO: FEEDBACK VISUAL INMEDIATO) ---
-# Verificamos si hyprpaper esta corriendo, si no, lo lanzamos
+echo "🚀 Iniciando cambio de tema: $WALLPAPER_PATH"
+
+# --- 1. HYPRPAPER (Arreglo de errores de IPC) ---
 if ! pgrep -x "hyprpaper" > /dev/null; then
-    echo "Hyprpaper no estaba corriendo, iniciandolo..."
     hyprpaper &
-    sleep 1 # Le damos un segundito para respirar
+    sleep 1
 fi
 
-# El truco: Limpiar antes de cargar para evitar errores de cache o memoria
-hyprctl hyprpaper unload all
+# Intentar aplicar wallpaper (silenciamos errores por si el IPC tarda en despertar)
+hyprctl hyprpaper unload all > /dev/null 2>&1
+hyprctl hyprpaper preload "$WALLPAPER_PATH" > /dev/null 2>&1
+hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH" > /dev/null 2>&1
 
-# Cargar la imagen nueva en RAM
-hyprctl hyprpaper preload "$WALLPAPER_PATH"
-
-# Aplicarla a todos los monitores (la coma vacía significa "todos")
-hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
-
-# --- 2. PYWAL (Generar paleta de colores) ---
-# Generamos los colores en silencio (-q) y sin setear el fondo por backend (-n)
+# --- 2. PYWAL (Generar paleta) ---
 wal -q -n -i "$WALLPAPER_PATH"
+source "$HOME/.cache/wal/colors.sh" # Cargar variables para usar en el script
 
-# --- 3. RECARGAR APPS LIGERA (Waybar, SwayNC) ---
-# Recargamos Hyprland para bordes
+# --- 3. RECARGAR INTERFAZ ---
 hyprctl reload
+swaync-client -rs > /dev/null 2>&1
+swaync-client --reload-css > /dev/null 2>&1
+killall -SIGUSR2 waybar # Recarga configuración de Waybar sin cerrarla
 
-# Recargamos notificaciones y waybar para que tomen los colores nuevos rapido
-swaync-client -rs
-swaync-client --reload-css
-# Si usas waybar con colores de pywal, reiniciala:
-# killall waybar; waybar &  <-- Descomenta si waybar no actualiza color sola
+# --- 4. CONFIGURACIÓN GLOBAL DE MODO OSCURO (Importante para GTK) ---
+# Esto quita las barras blancas de las cabeceras
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface gtk-color-scheme 'prefer-dark'
 
-# --- 4. OOMOX (LA PARTE LENTA) ---
-# Tiramos esto al final y en segundo plano (&) para que no sientas lag
-# Esto compila el tema GTK/Iconos
+# --- 5. OOMOX & GTK SYNC (Segundo plano para no bloquear) ---
+notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
 
-pkill oomox-cli || true
-notify-send "Compilando Tema" "Generando tema GTK con Oomox (esto demora)..."
 (
-oomox-cli -o pywal ~/.cache/wal/colors-oomox > /dev/null 2>&1
+    # Eliminar procesos previos de oomox para no saturar
+    pkill oomox-cli || true
+    
+    # Compilar el tema con oomox
+    oomox-cli -o "$THEME_NAME" ~/.cache/wal/colors-oomox > /dev/null 2>&1
+    
+    # APLICAR EL TEMA (Esto es lo que te faltaba)
+    gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
+    
+    # FIX PARA GTK4 / LIBADWAITA (Pavucontrol, Blueman, etc.)
+    # Enlazamos el CSS generado directamente a la carpeta de configuración de GTK4
+    mkdir -p "$HOME/.config/gtk-4.0"
+    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/gtk.css" "$HOME/.config/gtk-4.0/gtk.css"
+    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/gtk-dark.css" "$HOME/.config/gtk-4.0/gtk-dark.css"
+    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/assets" "$HOME/.config/gtk-4.0/assets"
 
-notify-send "Wallpaper cambiado" "el tema GTK se aplicará en unos segundos."
+    notify-send -i "$WALLPAPER_PATH" "Sistema Actualizado" "Tema GTK y colores aplicados correctamente."
+    echo "✅ Todo listo. Tema '$THEME_NAME' aplicado."
 ) &
 
 

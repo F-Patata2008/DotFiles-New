@@ -14,6 +14,7 @@ opera
 opera-ffmpeg-codecs-bin
 python-jupytext
 python-pywal16
+pywal-spicetify
 sddm-sugar-candy-git
 spicetify-cli
 spotify

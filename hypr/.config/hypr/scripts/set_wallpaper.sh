@@ -60,6 +60,12 @@ notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
     ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/gtk-dark.css" "$HOME/.config/gtk-4.0/gtk-dark.css"
     ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/assets" "$HOME/.config/gtk-4.0/assets"
 
+    if command -v pywal-spicetify &> /dev/null; then
+        echo "🎨 Sincronizando Spotify con Pywal..."
+        pywal-spicetify Sleek > /dev/null 2>&1
+        spicetify apply -q > /dev/null 2>&1
+    fi
+
     notify-send -i "$WALLPAPER_PATH" "Sistema Actualizado" "Tema GTK y colores aplicados correctamente."
     echo "✅ Todo listo. Tema '$THEME_NAME' aplicado."
 ) &

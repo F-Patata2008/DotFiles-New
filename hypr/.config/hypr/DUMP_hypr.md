@@ -1,18 +1,26 @@
 ==================================================================
- DUMP DE CONFIGURACIÓN: /home/F-Patata/Dotfiles/hypr/.config/hypr
- Fecha: Fri Dec 26 09:47:41 PM -03 2025
+ DUMP DE CONFIGURACIÓN: hypr/.config/hypr
+ Fecha: Wed Dec 31 10:07:59 PM -03 2025
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/aesthetics.conf
+AR-CHIVO: hypr/.config/hypr/conf/aesthetics.conf
 ################################################################################
 
 # Aesthetics
+source = ~/.cache/wal/colors-hyprland.conf
+layerrule {
+    name = Aplicar-BLur-wlogout
+    blur = on
+    match:namespace = wlogout
 
-layerrule = blur, wlogout
-layerrule = blur, ~/Dotfiles/hypr/.config/hypr/scripts/loguot.sh
-layerrule = blur,logout_dialog
+}
+layerrule {
+    name = Aplicar-BLur-logout_dialog
+    blur = on
+    match:namespace = logout_dialog
+}
 
 decoration {
     rounding = 5
@@ -23,7 +31,6 @@ decoration {
         size = 2
 
         ignore_opacity = true
-        new_optimizations = on
         noise = 0.02
         contrast = 1.1
         brightness = 1.0
@@ -32,11 +39,12 @@ decoration {
     shadow {
         enabled = false
     }
-}
+
+    }
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/animations.conf
+AR-CHIVO: hypr/.config/hypr/conf/animations.conf
 ################################################################################
 
 # Animations
@@ -54,7 +62,7 @@ animations {
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/binds.conf
+AR-CHIVO: hypr/.config/hypr/conf/binds.conf
 ################################################################################
 
 # Keybindings
@@ -148,7 +156,7 @@ bind = SUPER SHIFT, V, exec,  kitty --class clipse -e 'clipse'
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/general.conf
+AR-CHIVO: hypr/.config/hypr/conf/general.conf
 ################################################################################
 
 # General
@@ -174,7 +182,7 @@ misc {
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/input.conf
+AR-CHIVO: hypr/.config/hypr/conf/input.conf
 ################################################################################
 
 # Input
@@ -193,7 +201,7 @@ gesture = 3, horizontal, workspace
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/plugins.conf
+AR-CHIVO: hypr/.config/hypr/conf/plugins.conf
 ################################################################################
 
 # Plugins
@@ -209,7 +217,7 @@ AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/plugins.conf
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/startup.conf
+AR-CHIVO: hypr/.config/hypr/conf/startup.conf
 ################################################################################
 
 # --- PLugins ---
@@ -253,27 +261,145 @@ exec-once = kitty --class "Dotfiles" --directory ~/Dotfiles
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/conf/window.conf
+AR-CHIVO: hypr/.config/hypr/conf/window.conf
 ################################################################################
 
-# Window Rules
-windowrulev2 = float, class:^(blueman-manager)$
-windowrulev2 = float, class:^(pavucontrol)$
-windowrulev2 = float, class:^(nm-connection-editor)$
-windowrulev2 = opaque, class:^(kitty)$
-windowrulev2 = float, size 300 200, center, class:^(Notas)$
+# =============================================================================
+# HYPRLAND WINDOW RULES (v0.53+ BLOCK SYNTAX)
+# Organizado por: Utilidad, Geometría, Workspaces y Estética.
+# =============================================================================
 
-windowrulev2 = workspace 2, class:^(spotify)$
-windowrulev2 = workspace 2, class:^(discord)$
-windowrulev2 = float, title:^(Picture in Picture)$
-windowrulev2 = float,class:(clipse)
-windowrulev2 = size 622 652,class:(clipse)
+# -----------------------------------------------------------------------------
+# 🛠️ SECTION: GLOBAL FLOATING RULES
+# Herramientas del sistema que siempre deben aparecer sobre el tiling.
+# -----------------------------------------------------------------------------
 
-windowrulev2 = workspace 3, class:^(Dotfiles)$
+windowrule {
+    name = pavucontrol
+    match:class = ^(pavucontrol)$
+    float = on
+}
+
+windowrule {
+    name = bluetooth
+    match:class = ^(blueman-manager)$
+    float = on
+}
+
+windowrule {
+    name = internet
+    match:class = ^(nm-connection-editor)$
+    float = on
+}
+
+windowrule {
+    name = clipboard
+    match:class = ^(clipse)$
+    float = on
+    center = on
+}
+
+windowrule {
+    name = Notes
+    match:class = ^(Notas)$
+    float = on
+}
+
+windowrule {
+    name = desktop-portals-float
+    match:class = ^(xdg-desktop-portal-gtk)$
+    match:title = ^(Open File|Select File|Save File)$
+    float = on
+}
+
+windowrule {
+    name = Select-Wallpaper
+    match:class = ^(Select-Wallpaper)$
+    float = on
+    center = on
+    size = 60% 40%
+    pin = on
+}
+
+# -----------------------------------------------------------------------------
+# 📐 SECTION: GEOMETRY & PLACEMENT
+# Define tamaños específicos y posiciones para ventanas flotantes.
+# -----------------------------------------------------------------------------
+
+# Configuración para el Selector de Archivos (GTK Portal)
+windowrule {
+    name = portal-geometry
+    match:class = ^(xdg-desktop-portal-gtk)$
+    size = 60% 70%
+    center = on
+}
+
+# Gestor de Portapapeles (Clipse)
+windowrule {
+    name = clipse-geometry
+    match:class = ^(clipse)$
+    size = 622 652
+}
+
+# Aplicación de Notas Rápidas
+windowrule {
+    name = notes-geometry
+    match:class = ^(Notas)$
+    size = 300 200
+    center = on
+}
+
+# Navegador Picture-in-Picture (Posición fija en esquina inferior derecha)
+windowrule {
+    name = browser-pip-geometry
+    match:title = ^(Picture in Picture)$
+    float = on
+    move = 1081 751
+    size = 284 160
+    pin = on
+}
+
+# -----------------------------------------------------------------------------
+# 🖥️ SECTION: WORKSPACE ASSIGNMENTS
+# Envía aplicaciones a escritorios específicos de forma automática.
+# -----------------------------------------------------------------------------
+
+# Workspace 2: Multimedia y Social
+windowrule {
+    name = workspace-social-media
+    match:class = ^(spotify|discord)$
+    workspace = 2 silent
+}
+
+# Workspace 3: Desarrollo / Archivos de Configuración
+windowrule {
+    name = workspace-dotfiles
+    match:class = ^(Dotfiles)$
+    workspace = 3 silent
+}
+
+# -----------------------------------------------------------------------------
+# ✨ SECTION: VISUAL OVERRIDES
+# Ajustes estéticos específicos por aplicación.
+# -----------------------------------------------------------------------------
+
+# Kitty: Mantener 100% opaco para mejor legibilidad de código
+windowrule {
+    name = kitty-visuals
+    match:class = ^(kitty)$
+    opaque = on
+}
+
+# Desactivar blur en apps de video para ahorrar recursos (opcional)
+windowrule {
+    name = video-no-blur
+    match:title = ^(Picture in Picture)$
+    no_blur = on
+}
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hypridle.conf
+AR-CHIVO: hypr/.config/hypr/hypridle.conf
 ################################################################################
 
 # ===================================================================
@@ -314,7 +440,7 @@ listener {
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprland.conf
+AR-CHIVO: hypr/.config/hypr/hyprland.conf
 ################################################################################
 
 # -----------------------------------------------------
@@ -358,7 +484,7 @@ source = ~/.config/hypr/conf/plugins.conf # You created a plugins.conf, let's ad
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprlock.conf
+AR-CHIVO: hypr/.config/hypr/hyprlock.conf
 ################################################################################
 
 # ===================================================================
@@ -478,7 +604,7 @@ input-field {
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprpaper.conf
+AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
 # ===================================================================
@@ -504,7 +630,7 @@ ipc = on
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/hyprsunset.conf
+AR-CHIVO: hypr/.config/hypr/hyprsunset.conf
 ################################################################################
 
 max-gamma = 150
@@ -524,7 +650,7 @@ profile {
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/monitors.conf
+AR-CHIVO: hypr/.config/hypr/monitors.conf
 ################################################################################
 
 # Generated by nwg-displays on 2025-09-16 at 22:22:45. Do not edit manually.
@@ -534,53 +660,76 @@ monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/README.md
+AR-CHIVO: hypr/.config/hypr/README.md
 ################################################################################
 
-# HOLA PAtata
+# 🚀 Configuración de Hyprland
+*Un entorno de Tiling dinámico, modular y centrado en la eficiencia para Arch Linux.*
 
+![Hyprland](https://img.shields.io/badge/WM-Hyprland-E54B83?style=for-the-badge&logo=hyperspace&logoColor=white)
+![Arch Linux](https://img.shields.io/badge/OS-Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
+![Waybar](https://img.shields.io/badge/Bar-Waybar-2E3440?style=for-the-badge&logo=linux-containers&logoColor=white)
+![Pywal](https://img.shields.io/badge/Theme-Pywal-D8A657?style=for-the-badge&logo=linux&logoColor=white)
+
+## ✨ Filosofía
+Esta configuración está diseñada para un flujo de trabajo rápido y sin distracciones en una laptop, combinando el poder de un Tiling Window Manager con la funcionalidad de un entorno de escritorio completo. La estética es dinámica y se adapta al wallpaper, mientras que la funcionalidad está potenciada por scripts personalizados que integran `rofi` para una experiencia interactiva.
+
+## 🌟 Características Principales
+
+- **Modularidad Total:** La configuración principal (`hyprland.conf`) actúa como un archivo maestro que simplemente importa módulos desde la carpeta `conf/`. Esto facilita la gestión y modificación de atajos, animaciones, reglas de ventana, etc.
+- **Theming Dinámico:** Utiliza `pywal` para generar una paleta de colores basada en el wallpaper actual. El script `set_wallpaper.sh` aplica el tema a Hyprland, Waybar y otras aplicaciones al vuelo.
+- **Gestión de Energía Inteligente:** Configuración completa para `hypridle` y `wlsunset` para maximizar la duración de la batería, incluyendo apagado de pantalla, bloqueo automático y suspensión híbrida.
+- **Scripts Interactivos con Rofi:** El menú de Wi-Fi (`wifi.sh`) y el de capturas de pantalla (`screenshot.sh`) usan `rofi` para proveer una interfaz gráfica intuitiva sin depender de aplicaciones pesadas.
+- **Integración Completa de Hardware:** Incluye soporte para `solaar` (mouse Logitech), `kdeconnect` (integración con el teléfono), `blueman-applet` (Bluetooth) y reglas `udev` para el lector de huellas.
+- **Atajos Optimizados:** Keybindings pensados para la productividad, incluyendo el cambio de workspaces con `SUPER + Scroll` y gestión de multimedia con `playerctl`.
+
+## 📂 Estructura de Archivos
+
+La configuración está dividida lógicamente para facilitar su mantenimiento:
+
+```
+.
+├── hyprland.conf      # Archivo maestro (solo `source`s)
+├── conf/              # Directorio de módulos de configuración
+│   ├── aesthetics.conf  # Blur, bordes, sombras y efectos visuales.
+│   ├── animations.conf  # Configuración de animaciones.
+│   ├── binds.conf       # Todos los atajos de teclado y mouse.
+│   ├── general.conf     # Opciones generales del WM.
+│   ├── input.conf       # Configs de teclado, mouse y touchpad.
+│   ├── startup.conf     # Todos los `exec-once` al iniciar sesión.
+│   └── window.conf      # Reglas para ventanas (flotantes, workspaces, etc).
+├── scripts/           # Scripts personalizados para Waybar, Rofi, fondos, etc.
+├── hyprlock.conf      # Configuración de la pantalla de bloqueo.
+├── hypridle.conf      # Configuración del demonio de inactividad.
+├── hyprpaper.conf     # Configuración del gestor de fondos de pantalla.
+└── monitors.conf      # Configuración de monitores (generado por nwg-displays).
+```
+
+## 🛠️ Dependencias Clave
+
+Para que esta configuración funcione, se necesitan los siguientes paquetes:
+
+- **Visual:** `hyprland`, `hyprlock`, `hyprpaper`, `waybar`, `rofi`, `kitty`, `swayosd`, `swaync`, `nwg-displays`.
+- **Theming:** `pywal`, `oomox` (para el tema GTK), `noto-fonts-emoji`, `ttf-jetbrains-mono-nerd`.
+- **Utilidades:** `nm-applet`, `blueman-applet`, `solaar`, `kdeconnect`, `udiskie`, `playerctl`, `hyprshot`, `jq`.
+- **Backend:** `polkit-gnome`, `xdg-desktop-portal-hyprland`.
+
+## ⌨️ Atajos Esenciales
+
+- `SUPER + T`: Abrir terminal (Kitty).
+- `SUPER + R`: Lanzador de aplicaciones (Rofi).
+- `SUPER + C`: Cerrar ventana activa.
+- `SUPER + L`: Bloquear pantalla (`hyprlock`).
+- `SUPER + Flechas`: Moverse entre ventanas.
+- `SUPER + Scroll (rueda)`: Cambiar de workspace.
+- `PrintScreen`: Menú de captura de pantalla (Rofi + Hyprshot).
+
+---
+*Este no es solo un "rice", es un sistema de trabajo.*
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/env.sh
-################################################################################
-
-#!/bin/bash
-
-# Check if a path argument is provided
-if [ -z "$1" ]; then
-  echo "Usage: $0 <path/to/your/project>"
-  exit 1
-fi
-
-PROJECT_PATH="$1"
-
-# --- Tiling Layout Script ---
-
-# 1. Launch the main code window first. It will occupy the entire workspace.
-#    We use --class to identify it in hyprland.conf.
-kitty --class code_window --working-directory "$PROJECT_PATH" nvim . &
-sleep 0.5 # Wait for the window to open and be focused
-
-# 2. Set the split ratio for the NEXT window.
-#    A value of 0.34 means the new window will take 34% of the space,
-#    leaving the current 'code_window' with 66%.
-hyprctl dispatch splitratio 0.34
-
-# 3. Launch the first of the smaller windows. This will create the split.
-kitty --class input_window --working-directory "$PROJECT_PATH" nvim input &
-sleep 0.5 # Wait a moment
-
-# 4. Launch the remaining windows. The dwindle layout will automatically
-#    stack them vertically in the smaller pane.
-kitty --class compile_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
-sleep 0.3 # Wait a moment
-
-kitty --class exec_window --working-directory "$PROJECT_PATH" zsh -c "cd \"$PROJECT_PATH\"; zsh" &
-
-
-################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/.gitignore
+AR-CHIVO: hypr/.config/hypr/scripts/.gitignore
 ################################################################################
 
 
@@ -589,7 +738,7 @@ update.log
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/loguot.sh
+AR-CHIVO: hypr/.config/hypr/scripts/loguot.sh
 ################################################################################
 
 #!/usr/bin/env bash
@@ -636,27 +785,7 @@ wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlS
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/nigthligth.sh
-################################################################################
-
-#!/bin/bash
-
-# This is the compatible version that works on all Hyprland versions
-
-if pgrep -x "hyprsunset" > /dev/null
-then
-    # If hyprsunset is running, kill it and notify
-    killall hyprsunset
-    notify-send "Night Light Disabled" -h string:x-canonical-private-synchronous:nightlight-toggle
-else
-    # If hyprsunset is not running, start it and notify
-    hyprsunset &
-    notify-send "Night Light Enabled" -h string:x-canonical-private-synchronous:nightlight-toggle
-fi
-
-
-################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/phone.sh
+AR-CHIVO: hypr/.config/hypr/scripts/phone.sh
 ################################################################################
 
 #!/bin/zsh
@@ -684,7 +813,7 @@ fi
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/random_wallpaper.sh
+AR-CHIVO: hypr/.config/hypr/scripts/random_wallpaper.sh
 ################################################################################
 
 #!/bin/bash
@@ -699,14 +828,14 @@ RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/README.md
+AR-CHIVO: hypr/.config/hypr/scripts/README.md
 ################################################################################
 
 # Aqui estan mis sricots de hyprland
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/reset_waybar.sh
+AR-CHIVO: hypr/.config/hypr/scripts/reset_waybar.sh
 ################################################################################
 
 #!/bin/bash
@@ -715,155 +844,142 @@ waybar &
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/screenshot.sh
+AR-CHIVO: hypr/.config/hypr/scripts/screenshot.sh
 ################################################################################
 
 #!/bin/bash
 
-# Directory to save screenshots
-dir="$HOME/Pictures/Screenshots"
-# Create the directory if it doesn't exist
-mkdir -p "$dir"
+# --- DIRECTORIOS ---
+SCREENSHOT_DIR="$HOME/Pictures/Screenshots"
+RECORDING_DIR="$HOME/Videos/Recordings"
+mkdir -p "$SCREENSHOT_DIR"
+mkdir -p "$RECORDING_DIR"
 
-# Filename for the screenshot with timestamp
-file="screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
+# --- LÓGICA DE GRABACIÓN ---
+if pgrep -x "wf-recorder" > /dev/null; then
+    # Si wf-recorder está corriendo, solo mostramos la opción de detener.
+    choice=$(echo -e " Detener Grabación" | rofi -dmenu -i -p "Grabación en curso")
 
-# Options for Rofi menu
-options="󰹑 Fullscreen\n󰆞 Area\n󰖵 Window"
+    if [ "$choice" = " Detener Grabación" ]; then
+        # -l SIGINT envía una señal de "parada limpia"
+        pkill -l SIGINT wf-recorder
+        notify-send "Grabación Detenida" "El video se ha guardado en $RECORDING_DIR"
+    fi
+    exit 0
+fi
 
-# Show Rofi menu and get the user's choice
-choice=$(echo -e "$options" | rofi -dmenu -i -p "Screenshot")
+# --- SI NO ESTÁ GRABANDO, MOSTRAMOS EL MENÚ COMPLETO ---
 
-# Execute the command based on the choice.
-# hyprshot will handle the notification, preview, and clipboard copy.
-case $choice in
-    "󰹑 Fullscreen")
-        hyprshot -m output -o "$dir" -f "$file"
+# Nombres de archivo con timestamp
+SCREENSHOT_FILE="screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
+RECORDING_FILE="recording_$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+SCREENSHOT_PATH="$SCREENSHOT_DIR/$SCREENSHOT_FILE"
+RECORDING_PATH="$RECORDING_DIR/$RECORDING_FILE"
+
+# Opciones para Rofi (con separadores visuales)
+options="🖼️ CAPTURA DE PANTALLA\n󰹑 Pantalla Completa\n󰆞 Seleccionar Área\n󰖵 Ventana Activa\n\n📹 GRABAR VIDEO\n Grabar Área\n⏺️ Grabar Pantalla Completa"
+
+# Preguntar al usuario con Rofi
+choice=$(echo -e "$options" | rofi -dmenu -i -p "Centro de Captura")
+
+# Lógica del menú
+case "$choice" in
+    # --- Capturas de Pantalla ---
+    "󰹑 Pantalla Completa")
+        hyprshot -m output -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
         ;;
-    "󰆞 Area")
-        hyprshot -m region -o "$dir" -f "$file"
+    "󰆞 Seleccionar Área")
+        hyprshot -m region -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
         ;;
-    "󰖵 Window")
-        hyprshot -m window -o "$dir" -f "$file"
+    "󰖵 Ventana Activa")
+        hyprshot -m window -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
+        ;;
+
+    # --- Grabación de Video ---
+    " Grabar Área")
+        notify-send "Grabando Área" "Selecciona el área. La grabación comenzará al soltar."
+        wf-recorder -g "$(slurp)" -f "$RECORDING_PATH" --audio &
+        notify-send "🔴 ¡GRABANDO!" "Presiona [PrintScreen] de nuevo y elige 'Detener Grabación'."
+        ;;
+    "⏺️ Grabar Pantalla Completa")
+        monitor=$(hyprctl monitors -j | jq -r '.[].name' | rofi -dmenu -i -p "Selecciona un monitor")
+        if [ -n "$monitor" ]; then
+            notify-send "🔴 ¡GRABANDO!" "Grabando $monitor. Presiona [PrintScreen] y 'Detener'."
+            wf-recorder -o "$monitor" -f "$RECORDING_PATH" --audio &
+        else
+            notify-send "Grabación cancelada."
+        fi
         ;;
     *)
+        # Si se presiona Escape
         exit 1
         ;;
 esac
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/selector.sh
-################################################################################
-
-#!/bin/bash
-
-BASE_PROJECTS_DIR="$HOME/Progra"
-
-# Check if the base directory exists
-if [ ! -d "$BASE_PROJECTS_DIR" ]; then
-    echo "Base project directory '$BASE_PROJECTS_DIR' not found." >&2
-    exit 1
-fi
-
-TEMP_ROFI_INPUT=$(mktemp)
-
-find "$BASE_PROJECTS_DIR" -mindepth 1 -type d -print0 | \
-    grep -vzP "^$(printf '%q' "$BASE_PROJECTS_DIR")\/.git($|\/)" | \
-    sort -rz | \
-    sed -z "s|^$(printf '%q' "$BASE_PROJECTS_DIR")/||" | \
-    tr '\0' '\n' | \
-    rofi -dmenu -p "Select Project Directory:" -location 0 -display-drun "" > "$TEMP_ROFI_INPUT"
-
-read -r SELECTED_RELATIVE_PATH < "$TEMP_ROFI_INPUT"
-
-rm "$TEMP_ROFI_INPUT"
-
-if [ -n "$SELECTED_RELATIVE_PATH" ]; then
-    # Construct the full path with explicit quoting for the shell.
-    # This is more robust if SELECTED_RELATIVE_PATH has tricky characters.
-    FULL_PROJECT_PATH="$(printf '%q' "$BASE_PROJECTS_DIR")/$SELECTED_RELATIVE_PATH"
-
-    # Execute env.sh, ensuring the path is passed as a single, quoted argument.
-    # We can even try executing env.sh with bash -c to be very explicit about quoting.
-    bash -c "~/.config/hypr/scripts/env.sh $(printf '%q' \"$BASE_PROJECTS_DIR/$SELECTED_RELATIVE_PATH\")"
-else
-    echo "No project directory selected."
-fi
-
-
-################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/set_wallpaper.sh
+AR-CHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
 ################################################################################
 
 #!/bin/bash
 
 # A script to update the system theme using Pywal and Hyprpaper
 
-# Check if a wallpaper path is provided
+# 1. Validar que pasaron un archivo
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
     exit 1
 fi
 
 WALLPAPER_PATH="$1"
+echo "Changing wallpaper to: $WALLPAPER_PATH"
 
-# --- Pywal and Oomox ---
-# Run Pywal to generate the color scheme from the new wallpaper
-wal -q -n -i "$WALLPAPER_PATH"
-
-# Apply the generated Pywal theme with oomox-cli
-oomox-cli -o pywal ~/.cache/wal/colors-oomox
-
-# --- Hyprpaper Integration ---
-# Preload the new wallpaper into hyprpaper's memory for a smooth transition
-hyprctl hyprpaper preload "$WALLPAPER_PATH"
-
-# Set the preloaded wallpaper as the active wallpaper for all monitors
-hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
-
-# --- Reload Applications ---
-# Reload Hyprland to apply theme changes like border colors
-hyprctl reload
-
-echo "Wallpaper and theme updated successfully!"
-
-
-################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/sunset.sh
-################################################################################
-
-#!/bin/bash
-
-# Uso: ./smooth_sunset.sh on  (para activar)
-#      ./smooth_sunset.sh off (para desactivar)
-
-TARGET_TEMP=4000   # Temperatura objetivo (cálida)
-NORMAL_TEMP=6500   # Temperatura normal
-STEP=100           # Cuánto baja por paso (más bajo = más suave pero más CPU)
-DELAY=0.01         # Velocidad de la animación
-
-current=$(hyprsunset --current | awk '{print $1}') # (Esto es pseudo-código, hyprsunset no siempre reporta bien, asumimos estados)
-
-if [ "$1" == "on" ]; then
-    # Bucle para bajar de 6500 a 4000
-    for (( i=$NORMAL_TEMP; i>=$TARGET_TEMP; i-=$STEP )); do
-        hyprsunset -t $i
-        sleep $DELAY
-    done
-elif [ "$1" == "off" ]; then
-    # Bucle para subir de 4000 a 6500
-    for (( i=$TARGET_TEMP; i<=$NORMAL_TEMP; i+=$STEP )); do
-        hyprsunset -t $i
-        sleep $DELAY
-    done
-    # Asegurar que quede apagado el filtro
-    hyprsunset -i
+# --- 1. HYPRPAPER (LO PRIMERO: FEEDBACK VISUAL INMEDIATO) ---
+# Verificamos si hyprpaper esta corriendo, si no, lo lanzamos
+if ! pgrep -x "hyprpaper" > /dev/null; then
+    echo "Hyprpaper no estaba corriendo, iniciandolo..."
+    hyprpaper &
+    sleep 1 # Le damos un segundito para respirar
 fi
 
+# El truco: Limpiar antes de cargar para evitar errores de cache o memoria
+hyprctl hyprpaper unload all
+
+# Cargar la imagen nueva en RAM
+hyprctl hyprpaper preload "$WALLPAPER_PATH"
+
+# Aplicarla a todos los monitores (la coma vacía significa "todos")
+hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
+
+# --- 2. PYWAL (Generar paleta de colores) ---
+# Generamos los colores en silencio (-q) y sin setear el fondo por backend (-n)
+wal -q -n -i "$WALLPAPER_PATH"
+
+# --- 3. RECARGAR APPS LIGERA (Waybar, SwayNC) ---
+# Recargamos Hyprland para bordes
+hyprctl reload
+
+# Recargamos notificaciones y waybar para que tomen los colores nuevos rapido
+swaync-client -rs
+swaync-client --reload-css
+# Si usas waybar con colores de pywal, reiniciala:
+# killall waybar; waybar &  <-- Descomenta si waybar no actualiza color sola
+
+# --- 4. OOMOX (LA PARTE LENTA) ---
+# Tiramos esto al final y en segundo plano (&) para que no sientas lag
+# Esto compila el tema GTK/Iconos
+
+pkill oomox-cli || true
+notify-send "Compilando Tema" "Generando tema GTK con Oomox (esto demora)..."
+(
+oomox-cli -o pywal ~/.cache/wal/colors-oomox > /dev/null 2>&1
+
+notify-send "Wallpaper cambiado" "el tema GTK se aplicará en unos segundos."
+) &
+
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/update.sh
+AR-CHIVO: hypr/.config/hypr/scripts/update.sh
 ################################################################################
 
 #!/bin/zsh
@@ -924,7 +1040,58 @@ echo ""
 
 
 ################################################################################
-AR-CHIVO: /home/F-Patata/Dotfiles/hypr/.config/hypr/scripts/wifi.sh
+AR-CHIVO: hypr/.config/hypr/scripts/wallpaper-selector.sh
+################################################################################
+
+#!/bin/bash
+
+# 1. Definir rutas (OJO AQUI)
+# La carpeta donde estan las imagenes
+WALL_DIR="$HOME/Dotfiles/Wallpapers"
+
+# La ruta exacta de tu script que aplica el fondo (EL PRIMERO QUE ME MOSTRASTE)
+# Si lo tienes en otra parte, cambia esta linea.
+SETTER_SCRIPT="$HOME/Dotfiles/hypr/.config/hypr/scripts/set_wallpaper.sh"
+# ^^^ REVISA QUE ESTA RUTA SEA REAL. Si no sabes donde está, usa `find ~/Dotfiles -name set_Wallpaper.sh` para buscarlo.
+
+# 2. Comprobar dependencias
+if ! command -v fzf &> /dev/null; then
+    echo "Error: fzf no está instalado. Ejecuta 'sudo pacman -S fzf'"
+    exit 1
+fi
+
+# 3. Comando de previsualización para Kitty
+# place=ANCHO x ALTO @ POS_X x POS_Y
+# Ajusta el 60x60 si la imagen se ve chica o muy grande
+PREVIEW_CMD="kitten icat --clear --transfer-mode=memory --stdin=no --place=60x60@30x5 {}"
+
+# 4. Buscar imágenes recursivamente (entra a Gundam y Macross)
+# Usamos 'find' para listar todo y 'fzf' para elegir
+SELECTED=$(find "$WALL_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) | \
+    fzf --preview "$PREVIEW_CMD" \
+        --preview-window=right:50% \
+        --prompt="Fondo > " \
+        --height=100% \
+        --layout=reverse \
+        --border \
+        --margin=1 \
+        --padding=1)
+
+# 5. Si elegiste algo, aplicar
+if [ -n "$SELECTED" ]; then
+    notify-send "Fondo seleccionado:" "$SELECTED"
+
+    if [ -f "$SETTER_SCRIPT" ]; then
+        bash "$SETTER_SCRIPT" "$SELECTED"
+    else
+        notify-send "ERROR CRITICO:" "No encuentro el script set_Wallpaper.sh en: $SETTER_SCRIPT Por favor edita este archivo y corrige la ruta SETTER_SCRIPT."
+        read -p "Presiona enter para salir..."
+    fi
+fi
+
+
+################################################################################
+AR-CHIVO: hypr/.config/hypr/scripts/wifi.sh
 ################################################################################
 
 #!/usr/bin/env bash

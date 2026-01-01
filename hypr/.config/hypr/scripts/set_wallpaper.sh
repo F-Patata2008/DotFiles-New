@@ -46,13 +46,13 @@ notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
 (
     # Eliminar procesos previos de oomox para no saturar
     pkill oomox-cli || true
-    
+
     # Compilar el tema con oomox
     oomox-cli -o "$THEME_NAME" ~/.cache/wal/colors-oomox > /dev/null 2>&1
-    
+
     # APLICAR EL TEMA (Esto es lo que te faltaba)
     gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
-    
+
     # FIX PARA GTK4 / LIBADWAITA (Pavucontrol, Blueman, etc.)
     # Enlazamos el CSS generado directamente a la carpeta de configuración de GTK4
     mkdir -p "$HOME/.config/gtk-4.0"

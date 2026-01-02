@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: kitty/.config/kitty
- Fecha: Wed Feb 18 12:09:21 AM -03 2026
+ Fecha: Wed Feb 18 05:23:05 PM -03 2026
 ==================================================================
 
 
@@ -26,3 +26,9 @@ background_opacity 0.85
 background_opacity 0.85
 # Mapea Ctrl+Backspace para que envíe la secuencia de Ctrl+W
 map ctrl+backspace send_text all \x17
+
+
+# BEGIN_KITTY_THEME
+# Noctalia
+include current-theme.conf
+# END_KITTY_THEME

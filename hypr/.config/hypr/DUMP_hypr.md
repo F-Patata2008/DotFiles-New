@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Wed Feb 18 12:09:21 AM -03 2026
+ Fecha: Wed Feb 18 05:23:05 PM -03 2026
 ==================================================================
 
 
@@ -10,44 +10,35 @@ ARCHIVO: hypr/.config/hypr/conf/aesthetics.conf
 
 # Aesthetics
 source = ~/.cache/wal/colors-hyprland.conf
-layerrule {
-    name = Aplicar-BLur-wlogout
-    blur = on
-    match:namespace = wlogout
 
-}
+# Specific rule for Noctalia's background and widgets
 layerrule {
-    name = Aplicar-BLur-logout_dialog
-    blur = on
-    dim_around = on
-    match:namespace = logout_dialog
-}
-layerrule {
-    name = Aplicar-Blur-OSD
-    blur = on
+    name = noctalia
+    match:namespace = noctalia-.*$  # Optimized regex for all Noctalia components
+    blur = true
+    blur_popups = true
     ignore_alpha = 0.5
-    match:namespace = swayosd
 }
 
 decoration {
-    rounding = 5
+    rounding = 12 # Middle ground: 5 is too blocky, 20 is too much
+    # rounding_power = 2 # Optional: creates "squarcles" (smooth corners)
 
     blur {
         enabled = true
-        passes = 2
-        size = 2
+        size = 3
+        passes = 1 # CRITICAL: 2 passes doubles the work for your GPU. 1 pass + noise looks great.
 
+        vibrancy = 0.1696
         ignore_opacity = true
-        noise = 0.02
-        contrast = 1.1
-        brightness = 1.0
+        new_optimizations = true # Crucial for performance
+        xray = true # Saves battery/CPU by not blurring windows under the active one
     }
 
     shadow {
-        enabled = false
+        enabled = false # Performance over looks for the Ryzen 3
     }
-
-    }
+}
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/conf/animations.conf
@@ -70,47 +61,65 @@ animations {
 ARCHIVO: hypr/.config/hypr/conf/binds.conf
 ################################################################################
 
-# Keybindings
+# --- Variables ---
 $mainMod = SUPER
+$ipc = qs -c noctalia-shell ipc call
+$terminal = kitty
+$fileManager = thunar
+$browser = zen-browser
 
-# Application and utility binds
-bind = $mainMod, T, exec, kitty
-bind = $mainMod, R, exec, rofi -show drun -show-icons
-bind = $mainMod, C, killactive,
-bind = $mainMod, E, exec, nautilus
-bind = $mainMod, L, exec, pidof hyprlock || hyprlock
-bind = $mainMod, W, exec, ~/.config/hypr/scripts/reset_waybar.sh
-bind = $mainMod, Q, exec, rofi -show run
-bind = $mainMod, B, exec, opera
+# --- Core Noctalia Binds (The "Connected" UI) ---
+bind = $mainMod, R, exec, $ipc launcher toggle          # App Launcher
+bind = $mainMod, Q, exec, $ipc launcher command         # Command Launcher
+bind = $mainMod SHIFT, S, exec, $ipc controlCenter toggle     # The "Mundo Hola" Dashboard
+bind = $mainMod, comma, exec, $ipc settings toggle      # Shell Settings
+bind = $mainMod SHIFT, L, exec, $ipc sessionMenu toggle # Power Menu
+bind = $mainMod SHIFT, R, exec, $ipc launcher emoji      # Emoji Picker
+
+# --- Application Binds ---
+bind = $mainMod, T, exec, $terminal
+bind = $mainMod, B, exec, $browser
 bind = $mainMod, S, exec, spotify
-
-# Hyprland and script binds
-#bind = $mainMod SHIFT, return, hyprexpo:expo, toggle
-#bind = $mainMod SHIFT, N, exec, ~/.config/hypr/scripts/nigthligth.sh
-bind = $mainMod SHIFT, L, exec, $HOME/.config/hypr/scripts/loguot.sh
-bind = $mainMod SHIFT, P, exec, hyprpicker -a
-bind = $mainMod SHIFT, E, exec, rofi -show filebrowser
-bind = $mainMod SHIFT, R, exec, rofi -modi "emoji:rofimoji" -show emoji
-bind = $mainMod SHIFT, N, exec, kitty --class Notas -e sh -c "nvim $HOME/Notas.md"
-bind = $mainMod SHIFT, F, fullscreen
-
-
-# Screenshot binds
-bind = , PRINT, exec, ~/.config/hypr/scripts/screenshot.sh
-bind = shift, PRINT, exec, hyprshot -m output
-
-# Window and layout binds
-bind = $mainMod, P, pseudo,
-bind = $mainMod, J, togglesplit,
+bind = $mainMod, C, killactive,
 bind = $mainMod, V, togglefloating,
+bind = $mainMod, F, fullscreen, 1
 
-# Focus binds
+# --- THE SPEED BIND (Objective 2) ---
+# Use Yazi for "Instant" file browsing, Thunar for GUI tasks
+bind = $mainMod, E, exec, $terminal -e yazi
+bind = $mainMod SHIFT, E, exec, $fileManager
+
+# --- System & Hardware (Using Noctalia IPC for OSD) ---
+bindel = , XF86AudioRaiseVolume, exec, $ipc volume increase
+bindel = , XF86AudioLowerVolume, exec, $ipc volume decrease
+bindl  = , XF86AudioMute, exec, $ipc volume muteOutput
+bindl  = , XF86AudioMicMute, exec, $ipc volume muteInput
+bindel = , XF86MonBrightnessUp, exec, $ipc brightness increase
+bindel = , XF86MonBrightnessDown, exec, $ipc brightness decrease
+
+# --- Player Controls ---
+bindl = , XF86AudioNext, exec, playerctl next
+bindl = , XF86AudioPause, exec, playerctl play-pause
+bindl = , XF86AudioPlay, exec, playerctl play-pause
+bindl = , XF86AudioPrev, exec, playerctl previous
+
+# --- Utilities ---
+bind = $mainMod, L, exec, pidof hyprlock || hyprlock
+bind = $mainMod SHIFT, P, exec, hyprpicker -a
+bind = $mainMod SHIFT, V, exec, kitty --class clipse -e 'clipse'
+bind = $mainMod SHIFT, N, exec, kitty --class Notas -e nvim $HOME/Notas.md
+
+# --- Screenshot ---
+bind = , PRINT, exec, ~/.config/hypr/scripts/screenshot.sh
+bind = SHIFT, PRINT, exec, hyprshot -m window -o ~/Pictures/Screenshots
+
+# --- Window Management ---
 bind = $mainMod, left, movefocus, l
 bind = $mainMod, right, movefocus, r
 bind = $mainMod, up, movefocus, u
 bind = $mainMod, down, movefocus, d
 
-# Workspace binds
+# --- Workspaces ---
 bind = $mainMod, 1, workspace, 1
 bind = $mainMod, 2, workspace, 2
 bind = $mainMod, 3, workspace, 3
@@ -122,7 +131,6 @@ bind = $mainMod, 8, workspace, 8
 bind = $mainMod, 9, workspace, 9
 bind = $mainMod, 0, workspace, 10
 
-# Move to workspace binds
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2
 bind = $mainMod SHIFT, 3, movetoworkspace, 3
@@ -134,30 +142,11 @@ bind = $mainMod SHIFT, 8, movetoworkspace, 8
 bind = $mainMod SHIFT, 9, movetoworkspace, 9
 bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
-# Cambiar workspace con Super + Scroll del mouse
-bind = SUPER, mouse_down, workspace, e-1
-bind = SUPER, mouse_up, workspace, e+1
-
-# Mouse binds
+# Mouse Scroll Workspace
+bind = $mainMod, mouse_down, workspace, e-1
+bind = $mainMod, mouse_up, workspace, e+1
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
-
-# Multimedia keys
-bindel = ,XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise
-bindel = ,XF86AudioLowerVolume, exec, swayosd-client --output-volume lower
-bindel = ,XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
-bindel = ,XF86AudioMicMute, exec, swayosd-client --input-volume mute-toggle
-bindel = ,XF86MonBrightnessUp, exec, swayosd-client --brightness raise
-bindel = ,XF86MonBrightnessDown, exec, swayosd-client --brightness lower
-
-# Player controls
-bindl = , XF86AudioNext, exec, playerctl next
-bindl = , XF86AudioPause, exec, playerctl play-pause
-bindl = , XF86AudioPlay, exec, playerctl play-pause
-bindl = , XF86AudioPrev, exec, playerctl previous
-
-# Clipboard manager
-bind = SUPER SHIFT, V, exec,  kitty --class clipse -e 'clipse'
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/conf/general.conf
@@ -178,10 +167,12 @@ general {
 dwindle {
     pseudotile = yes
     preserve_split = yes
+    smart_split = true
 }
 
 misc {
     vfr = true
+    force_default_wallpaper = 0
 }
 
 ################################################################################
@@ -221,45 +212,33 @@ ARCHIVO: hypr/.config/hypr/conf/plugins.conf
 ARCHIVO: hypr/.config/hypr/conf/startup.conf
 ################################################################################
 
-# --- PLugins ---
-#exec-once = hyprpm reload -n
-
-
-# --- Theming & OSD ---
-exec-once = wal -R
-exec-once = swayosd-server
-exec-once = swaync
-exec-once = hyprpaper
-
-# --- Hardware & System Tray ---
-exec-once = nm-applet &
-exec-once = blueman-applet &  # <--- NUEVO (Bluetooth)
-exec-once = udiskie &         # <--- NUEVO (USB Automount)
-exec-once = solaar --window=hide --battery-icons=symbolic > /dev/null 2>&1 &
-exec-once = waybar &
-exec-once = kdeconnect-indicator
-exec-once = ~/Dotfiles/hypr/.config/hypr/scripts/bat.sh
-
-# --- Idle & Screen Protection ---
-exec-once = hypridle &
-# Santiago de Chile Coordinates (-33.4, -70.6)
-exec-once = wlsunset -t 3600 -T 6500 -d 1800 -l -33.4 -L -70.6
-
-# --- Backend Services ---
-exec-once = /usr/lib/evolution-data-server/evolution-alarm-notify
+# --- CORE SERVICES (Order Matters) ---
+exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once = systemctl --user start hyprland-session.target
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec-once = kdeconnectd
-exec-once = clipse -listen
 
-# --- Session & Portals (Orden Importante) ---
-exec-once = dbus-update-activation-environment --systemd --all
-exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP # <--- Fix para OBS/Screen Share
-exec-once = /usr/lib/xdg-desktop-portal-hyprland
-# Descomentado para guardar claves SSH/Git/Spotify
-#exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
+# --- THE SHELL (Noctalia/AGS) ---
+exec-once = wal -R          # Restore Pywal colors
+exec-once = ags &           # Launch Noctalia (replaces waybar, swaync, swayosd, wlsunset)
 
-# --- User Apps ---
-exec-once = kitty --class "Dotfiles" --directory ~/Dotfiles
+# --- PERFORMANCE HACKS ---
+# This makes Thunar open INSTANTLY when you call it
+exec-once = thunar --daemon 
+
+# --- HARDWARE & SYNC ---
+exec-once = udiskie &       # USB Automount
+exec-once = solaar --window=hide --battery-icons=symbolic > /dev/null 2>&1 &
+exec-once = kdeconnectd     # Backend only (Noctalia has a widget for this)
+
+# --- UTILS ---
+exec-once = hypridle &
+exec-once = clipse -listen  # Clipboard manager
+exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
+
+# --- USER APPS ---
+# Only start what you actually need immediately
+exec-once = [workspace 1 silent] kitty --class "Dotfiles" --directory ~/Dotfiles
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/conf/window.conf
@@ -481,6 +460,9 @@ source = ~/.config/hypr/conf/binds.conf
 source = ~/.config/hypr/conf/window.conf
 source = ~/.config/hypr/conf/plugins.conf # You created a plugins.conf, let's add it!
 
+source = /home/F-Patata/.config/hypr/noctalia/noctalia-colors.conf
+
+
 ################################################################################
 ARCHIVO: hypr/.config/hypr/hyprlock.conf
 ################################################################################
@@ -616,7 +598,7 @@ ARCHIVO: hypr/.config/hypr/hyprpaper.conf
 
 wallpaper {
     monitor = eDP-1
-    path = /home/F-Patata/Dotfiles/Wallpapers/Miku/Miku10.jpg
+    path = /home/F-Patata/Dotfiles/Wallpapers/Miku/Miku05.jpg
 }
 
 ################################################################################
@@ -639,6 +621,17 @@ profile {
 }
 
 ################################################################################
+ARCHIVO: hypr/.config/hypr/hyprtoolkit.conf
+################################################################################
+
+background = rgba(131316ff)
+base = rgba(131316ff)
+text = rgba(e4e1e6ff)
+alternate_base = rgba(45464fff)
+bright_text = rgba(2b3042ff)
+accent = rgba(b6c4ffff)
+accent_secondary = rgba(c2c5ddff)
+################################################################################
 ARCHIVO: hypr/.config/hypr/monitors.conf
 ################################################################################
 
@@ -646,6 +639,36 @@ ARCHIVO: hypr/.config/hypr/monitors.conf
 
 monitor=eDP-1,1366x768@60.0,0x144,1.0
 monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
+
+################################################################################
+ARCHIVO: hypr/.config/hypr/noctalia/noctalia-colors.conf
+################################################################################
+
+$primary = rgb(b6c4ff)
+$surface = rgb(131316)
+$secondary = rgb(c2c5dd)
+$error = rgb(ffb4ab)
+$tertiary = rgb(e3bada)
+$surface_lowest = rgb(0e0e11)
+
+general {
+    col.active_border = $primary
+    col.inactive_border = $surface
+}
+
+group {
+    col.border_active = $secondary
+    col.border_inactive = $surface
+    col.border_locked_active = $error
+    col.border_locked_inactive = $surface
+
+    groupbar {
+        col.active = $secondary
+        col.inactive = $surface
+        col.locked_active = $error
+        col.locked_inactive = $surface
+    }
+}
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/README.md
@@ -828,33 +851,6 @@ wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlS
 
 
 ################################################################################
-ARCHIVO: hypr/.config/hypr/scripts/phone.sh
-################################################################################
-
-#!/bin/zsh
-
-# Find the specific ID for the "Galaxy S8"
-DEVICE_ID=$(kdeconnect-cli -a | grep "Galaxy S8" | awk -F': ' '{print $2}' | awk '{print $1}')
-
-ICON="" # Nerd Font icon for phone
-
-if [ -n "$DEVICE_ID" ]; then
-    # Use qdbus and crucially, ignore the stderr error messages with 2>/dev/null
-    BATTERY_LEVEL=$(qdbus6 org.kde.kdeconnect /modules/kdeconnect/devices/$DEVICE_ID/battery org.kde.kdeconnect.device.battery.charge 2>/dev/null)
-
-    # Check if the command was successful and returned a number
-    if [[ -n "$BATTERY_LEVEL" && "$BATTERY_LEVEL" -ge 0 ]]; then
-        echo "{\"text\": \"$ICON $BATTERY_LEVEL%\", \"tooltip\": \"Phone Battery: $BATTERY_LEVEL%\"}"
-    else
-        # This will now correctly trigger if the command fails or phone is truly unreachable
-        echo "{\"text\": \"$ICON --%\", \"tooltip\": \"Phone Disconnected\"}"
-    fi
-else
-    # No device named "Galaxy S8" found
-    echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"Phone Not Found\"}"
-fi
-
-################################################################################
 ARCHIVO: hypr/.config/hypr/scripts/random_wallpaper.sh
 ################################################################################
 
@@ -877,14 +873,6 @@ ARCHIVO: hypr/.config/hypr/scripts/README.md
 Se Incluyen:
 - set.wallpaper.sh
 - wallpaper-selector.sh
-
-################################################################################
-ARCHIVO: hypr/.config/hypr/scripts/reset_waybar.sh
-################################################################################
-
-#!/bin/bash
-killall -q waybar
-waybar &
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/scripts/screenshot.sh
@@ -965,10 +953,10 @@ ARCHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
 
 #!/bin/bash
 
-# --- ENV FIX ---
-# Ensure the script has the necessary paths even without a terminal
+# --- CONFIG & IPC ---
 export PATH="${PATH}:$HOME/.local/bin:/usr/local/bin:/usr/bin"
-export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+# The Noctalia IPC command
+IPC="qs -c noctalia-shell ipc call"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
@@ -976,26 +964,13 @@ if [ -z "$1" ]; then
 fi
 
 WALLPAPER_PATH=$(realpath "$1")
-CONF_DIR="$HOME/.config/hypr"
-HYPRPAPER_CONF="$CONF_DIR/hyprpaper.conf"
 
-# --- 1. PERSISTENCE ---
-cat > "$HYPRPAPER_CONF" <<EOL
-wallpaper {
-    monitor = eDP-1
-    path = $WALLPAPER_PATH
-}
-EOL
+# --- 1. SET WALLPAPER VIA NOCTALIA ---
+# This replaces hyprpaper. Noctalia handles the transition.
+$IPC wallpaper set "$WALLPAPER_PATH" eDP-1
 
-# --- 2. HYPRPAPER ---
-if ! pgrep -x "hyprpaper" > /dev/null; then
-    hyprpaper -c "$HYPRPAPER_CONF" &
-    sleep 0.5
-else
-    hyprctl hyprpaper wallpaper 'eDP-1, "$WALLPAPER_PATH"'
-fi
-
-# --- 3. PYWAL ---
+# --- 2. GENERATE COLORS WITH PYWAL ---
+# -n (no wallpaper) -q (quiet) -t (skip terminal checks)
 wal -n -s -t -i "$WALLPAPER_PATH"
 
 if [ $? -ne 0 ]; then
@@ -1003,41 +978,18 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# --- 4. RELOAD EVERYTHING ---
-
-# A) SwayNC & Waybar
-swaync-client --reload-css
-swaync-client -rs
-killall -SIGUSR2 waybar
+# --- 3. RELOAD KITTY ---
+# Sends a signal to all open Kitty instances to reload their colors from ~/.cache/wal/colors-kitty.conf
 killall -SIGUSR1 kitty
 
-# B) THE SWAYOSD FIX (Kill, Wait, Revive)
-echo "Restarting SwayOSD..."
+# --- 4. RELOAD NOCTALIA THEME ---
+# Most Noctalia setups watch the CSS files, but this forces a reload
+# to ensure the Pywal colors are applied to the bar and dashboard.
+$IPC stylesheet reload
 
-# Kill it
-pkill swayosd-server
-pkill swayosd-libinput-backend
-
-# WAIT LOOP: Wait until it is truly dead
-# This prevents the "Name already taken" error
-while pgrep -x swayosd-server >/dev/null; do
-    sleep 0.1
-done
-
-# Start it detached from this script so it doesn't die when script ends
-# redirect output to /dev/null so it doesn't spam
-nohup swayosd-server >/dev/null 2>&1 &
-
-# Optional: Input backend (if you need it for caps lock LEDs etc)
-nohup swayosd-libinput-backend >/dev/null 2>&1 &
-
-# E) Spicetify
-if command -v pywal-spicetify &> /dev/null; then
-    pywal-spicetify Sleek > /dev/null 2>&1
-    spicetify apply -q -n > /dev/null 2>&1
-fi
-
-notify-send -i "$WALLPAPER_PATH" "Theme Updated" "Everything synced successfully."
+# --- 5. NOTIFICATION ---
+# Uses Noctalia's own notification system
+notify-send -a "System" -i "$WALLPAPER_PATH" "Theme Updated" "Noctalia, Kitty, and synced."
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/scripts/update.sh
@@ -1146,48 +1098,5 @@ if [ -n "$SELECTED" ]; then
     else
         notify-send "ERROR CRITICO:" "No encuentro el script set_Wallpaper.sh en: $SETTER_SCRIPT Por favor edita este archivo y corrige la ruta SETTER_SCRIPT."
         read -p "Presiona enter para salir..."
-    fi
-fi
-
-################################################################################
-ARCHIVO: hypr/.config/hypr/scripts/wifi.sh
-################################################################################
-
-#!/usr/bin/env bash
-
-notify-send "Getting list of available Wi-Fi networks..."
-# Get a list of available wifi connections and morph it into a nice-looking list
-wifi_list=$(nmcli --fields "SECURITY,SSID" device wifi list | sed 1d | sed 's/  */ /g' | sed -E "s/WPA*.?\S/ /g" | sed "s/^--/ /g" | sed "s/  //g" | sed "/--/d")
-
-connected=$(nmcli -fields WIFI g)
-if [[ "$connected" =~ "enabled" ]]; then
-	toggle="󰖪  Disable Wi-Fi"
-elif [[ "$connected" =~ "disabled" ]]; then
-	toggle="󰖩  Enable Wi-Fi"
-fi
-
-# Use rofi to select wifi network
-chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "Wi-Fi SSID: " )
-# Get name of connection
-read -r chosen_id <<< "${chosen_network:3}"
-
-if [ "$chosen_network" = "" ]; then
-	exit
-elif [ "$chosen_network" = "󰖩  Enable Wi-Fi" ]; then
-	nmcli radio wifi on
-elif [ "$chosen_network" = "󰖪  Disable Wi-Fi" ]; then
-	nmcli radio wifi off
-else
-	# Message to show when connection is activated successfully
-  	success_message="You are now connected to the Wi-Fi network \"$chosen_id\"."
-	# Get saved connections
-	saved_connections=$(nmcli -g NAME connection)
-	if [[ $(echo "$saved_connections" | grep -w "$chosen_id") = "$chosen_id" ]]; then
-		nmcli connection up id "$chosen_id" | grep "successfully" && notify-send "Connection Established" "$success_message"
-	else
-		if [[ "$chosen_network" =~ "" ]]; then
-			wifi_password=$(rofi -dmenu -p "Password: " )
-		fi
-		nmcli device wifi connect "$chosen_id" password "$wifi_password" | grep "successfully" && notify-send "Connection Established" "$success_message"
     fi
 fi

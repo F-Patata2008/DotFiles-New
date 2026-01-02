@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# --- ENV FIX ---
-# Ensure the script has the necessary paths even without a terminal
+# --- CONFIG & IPC ---
 export PATH="${PATH}:$HOME/.local/bin:/usr/local/bin:/usr/bin"
-export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+# The Noctalia IPC command
+IPC="qs -c noctalia-shell ipc call"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
@@ -11,26 +11,13 @@ if [ -z "$1" ]; then
 fi
 
 WALLPAPER_PATH=$(realpath "$1")
-CONF_DIR="$HOME/.config/hypr"
-HYPRPAPER_CONF="$CONF_DIR/hyprpaper.conf"
 
-# --- 1. PERSISTENCE ---
-cat > "$HYPRPAPER_CONF" <<EOL
-wallpaper {
-    monitor = eDP-1
-    path = $WALLPAPER_PATH
-}
-EOL
+# --- 1. SET WALLPAPER VIA NOCTALIA ---
+# This replaces hyprpaper. Noctalia handles the transition.
+$IPC wallpaper set "$WALLPAPER_PATH" eDP-1
 
-# --- 2. HYPRPAPER ---
-if ! pgrep -x "hyprpaper" > /dev/null; then
-    hyprpaper -c "$HYPRPAPER_CONF" &
-    sleep 0.5
-else
-    hyprctl hyprpaper wallpaper 'eDP-1, "$WALLPAPER_PATH"'
-fi
-
-# --- 3. PYWAL ---
+# --- 2. GENERATE COLORS WITH PYWAL ---
+# -n (no wallpaper) -q (quiet) -t (skip terminal checks)
 wal -n -s -t -i "$WALLPAPER_PATH"
 
 if [ $? -ne 0 ]; then
@@ -38,38 +25,15 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# --- 4. RELOAD EVERYTHING ---
-
-# A) SwayNC & Waybar
-swaync-client --reload-css
-swaync-client -rs
-killall -SIGUSR2 waybar
+# --- 3. RELOAD KITTY ---
+# Sends a signal to all open Kitty instances to reload their colors from ~/.cache/wal/colors-kitty.conf
 killall -SIGUSR1 kitty
 
-# B) THE SWAYOSD FIX (Kill, Wait, Revive)
-echo "Restarting SwayOSD..."
+# --- 4. RELOAD NOCTALIA THEME ---
+# Most Noctalia setups watch the CSS files, but this forces a reload
+# to ensure the Pywal colors are applied to the bar and dashboard.
+$IPC stylesheet reload
 
-# Kill it
-pkill swayosd-server
-pkill swayosd-libinput-backend
-
-# WAIT LOOP: Wait until it is truly dead
-# This prevents the "Name already taken" error
-while pgrep -x swayosd-server >/dev/null; do
-    sleep 0.1
-done
-
-# Start it detached from this script so it doesn't die when script ends
-# redirect output to /dev/null so it doesn't spam
-nohup swayosd-server >/dev/null 2>&1 &
-
-# Optional: Input backend (if you need it for caps lock LEDs etc)
-nohup swayosd-libinput-backend >/dev/null 2>&1 &
-
-# E) Spicetify
-if command -v pywal-spicetify &> /dev/null; then
-    pywal-spicetify Sleek > /dev/null 2>&1
-    spicetify apply -q -n > /dev/null 2>&1
-fi
-
-notify-send -i "$WALLPAPER_PATH" "Theme Updated" "Everything synced successfully."
+# --- 5. NOTIFICATION ---
+# Uses Noctalia's own notification system
+notify-send -a "System" -i "$WALLPAPER_PATH" "Theme Updated" "Noctalia, Kitty, and synced."

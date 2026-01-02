@@ -17,6 +17,7 @@ btop
 cachyos-keyring
 cachyos-mirrorlist
 cachyos-rate-mirrors
+cachyos-settings
 cachyos-v3-mirrorlist
 cachyos-v4-mirrorlist
 cava
@@ -28,7 +29,6 @@ dart-sass
 decibels
 discord
 dmenu
-dolphin
 efibootmgr
 endeavour
 eog
@@ -129,11 +129,10 @@ lvm2
 malcontent
 meson
 nano
-nautilus
-nautilus-python
 neovim
 network-manager-applet
 networkmanager
+noctalia-shell
 nodejs
 npm
 nss-mdns
@@ -141,7 +140,6 @@ ntfs-3g
 nwg-displays
 nwg-icon-picker
 nwg-look
-nwg-shell
 obs-studio
 orca
 os-prober
@@ -164,9 +162,9 @@ python-pyqt5
 qt6-tools
 qt6-virtualkeyboard
 reflector
-rofi
 rofimoji
 rygel
+scx-scheds
 sddm
 seahorse
 showtime
@@ -183,7 +181,6 @@ stylua
 sudo
 sushi
 swaylock-effects
-swayosd
 system-config-printer
 taskwarrior-tui
 tecla
@@ -208,6 +205,9 @@ texlive-music
 texlive-pstricks
 texlive-publishers
 texlive-xetex
+thunar
+thunar-archive-plugin
+thunar-volman
 timeshift
 tldr
 tlp
@@ -228,7 +228,6 @@ vlc
 waybar
 wf-recorder
 wget
-wlogout
 wtype
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland

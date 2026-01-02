@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Jan  1 04:50:00 PM -03 2026
+ Fecha: Fri Jan  2 04:41:29 PM -03 2026
 ==================================================================
 
 
@@ -19,7 +19,14 @@ layerrule {
 layerrule {
     name = Aplicar-BLur-logout_dialog
     blur = on
+    dim_around = on
     match:namespace = logout_dialog
+}
+layerrule {
+    name = Aplicar-Blur-OSD
+    blur = on
+    ignore_alpha = 0.5
+    match:namespace = swayosd
 }
 
 decoration {
@@ -988,6 +995,14 @@ notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
         echo "🎨 Sincronizando Spotify con Pywal..."
         pywal-spicetify Sleek > /dev/null 2>&1
         spicetify apply -q > /dev/null 2>&1
+    fi
+
+
+    if pgrep -x "swayosd-server" > /dev/null; then
+        echo "🔊 Actualizando SwayOSD..."
+        killall swayosd-server
+        swayosd-server &
+        swayosd-libinput-backend & > /dev/null 2>&1
     fi
 
     notify-send -i "$WALLPAPER_PATH" "Sistema Actualizado" "Tema GTK y colores aplicados correctamente."

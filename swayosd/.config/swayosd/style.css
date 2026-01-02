@@ -1,0 +1,43 @@
+/* Importar los colores de Pywal */
+@import "/home/F-Patata/.cache/wal/colors-waybar.css";
+
+/* 1. Limpiar la ventana base (QUITAR EL FANTASMA GRIS) */
+window {
+    background: transparent;
+}
+
+osd {
+    background: transparent;
+    border: none;
+}
+
+/* 2. El contenedor principal (La Píldora) */
+box {
+    /* Usamos @background de pywal para que combine con tu terminal */
+    background-color: alpha(@background, 0.8);
+    border-radius: 16px;
+    border: 2px solid @color1;
+    padding: 12px 24px;
+    margin: 20px; /* Espacio para que el blur no se corte */
+}
+
+/* 3. El Slider (La barra de progreso) */
+slider {
+    background-color: alpha(@foreground, 0.1); /* Fondo de la barra */
+    border-radius: 10px;
+    min-height: 10px;
+    min-width: 200px;
+}
+
+slider trough highlight {
+    background-color: @color1; /* El color que llena la barra */
+    border-radius: 10px;
+}
+
+/* 4. El Icono */
+label {
+    color: @color1;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 32px;
+    margin-right: 15px;
+}

@@ -66,6 +66,14 @@ notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
         spicetify apply -q > /dev/null 2>&1
     fi
 
+
+    if pgrep -x "swayosd-server" > /dev/null; then
+        echo "🔊 Actualizando SwayOSD..."
+        killall swayosd-server
+        swayosd-server &
+        swayosd-libinput-backend & > /dev/null 2>&1
+    fi
+
     notify-send -i "$WALLPAPER_PATH" "Sistema Actualizado" "Tema GTK y colores aplicados correctamente."
     echo "✅ Todo listo. Tema '$THEME_NAME' aplicado."
 ) &

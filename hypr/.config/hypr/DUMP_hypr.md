@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Wed Feb 18 05:24:58 PM -03 2026
+ Fecha: Wed Feb 18 05:28:30 PM -03 2026
 ==================================================================
 
 
@@ -81,6 +81,7 @@ bind = $mainMod, T, exec, $terminal
 bind = $mainMod, B, exec, $browser
 bind = $mainMod, S, exec, spotify
 bind = $mainMod, C, killactive,
+bind = $mainMod, J, togglesplit,
 bind = $mainMod, V, togglefloating,
 bind = $mainMod, F, fullscreen, 1
 
@@ -167,7 +168,7 @@ general {
 dwindle {
     pseudotile = yes
     preserve_split = yes
-    smart_split = true
+    #smart_split = true
 }
 
 misc {

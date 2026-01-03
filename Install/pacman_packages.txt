@@ -14,6 +14,11 @@ bpytop
 breeze
 brightnessctl
 btop
+cachyos-keyring
+cachyos-mirrorlist
+cachyos-rate-mirrors
+cachyos-v3-mirrorlist
+cachyos-v4-mirrorlist
 cava
 clang
 cmake
@@ -71,6 +76,7 @@ gnome-user-share
 gnome-weather
 go
 grilo-plugins
+grimblast-git
 grub
 gvfs-afc
 gvfs-dnssd
@@ -83,6 +89,7 @@ gvfs-onedrive
 gvfs-smb
 gvfs-wsdd
 hplip
+http-parser
 hypridle
 hyprland
 hyprland-protocols
@@ -109,6 +116,8 @@ libratbag
 libreoffice-fresh
 libva-utils
 linux
+linux-cachyos
+linux-cachyos-headers
 linux-firmware
 linux-headers
 linux-lts
@@ -169,6 +178,7 @@ strace
 stylua
 sudo
 sushi
+swaylock-effects
 swayosd
 system-config-printer
 taskwarrior-tui
@@ -203,6 +213,7 @@ tree
 tree-sitter-cli
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols-mono
+tty-clock
 ufw
 unzip
 v4l2loopback-dkms
@@ -212,6 +223,7 @@ vlc
 waybar
 wf-recorder
 wget
+wlogout
 wtype
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
@@ -256,7 +268,9 @@ xorg-xwd
 xorg-xwininfo
 xorg-xwud
 xournalpp
+yay
 yelp
 zathura
 zathura-pdf-mupdf
+zen-browser-bin
 zsh

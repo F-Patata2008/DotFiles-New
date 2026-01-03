@@ -5,8 +5,6 @@ clipse
 electron30-bin
 epson-inkjet-printer-escpr2
 flat-remix-gtk
-grimblast-git
-http-parser
 libastal-battery-git
 libastal-hyprland-git
 libastal-mpris-git
@@ -24,10 +22,5 @@ python-pywal16
 sddm-sugar-candy-git
 spicetify-cli
 spotify
-swaylock-effects
 themix-theme-oomox-git
-tty-clock
-wlogout
-yay
-zen-browser-bin
 zoom

@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Fri Jan  2 04:41:29 PM -03 2026
+ Fecha: Sun Jan 11 10:13:30 PM -03 2026
 ==================================================================
 
 
@@ -672,68 +672,61 @@ AR-CHIVO: hypr/.config/hypr/README.md
 ################################################################################
 
 # 🚀 Configuración de Hyprland
-*Un entorno de Tiling dinámico, modular y centrado en la eficiencia para Arch Linux.*
 
 ![Hyprland](https://img.shields.io/badge/WM-Hyprland-E54B83?style=for-the-badge&logo=hyperspace&logoColor=white)
 ![Arch Linux](https://img.shields.io/badge/OS-Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
-![Waybar](https://img.shields.io/badge/Bar-Waybar-2E3440?style=for-the-badge&logo=linux-containers&logoColor=white)
 ![Pywal](https://img.shields.io/badge/Theme-Pywal-D8A657?style=for-the-badge&logo=linux&logoColor=white)
+![Waybar](https://img.shields.io/badge/Bar-Waybar-2E3440?style=for-the-badge&logo=linux-containers&logoColor=white)
+
+Esta es mi configuración personal de Hyprland, diseñada para un flujo de trabajo rápido, eficiente y visualmente cohesivo en Arch Linux. Todo el sistema, desde la terminal hasta Spotify, se adapta dinámicamente al fondo de pantalla.
 
 ## ✨ Filosofía
-Esta configuración está diseñada para un flujo de trabajo rápido y sin distracciones en una laptop, combinando el poder de un Tiling Window Manager con la funcionalidad de un entorno de escritorio completo. La estética es dinámica y se adapta al wallpaper, mientras que la funcionalidad está potenciada por scripts personalizados que integran `rofi` para una experiencia interactiva.
+- **Cohesión Dinámica:** El sistema completo está gobernado por **Pywal**. Un solo script (`set_wallpaper.sh`) se encarga de re-tematizar Hyprland, Waybar, Rofi, Kitty, SwayNC, GTK apps y Spicetify.
+- **Modularidad y Legibilidad:** La configuración está dividida en archivos lógicos (`binds.conf`, `window.conf`, etc.) y utiliza la sintaxis de bloques de Hyprland 0.40+ para mayor claridad.
+- **Eficiencia y Rendimiento:** Se prioriza la ligereza y la funcionalidad del teclado, pero sin sacrificar la estética moderna de Wayland (blur, animaciones, bordes redondeados).
 
-## 🌟 Características Principales
+## 📂 Estructura de la Configuración
 
-- **Modularidad Total:** La configuración principal (`hyprland.conf`) actúa como un archivo maestro que simplemente importa módulos desde la carpeta `conf/`. Esto facilita la gestión y modificación de atajos, animaciones, reglas de ventana, etc.
-- **Theming Dinámico:** Utiliza `pywal` para generar una paleta de colores basada en el wallpaper actual. El script `set_wallpaper.sh` aplica el tema a Hyprland, Waybar y otras aplicaciones al vuelo.
-- **Gestión de Energía Inteligente:** Configuración completa para `hypridle` y `wlsunset` para maximizar la duración de la batería, incluyendo apagado de pantalla, bloqueo automático y suspensión híbrida.
-- **Scripts Interactivos con Rofi:** El menú de Wi-Fi (`wifi.sh`) y el de capturas de pantalla (`screenshot.sh`) usan `rofi` para proveer una interfaz gráfica intuitiva sin depender de aplicaciones pesadas.
-- **Integración Completa de Hardware:** Incluye soporte para `solaar` (mouse Logitech), `kdeconnect` (integración con el teléfono), `blueman-applet` (Bluetooth) y reglas `udev` para el lector de huellas.
-- **Atajos Optimizados:** Keybindings pensados para la productividad, incluyendo el cambio de workspaces con `SUPER + Scroll` y gestión de multimedia con `playerctl`.
-
-## 📂 Estructura de Archivos
-
-La configuración está dividida lógicamente para facilitar su mantenimiento:
+La configuración está organizada para ser fácilmente mantenible y portable.
 
 ```
 .
-├── hyprland.conf      # Archivo maestro (solo `source`s)
-├── conf/              # Directorio de módulos de configuración
-│   ├── aesthetics.conf  # Blur, bordes, sombras y efectos visuales.
-│   ├── animations.conf  # Configuración de animaciones.
-│   ├── binds.conf       # Todos los atajos de teclado y mouse.
-│   ├── general.conf     # Opciones generales del WM.
+├── hyprland.conf      # Archivo maestro que importa todos los módulos.
+├── conf/              # Directorio con los módulos de configuración.
+│   ├── aesthetics.conf  # Reglas de blur, bordes y efectos visuales (`layerrule`).
+│   ├── animations.conf  # Animaciones de ventanas y workspaces.
+│   ├── binds.conf       # Atajos de teclado y mouse.
+│   ├── general.conf     # Opciones generales del WM (layout, gaps, etc.).
 │   ├── input.conf       # Configs de teclado, mouse y touchpad.
-│   ├── startup.conf     # Todos los `exec-once` al iniciar sesión.
-│   └── window.conf      # Reglas para ventanas (flotantes, workspaces, etc).
-├── scripts/           # Scripts personalizados para Waybar, Rofi, fondos, etc.
-├── hyprlock.conf      # Configuración de la pantalla de bloqueo.
-├── hypridle.conf      # Configuración del demonio de inactividad.
-├── hyprpaper.conf     # Configuración del gestor de fondos de pantalla.
-└── monitors.conf      # Configuración de monitores (generado por nwg-displays).
+│   └── window.conf      # Reglas de ventana (flotantes, workspaces, tamaño).
+├── scripts/           # Corazón de la automatización del setup.
+│   ├── set_wallpaper.sh   # Orquesta el cambio de tema en todo el sistema.
+│   ├── wallpaper-selector.sh # Selector de wallpapers con vista previa en Kitty+FZF.
+│   └── capture-menu.sh  # Menú unificado para screenshots y grabación de pantalla.
+├── hyprlock.conf      # Tema de la pantalla de bloqueo.
+├── hypridle.conf      # Reglas de inactividad (suspensión, hibernación).
+└── monitors.conf      # Configuración de monitores.
 ```
+
+## 🌟 Características Destacadas
+
+- **Selector de Wallpapers con Vista Previa en Terminal:** Un script personalizado (`wallpaper-selector.sh`) utiliza `fzf` y `kitty +kitten icat` para crear una galería de wallpapers con previsualización en vivo, sin salir de la terminal.
+- **Theming de Espectro Completo:**
+  - **GTK3/4 & Libadwaita:** El script `set_wallpaper.sh` no solo genera un tema con `oomox`, sino que también aplica `gsettings` y crea symlinks para forzar el theming en aplicaciones de GNOME y Flatpaks.
+  - **Spotify:** Se integra con `spicetify` para que la aplicación de Spotify también adopte la paleta de colores del wallpaper.
+- **Centro de Captura Unificado:** Un solo atajo (`PrintScreen`) lanza un menú en Rofi (`capture-menu.sh`) que permite tomar screenshots (pantalla completa, área, ventana) o iniciar/detener grabaciones de pantalla con `wf-recorder`.
+- **Gestión de Energía Avanzada:** `hypridle` está configurado para `suspend-then-hibernate`, ideal para laptops. `wlsunset` ajusta la temperatura de la pantalla automáticamente según la hora en Santiago de Chile.
 
 ## 🛠️ Dependencias Clave
 
-Para que esta configuración funcione, se necesitan los siguientes paquetes:
-
-- **Visual:** `hyprland`, `hyprlock`, `hyprpaper`, `waybar`, `rofi`, `kitty`, `swayosd`, `swaync`, `nwg-displays`.
-- **Theming:** `pywal`, `oomox` (para el tema GTK), `noto-fonts-emoji`, `ttf-jetbrains-mono-nerd`.
-- **Utilidades:** `nm-applet`, `blueman-applet`, `solaar`, `kdeconnect`, `udiskie`, `playerctl`, `hyprshot`, `jq`.
+- **Visual:** `hyprland`, `waybar`, `rofi`, `kitty`, `swayosd`, `swaync`, `sddm`.
+- **Theming:** `pywal`, `oomox-cli`, `spicetify-cli`, `ttf-jetbrains-mono-nerd`.
+- **Scripts y Automatización:** `fzf`, `jq`, `gnu-stow`, `swayosd-client`.
+- **Hardware:** `blueman`, `solaar`, `kdeconnect`, `libfprint-goodixtls-55x4`.
 - **Backend:** `polkit-gnome`, `xdg-desktop-portal-hyprland`.
 
-## ⌨️ Atajos Esenciales
-
-- `SUPER + T`: Abrir terminal (Kitty).
-- `SUPER + R`: Lanzador de aplicaciones (Rofi).
-- `SUPER + C`: Cerrar ventana activa.
-- `SUPER + L`: Bloquear pantalla (`hyprlock`).
-- `SUPER + Flechas`: Moverse entre ventanas.
-- `SUPER + Scroll (rueda)`: Cambiar de workspace.
-- `PrintScreen`: Menú de captura de pantalla (Rofi + Hyprshot).
-
 ---
-*Este no es solo un "rice", es un sistema de trabajo.*
+*Este setup es la prueba de que un entorno minimalista no tiene por qué sacrificar funcionalidad ni estética.*
 
 
 ################################################################################

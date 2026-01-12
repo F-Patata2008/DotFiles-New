@@ -203,6 +203,7 @@ ttf-nerd-fonts-symbols-mono
 ufw
 unzip
 v4l2loopback-dkms
+valgrind
 vi
 vim
 waybar

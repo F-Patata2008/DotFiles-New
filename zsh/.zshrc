@@ -50,7 +50,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor
 export EDITOR='nvim'
-export BROWSER='opera'
+export BROWSER='zen'
 
 
 # +++ ADD THIS BLOCK +++

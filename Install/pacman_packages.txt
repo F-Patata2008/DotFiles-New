@@ -206,6 +206,7 @@ v4l2loopback-dkms
 valgrind
 vi
 vim
+vlc
 waybar
 wf-recorder
 wget

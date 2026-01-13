@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: zsh
- Fecha: Sun Jan 11 10:13:32 PM -03 2026
+ Fecha: Mon Jan 12 10:34:34 PM -03 2026
 ==================================================================
 
 
@@ -2021,7 +2021,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor
 export EDITOR='nvim'
-export BROWSER='opera'
+export BROWSER='zen'
 
 
 # +++ ADD THIS BLOCK +++

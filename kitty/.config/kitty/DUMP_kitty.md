@@ -1,12 +1,14 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: kitty/.config/kitty
- Fecha: Mon Jan 12 10:34:33 PM -03 2026
+ Fecha: Sat Jan 17 12:13:08 AM -03 2026
 ==================================================================
 
 
 ################################################################################
 AR-CHIVO: kitty/.config/kitty/kitty.conf
 ################################################################################
+
+include ~/.cache/wal/colors-kitty.conf
 
 # --- Tus configuraciones personales (van PRIMERO) ---
 font_family      JetBrainsMono Nerd Font
@@ -20,7 +22,6 @@ background_opacity 0.85
 
 # --- Cargar los colores de Pywal (van DESPUÉS) ---
 # Esto define color0, color1, etc.
-include ~/.cache/wal/colors-kitty.conf
 
 background_opacity 0.85
 # Mapea Ctrl+Backspace para que envíe la secuencia de Ctrl+W

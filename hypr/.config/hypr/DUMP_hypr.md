@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Mon Jan 12 10:34:33 PM -03 2026
+ Fecha: Sat Jan 17 12:13:07 AM -03 2026
 ==================================================================
 
 
@@ -614,27 +614,9 @@ input-field {
 AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
-ipc = on
-# ===================================================================
-# HYPRPAPER CONFIGURATION
-#
-# This file sets the initial wallpaper and enables IPC (Inter-Process
-# Communication) so that scripts can change the wallpaper later.
-# ===================================================================
-
-# Set a preload wallpaper. This is the image that will be loaded
-# into memory when hyprpaper starts.
-# I'm using the path from your example.
-preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/10.jpg
-
-# Set the wallpaper for all monitors. The leading comma means it
-# applies to any monitor that doesn't have a specific rule.
-# This will be your wallpaper at login.
-wallpaper = , /home/F-Patata/Dotfiles/Wallpapers/Gundam/10.jpg
-
-# THIS IS THE MOST IMPORTANT LINE
-# It allows hyprpaper to be controlled by the command line (hyprctl).
-ipc = on
+preload = /home/F-Patata/Dotfiles/Wallpapers/Macross/14.jpg
+wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Macross/14.jpg
+splash = false
 
 
 ################################################################################
@@ -924,9 +906,10 @@ AR-CHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
 
 #!/bin/bash
 
-# =============================================================================
-# SCRIPT DE TEMATIZACIÓN DINÁMICA (Hyprland v0.53+)
-# =============================================================================
+# --- ENV FIX ---
+# Ensure the script has the necessary paths even without a terminal
+export PATH="${PATH}:$HOME/.local/bin:/usr/local/bin:/usr/bin"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 /path/to/wallpaper"
@@ -934,73 +917,68 @@ if [ -z "$1" ]; then
 fi
 
 WALLPAPER_PATH=$(realpath "$1")
-THEME_NAME="pywal" # Nombre consistente para evitar confusiones
+CONF_DIR="$HOME/.config/hypr"
+HYPRPAPER_CONF="$CONF_DIR/hyprpaper.conf"
 
-echo "🚀 Iniciando cambio de tema: $WALLPAPER_PATH"
+# --- 1. PERSISTENCE ---
+cat > "$HYPRPAPER_CONF" <<EOL
+preload = $WALLPAPER_PATH
+wallpaper = ,$WALLPAPER_PATH
+splash = false
+EOL
 
-# --- 1. HYPRPAPER (Arreglo de errores de IPC) ---
+# --- 2. HYPRPAPER ---
 if ! pgrep -x "hyprpaper" > /dev/null; then
-    hyprpaper &
-    sleep 1
+    hyprpaper -c "$HYPRPAPER_CONF" &
+    sleep 0.5
+else
+    hyprctl hyprpaper preload "$WALLPAPER_PATH"
+    hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
 fi
 
-# Intentar aplicar wallpaper (silenciamos errores por si el IPC tarda en despertar)
-hyprctl hyprpaper unload all > /dev/null 2>&1
-hyprctl hyprpaper preload "$WALLPAPER_PATH" > /dev/null 2>&1
-hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH" > /dev/null 2>&1
+# --- 3. PYWAL ---
+wal -n -s -t -i "$WALLPAPER_PATH"
 
-# --- 2. PYWAL (Generar paleta) ---
-wal -q -n -i "$WALLPAPER_PATH"
-source "$HOME/.cache/wal/colors.sh" # Cargar variables para usar en el script
+if [ $? -ne 0 ]; then
+    notify-send "Error" "Pywal failed."
+    exit 1
+fi
 
-# --- 3. RECARGAR INTERFAZ ---
-hyprctl reload
-swaync-client -rs > /dev/null 2>&1
-swaync-client --reload-css > /dev/null 2>&1
-killall -SIGUSR2 waybar # Recarga configuración de Waybar sin cerrarla
+# --- 4. RELOAD EVERYTHING ---
 
-# --- 4. CONFIGURACIÓN GLOBAL DE MODO OSCURO (Importante para GTK) ---
-# Esto quita las barras blancas de las cabeceras
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.desktop.interface gtk-color-scheme 'prefer-dark'
+# A) SwayNC & Waybar
+swaync-client --reload-css
+swaync-client -rs
+killall -SIGUSR2 waybar
+killall -SIGUSR1 kitty
 
-# --- 5. OOMOX & GTK SYNC (Segundo plano para no bloquear) ---
-notify-send -i "$WALLPAPER_PATH" "Tematización" "Generando paleta GTK..."
+# B) THE SWAYOSD FIX (Kill, Wait, Revive)
+echo "Restarting SwayOSD..."
 
-(
-    # Eliminar procesos previos de oomox para no saturar
-    pkill oomox-cli || true
+# Kill it
+pkill swayosd-server
+pkill swayosd-libinput-backend
 
-    # Compilar el tema con oomox
-    oomox-cli -o "$THEME_NAME" ~/.cache/wal/colors-oomox > /dev/null 2>&1
+# WAIT LOOP: Wait until it is truly dead
+# This prevents the "Name already taken" error
+while pgrep -x swayosd-server >/dev/null; do
+    sleep 0.1
+done
 
-    # APLICAR EL TEMA (Esto es lo que te faltaba)
-    gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
+# Start it detached from this script so it doesn't die when script ends
+# redirect output to /dev/null so it doesn't spam
+nohup swayosd-server >/dev/null 2>&1 &
 
-    # FIX PARA GTK4 / LIBADWAITA (Pavucontrol, Blueman, etc.)
-    # Enlazamos el CSS generado directamente a la carpeta de configuración de GTK4
-    mkdir -p "$HOME/.config/gtk-4.0"
-    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/gtk.css" "$HOME/.config/gtk-4.0/gtk.css"
-    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/gtk-dark.css" "$HOME/.config/gtk-4.0/gtk-dark.css"
-    ln -sf "$HOME/.themes/$THEME_NAME/gtk-4.0/assets" "$HOME/.config/gtk-4.0/assets"
+# Optional: Input backend (if you need it for caps lock LEDs etc)
+# nohup swayosd-libinput-backend >/dev/null 2>&1 &
 
-    if command -v pywal-spicetify &> /dev/null; then
-        echo "🎨 Sincronizando Spotify con Pywal..."
-        pywal-spicetify Sleek > /dev/null 2>&1
-        spicetify apply -q > /dev/null 2>&1
-    fi
+# E) Spicetify
+if command -v pywal-spicetify &> /dev/null; then
+    pywal-spicetify Sleek > /dev/null 2>&1
+    spicetify apply -q -n > /dev/null 2>&1
+fi
 
-
-    if pgrep -x "swayosd-server" > /dev/null; then
-        echo "🔊 Actualizando SwayOSD..."
-        killall swayosd-server
-        swayosd-server &
-        swayosd-libinput-backend & > /dev/null 2>&1
-    fi
-
-    notify-send -i "$WALLPAPER_PATH" "Sistema Actualizado" "Tema GTK y colores aplicados correctamente."
-    echo "✅ Todo listo. Tema '$THEME_NAME' aplicado."
-) &
+notify-send -i "$WALLPAPER_PATH" "Theme Updated" "Everything synced successfully."
 
 
 ################################################################################

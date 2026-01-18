@@ -64,7 +64,7 @@ done
 nohup swayosd-server >/dev/null 2>&1 &
 
 # Optional: Input backend (if you need it for caps lock LEDs etc)
-# nohup swayosd-libinput-backend >/dev/null 2>&1 &
+nohup swayosd-libinput-backend >/dev/null 2>&1 &
 
 # E) Spicetify
 if command -v pywal-spicetify &> /dev/null; then

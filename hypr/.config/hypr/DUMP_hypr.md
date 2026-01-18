@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Sat Jan 17 08:46:04 PM -03 2026
+ Fecha: Sat Jan 17 11:00:55 PM -03 2026
 ==================================================================
 
 
@@ -614,8 +614,8 @@ input-field {
 AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
-preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/24.jpg
-wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/24.jpg
+preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/21.jpg
+wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/21.jpg
 splash = false
 
 
@@ -970,7 +970,7 @@ done
 nohup swayosd-server >/dev/null 2>&1 &
 
 # Optional: Input backend (if you need it for caps lock LEDs etc)
-# nohup swayosd-libinput-backend >/dev/null 2>&1 &
+nohup swayosd-libinput-backend >/dev/null 2>&1 &
 
 # E) Spicetify
 if command -v pywal-spicetify &> /dev/null; then

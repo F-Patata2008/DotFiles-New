@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Sat Jan 17 11:00:55 PM -03 2026
+ Fecha: Sun Jan 18 10:02:34 PM -03 2026
 ==================================================================
 
 
@@ -814,7 +814,11 @@ RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 AR-CHIVO: hypr/.config/hypr/scripts/README.md
 ################################################################################
 
-# Aqui estan mis sricots de hyprland
+# Aqui estan mis scripts de Hyprland
+---
+Se Incluyen:
+- set.wallpaper.sh
+- wallpaper-selector.sh
 
 
 ################################################################################

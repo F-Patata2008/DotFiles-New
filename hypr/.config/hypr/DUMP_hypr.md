@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Sun Jan 18 10:02:34 PM -03 2026
+ Fecha: Mon Jan 19 10:39:34 PM -03 2026
 ==================================================================
 
 
@@ -614,8 +614,8 @@ input-field {
 AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
-preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/21.jpg
-wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/21.jpg
+preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/20.jpg
+wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/20.jpg
 splash = false
 
 

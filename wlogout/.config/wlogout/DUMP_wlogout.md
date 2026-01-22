@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: wlogout/.config/wlogout
- Fecha: Thu Jan 22 08:54:31 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: wlogout/.config/wlogout/layout
+ARCHIVO: wlogout/.config/wlogout/layout
 ################################################################################
 
 { "label": "lock", "action": "pidof hyprlock || hyprlock", "text": "Lock", "keybind": "l" }
@@ -15,9 +15,8 @@ AR-CHIVO: wlogout/.config/wlogout/layout
 { "label": "hibernate", "action": "systemctl hibernate", "text": "Hibernate", "keybind": "h" }
 { "label": "reboot", "action": "systemctl reboot", "text": "Reboot", "keybind": "r" }
 
-
 ################################################################################
-AR-CHIVO: wlogout/.config/wlogout/README.md
+ARCHIVO: wlogout/.config/wlogout/README.md
 ################################################################################
 
 # 🚪 Configuración de Wlogout (Menú de Salida para Hyprland)
@@ -55,9 +54,8 @@ El script realiza los siguientes pasos:
 
 Este método permite tener un menú de salida que se ve perfecto en cualquier pantalla, sin necesidad de tener múltiples archivos de CSS o valores fijos.
 
-
 ################################################################################
-AR-CHIVO: wlogout/.config/wlogout/style.css
+ARCHIVO: wlogout/.config/wlogout/style.css
 ################################################################################
 
 * {
@@ -132,4 +130,3 @@ button:focus#reboot {
 #shutdown { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
 #hibernate { background-image: image(url("/usr/share/wlogout/icons/hibernate.png")); }
 #reboot { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }
-

@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: swaync/.config/swaync
- Fecha: Thu Jan 22 08:54:30 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: swaync/.config/swaync/config.json
+ARCHIVO: swaync/.config/swaync/config.json
 ################################################################################
 
 {
@@ -53,9 +53,8 @@ AR-CHIVO: swaync/.config/swaync/config.json
     }
 }
 
-
 ################################################################################
-AR-CHIVO: swaync/.config/swaync/README.md
+ARCHIVO: swaync/.config/swaync/README.md
 ################################################################################
 
 # 🎨 Configuración de Sway Notification Center (SwayNC)
@@ -103,9 +102,8 @@ La interacción con `SwayNC` se maneja desde el módulo `custom/notification` en
 - **`on-click`:** `swaync-client -t -sw` abre y cierra el centro de control.
 - **`on-click-right`:** `swaync-client -d -sw` abre y cierra el modo "No Molestar".
 
-
 ################################################################################
-AR-CHIVO: swaync/.config/swaync/style.css
+ARCHIVO: swaync/.config/swaync/style.css
 ################################################################################
 
 /* --- Import your pywal color palette --- */
@@ -225,4 +223,3 @@ AR-CHIVO: swaync/.config/swaync/style.css
 .widget-mpris image {
     border-radius: 12px;
 }
-

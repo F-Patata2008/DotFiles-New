@@ -51,15 +51,12 @@ find "$TARGET_DIR" -type f \
         # Formato bonito en el TXT
         echo "" >> "$OUTPUT_FILE"
         echo "################################################################################" >> "$OUTPUT_FILE"
-        echo "AR-CHIVO: $file" >> "$OUTPUT_FILE"
+        echo "ARCHIVO: $file" >> "$OUTPUT_FILE"
         echo "################################################################################" >> "$OUTPUT_FILE"
         echo "" >> "$OUTPUT_FILE"
 
         # Volcar contenido
         cat "$file" >> "$OUTPUT_FILE"
-        echo "" >> "$OUTPUT_FILE"
-    else
-        echo "⚠️  Saltando binario: $file"
     fi
 done
 

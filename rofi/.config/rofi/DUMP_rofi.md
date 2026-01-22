@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: rofi/.config/rofi
- Fecha: Thu Jan 22 08:54:30 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: rofi/.config/rofi/config.rasi
+ARCHIVO: rofi/.config/rofi/config.rasi
 ################################################################################
 
 /**
@@ -43,9 +43,8 @@ configuration {
  */
 @import "~/.config/rofi/theme.rasi"
 
-
 ################################################################################
-AR-CHIVO: rofi/.config/rofi/README.md
+ARCHIVO: rofi/.config/rofi/README.md
 ################################################################################
 
 # 🚀 Configuración de Rofi Dinámica
@@ -99,9 +98,8 @@ Esta configuración viene con los siguientes modos pre-configurados, accesibles 
 
 El resultado es un lanzador que no solo es potente, sino que también se siente como una parte integrada y viva del escritorio.
 
-
 ################################################################################
-AR-CHIVO: rofi/.config/rofi/theme.rasi
+ARCHIVO: rofi/.config/rofi/theme.rasi
 ################################################################################
 
 /**
@@ -230,4 +228,3 @@ element.selected {
     background-color: @foreground; /* Invert colors for selection */
     text-color: @background;
 }
-

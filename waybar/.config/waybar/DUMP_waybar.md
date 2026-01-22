@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: waybar/.config/waybar
- Fecha: Thu Jan 22 08:54:31 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: waybar/.config/waybar/config.jsonc
+ARCHIVO: waybar/.config/waybar/config.jsonc
 ################################################################################
 
 {
@@ -172,9 +172,8 @@ AR-CHIVO: waybar/.config/waybar/config.jsonc
     }
 }
 
-
 ################################################################################
-AR-CHIVO: waybar/.config/waybar/README.md
+ARCHIVO: waybar/.config/waybar/README.md
 ################################################################################
 
 # 🚀 Configuración de Waybar para Hyprland
@@ -219,9 +218,8 @@ El `style.css` es el núcleo de la integración. Las variables de color definida
 
 El script `reset_waybar.sh` (`killall waybar && waybar &`) se encarga de forzar esta recarga después de que `pywal` genera una nueva paleta, asegurando que los cambios de color se apliquen instantáneamente.
 
-
 ################################################################################
-AR-CHIVO: waybar/.config/waybar/style.css
+ARCHIVO: waybar/.config/waybar/style.css
 ################################################################################
 
 @import "/home/F-Patata/.cache/wal/colors-waybar.css";
@@ -390,4 +388,3 @@ window#waybar {
 #custom-suspend.pmode-normal { color: #3498db; }
 #custom-suspend.pmode-school { color: #8e44ad; }
 #custom-suspend.pmode-unk { color: #95a5a6; }
-

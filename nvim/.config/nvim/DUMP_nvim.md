@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: nvim/.config/nvim
- Fecha: Thu Jan 22 08:54:29 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/init.lua
+ARCHIVO: nvim/.config/nvim/init.lua
 ################################################################################
 
 -- Set <leader> BEFORE lazy
@@ -56,9 +56,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 })
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/core/autostart.lua
+ARCHIVO: nvim/.config/nvim/lua/core/autostart.lua
 ################################################################################
 
 -- Set editor options
@@ -98,15 +97,13 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   end,
 })
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/core/current-theme.lua
+ARCHIVO: nvim/.config/nvim/lua/core/current-theme.lua
 ################################################################################
 
 vim.cmd("colorscheme tokyonight-night")
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/core/keybinds.lua
+ARCHIVO: nvim/.config/nvim/lua/core/keybinds.lua
 ################################################################################
 
 local map = vim.keymap.set
@@ -142,9 +139,8 @@ map("n", "<leader>mp", "<cmd>RenderMarkdownToggle<CR>", { desc = "Toggle Markdow
 
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/custom/copilot.lua
+ARCHIVO: nvim/.config/nvim/lua/custom/copilot.lua
 ################################################################################
 
 return {
@@ -182,9 +178,8 @@ return {
 }
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/dkjson.lua
+ARCHIVO: nvim/.config/nvim/lua/dkjson.lua
 ################################################################################
 
 -- Module options:
@@ -940,9 +935,8 @@ end
 return json
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/alpha.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/alpha.lua
 ################################################################################
 
 return {
@@ -955,9 +949,8 @@ return {
   },
  }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/arduino.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/arduino.lua
 ################################################################################
 
 return {
@@ -979,9 +972,8 @@ return {
     }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/autopairs.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/autopairs.lua
 ################################################################################
 
 return {
@@ -1000,9 +992,8 @@ return {
     }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/comments.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/comments.lua
 ################################################################################
 
 return {
@@ -1013,9 +1004,8 @@ return {
     },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/completion.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/completion.lua
 ################################################################################
 
 return {
@@ -1107,9 +1097,8 @@ return {
 }
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/debugging.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/debugging.lua
 ################################################################################
 
 return {
@@ -1179,9 +1168,8 @@ return {
   },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/formatter.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/formatter.lua
 ################################################################################
 
 return {
@@ -1234,9 +1222,8 @@ return {
     },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/git.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/git.lua
 ################################################################################
 
 return {
@@ -1249,9 +1236,8 @@ return {
     }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/jupyter.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/jupyter.lua
 ################################################################################
 
 return {
@@ -1290,9 +1276,8 @@ return {
     }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/key.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/key.lua
 ################################################################################
 
 return {
@@ -1307,9 +1292,8 @@ return {
     },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/latex.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/latex.lua
 ################################################################################
 
 -- Tu archivo de configuración de vimtex
@@ -1337,9 +1321,8 @@ return {
     }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/lsp.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/lsp.lua
 ################################################################################
 
 -- plugins/lsp.lua (or your equivalent file)
@@ -1418,9 +1401,8 @@ return {
   }
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/lualine.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/lualine.lua
 ################################################################################
 
 return {
@@ -1435,9 +1417,8 @@ return {
 	end
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/luasnip.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/luasnip.lua
 ################################################################################
 
 return {
@@ -1458,9 +1439,8 @@ return {
 }
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/markdown.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/markdown.lua
 ################################################################################
 
 -- plugins/markdown.lua
@@ -1476,9 +1456,8 @@ return {
   },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/mini.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/mini.lua
 ################################################################################
 
 -- lua/plugins/mini.lua
@@ -1502,9 +1481,8 @@ return {
   },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/neo-tree.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/neo-tree.lua
 ################################################################################
 
 return {
@@ -1527,9 +1505,8 @@ return {
 	end
 }   
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/telescope.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/telescope.lua
 ################################################################################
 
 return {
@@ -1566,9 +1543,8 @@ return {
 	}
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/themes.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/themes.lua
 ################################################################################
 
 return {
@@ -1608,9 +1584,8 @@ return {
   },
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/treesitter.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/treesitter.lua
 ################################################################################
 
 return {
@@ -1659,9 +1634,8 @@ return {
 }
 
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/plugins/trouble.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/trouble.lua
 ################################################################################
 
 return {
@@ -1675,9 +1649,8 @@ return {
 
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/snippets/cpp.lua
+ARCHIVO: nvim/.config/nvim/lua/snippets/cpp.lua
 ################################################################################
 
 local ls = require("luasnip")
@@ -1755,9 +1728,8 @@ return {
     )
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/lua/snippets/tex.lua
+ARCHIVO: nvim/.config/nvim/lua/snippets/tex.lua
 ################################################################################
 
 local ls = require("luasnip")
@@ -1975,9 +1947,8 @@ return {
   })),
 }
 
-
 ################################################################################
-AR-CHIVO: nvim/.config/nvim/README.md
+ARCHIVO: nvim/.config/nvim/README.md
 ################################################################################
 
 # 🐧 Configuración de Neovim para Programación Competitiva y Desarrollo General
@@ -2045,4 +2016,3 @@ La tecla `<leader>` está mapeada a `Espacio`.
 
 ---
 *Hecho para maximizar la velocidad y minimizar las distracciones.*
-

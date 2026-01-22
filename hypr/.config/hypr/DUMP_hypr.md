@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Jan 22 08:54:28 PM -03 2026
+ Fecha: Thu Jan 22 09:01:37 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/aesthetics.conf
+ARCHIVO: hypr/.config/hypr/conf/aesthetics.conf
 ################################################################################
 
 # Aesthetics
@@ -49,9 +49,8 @@ decoration {
 
     }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/animations.conf
+ARCHIVO: hypr/.config/hypr/conf/animations.conf
 ################################################################################
 
 # Animations
@@ -67,9 +66,8 @@ animations {
     animation = workspaces, 1, 6, default
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/binds.conf
+ARCHIVO: hypr/.config/hypr/conf/binds.conf
 ################################################################################
 
 # Keybindings
@@ -161,9 +159,8 @@ bindl = , XF86AudioPrev, exec, playerctl previous
 # Clipboard manager
 bind = SUPER SHIFT, V, exec,  kitty --class clipse -e 'clipse'
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/general.conf
+ARCHIVO: hypr/.config/hypr/conf/general.conf
 ################################################################################
 
 # General
@@ -187,9 +184,8 @@ misc {
     vfr = true
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/input.conf
+ARCHIVO: hypr/.config/hypr/conf/input.conf
 ################################################################################
 
 # Input
@@ -206,9 +202,8 @@ input {
 
 gesture = 3, horizontal, workspace
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/plugins.conf
+ARCHIVO: hypr/.config/hypr/conf/plugins.conf
 ################################################################################
 
 # Plugins
@@ -222,9 +217,8 @@ AR-CHIVO: hypr/.config/hypr/conf/plugins.conf
 #    }
 #}
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/startup.conf
+ARCHIVO: hypr/.config/hypr/conf/startup.conf
 ################################################################################
 
 # --- PLugins ---
@@ -266,9 +260,8 @@ exec-once = /usr/lib/xdg-desktop-portal-hyprland
 # --- User Apps ---
 exec-once = kitty --class "Dotfiles" --directory ~/Dotfiles
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/conf/window.conf
+ARCHIVO: hypr/.config/hypr/conf/window.conf
 ################################################################################
 
 # =============================================================================
@@ -404,9 +397,8 @@ windowrule {
     no_blur = on
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/hypridle.conf
+ARCHIVO: hypr/.config/hypr/hypridle.conf
 ################################################################################
 
 # ===================================================================
@@ -445,9 +437,8 @@ listener {
     on-resume = hyprctl dispatch dpms on
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/hyprland.conf
+ARCHIVO: hypr/.config/hypr/hyprland.conf
 ################################################################################
 
 # -----------------------------------------------------
@@ -489,9 +480,8 @@ source = ~/.config/hypr/conf/binds.conf
 source = ~/.config/hypr/conf/window.conf
 source = ~/.config/hypr/conf/plugins.conf # You created a plugins.conf, let's add it!
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/hyprlock.conf
+ARCHIVO: hypr/.config/hypr/hyprlock.conf
 ################################################################################
 
 # ===================================================================
@@ -609,18 +599,16 @@ input-field {
     valign = center
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/hyprpaper.conf
+ARCHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
 preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/2.jpg
 wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/2.jpg
 splash = false
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/hyprsunset.conf
+ARCHIVO: hypr/.config/hypr/hyprsunset.conf
 ################################################################################
 
 max-gamma = 150
@@ -638,9 +626,8 @@ profile {
     gamma = 0.8
 }
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/monitors.conf
+ARCHIVO: hypr/.config/hypr/monitors.conf
 ################################################################################
 
 # Generated by nwg-displays on 2025-09-16 at 22:22:45. Do not edit manually.
@@ -648,9 +635,8 @@ AR-CHIVO: hypr/.config/hypr/monitors.conf
 monitor=eDP-1,1366x768@60.0,0x144,1.0
 monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/README.md
+ARCHIVO: hypr/.config/hypr/README.md
 ################################################################################
 
 # 🚀 Configuración de Hyprland
@@ -710,18 +696,16 @@ La configuración está organizada para ser fácilmente mantenible y portable.
 ---
 *Este setup es la prueba de que un entorno minimalista no tiene por qué sacrificar funcionalidad ni estética.*
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/.gitignore
+ARCHIVO: hypr/.config/hypr/scripts/.gitignore
 ################################################################################
 
 
 # Ignore update script log
 update.log
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/loguot.sh
+ARCHIVO: hypr/.config/hypr/scripts/loguot.sh
 ################################################################################
 
 #!/usr/bin/env bash
@@ -766,9 +750,8 @@ wlogout -b "${wlColms}" -c 0 -r 0 -m 0 --layout "${wLayout}" --css <(echo "${wlS
 
 
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/phone.sh
+ARCHIVO: hypr/.config/hypr/scripts/phone.sh
 ################################################################################
 
 #!/bin/zsh
@@ -794,9 +777,8 @@ else
     echo "{\"text\": \"$ICON N/A\", \"tooltip\": \"Phone Not Found\"}"
 fi
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/random_wallpaper.sh
+ARCHIVO: hypr/.config/hypr/scripts/random_wallpaper.sh
 ################################################################################
 
 #!/bin/bash
@@ -809,9 +791,8 @@ RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 # Set the wallpaper using our main script
 ~/.config/hypr/scripts/set_wallpaper.sh "$RANDOM_WALLPAPER"
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/README.md
+ARCHIVO: hypr/.config/hypr/scripts/README.md
 ################################################################################
 
 # Aqui estan mis scripts de Hyprland
@@ -820,18 +801,16 @@ Se Incluyen:
 - set.wallpaper.sh
 - wallpaper-selector.sh
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/reset_waybar.sh
+ARCHIVO: hypr/.config/hypr/scripts/reset_waybar.sh
 ################################################################################
 
 #!/bin/bash
 killall -q waybar
 waybar &
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/screenshot.sh
+ARCHIVO: hypr/.config/hypr/scripts/screenshot.sh
 ################################################################################
 
 #!/bin/bash
@@ -903,9 +882,8 @@ case "$choice" in
         ;;
 esac
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
+ARCHIVO: hypr/.config/hypr/scripts/set_wallpaper.sh
 ################################################################################
 
 #!/bin/bash
@@ -984,9 +962,8 @@ fi
 
 notify-send -i "$WALLPAPER_PATH" "Theme Updated" "Everything synced successfully."
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/update.sh
+ARCHIVO: hypr/.config/hypr/scripts/update.sh
 ################################################################################
 
 #!/bin/zsh
@@ -1045,9 +1022,8 @@ fi
 echo "=================================================="
 echo ""
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/wallpaper-selector.sh
+ARCHIVO: hypr/.config/hypr/scripts/wallpaper-selector.sh
 ################################################################################
 
 #!/bin/bash
@@ -1096,9 +1072,8 @@ if [ -n "$SELECTED" ]; then
     fi
 fi
 
-
 ################################################################################
-AR-CHIVO: hypr/.config/hypr/scripts/wifi.sh
+ARCHIVO: hypr/.config/hypr/scripts/wifi.sh
 ################################################################################
 
 #!/usr/bin/env bash
@@ -1139,4 +1114,3 @@ else
 		nmcli device wifi connect "$chosen_id" password "$wifi_password" | grep "successfully" && notify-send "Connection Established" "$success_message"
     fi
 fi
-

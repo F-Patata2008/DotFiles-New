@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: kitty/.config/kitty
- Fecha: Thu Jan 22 08:54:29 PM -03 2026
+ Fecha: Thu Jan 22 09:01:38 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: kitty/.config/kitty/kitty.conf
+ARCHIVO: kitty/.config/kitty/kitty.conf
 ################################################################################
 
 include ~/.cache/wal/colors-kitty.conf
@@ -26,4 +26,3 @@ background_opacity 0.85
 background_opacity 0.85
 # Mapea Ctrl+Backspace para que envíe la secuencia de Ctrl+W
 map ctrl+backspace send_text all \x17
-

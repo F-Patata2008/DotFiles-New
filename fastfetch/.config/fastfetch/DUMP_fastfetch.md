@@ -1,11 +1,11 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: fastfetch/.config/fastfetch
- Fecha: Thu Jan 22 08:54:28 PM -03 2026
+ Fecha: Thu Jan 22 09:01:37 PM -03 2026
 ==================================================================
 
 
 ################################################################################
-AR-CHIVO: fastfetch/.config/fastfetch/config.jsonc
+ARCHIVO: fastfetch/.config/fastfetch/config.jsonc
 ################################################################################
 
 {
@@ -263,4 +263,3 @@ AR-CHIVO: fastfetch/.config/fastfetch/config.jsonc
     }
   ]
 }
-

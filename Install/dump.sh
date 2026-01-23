@@ -46,8 +46,6 @@ find "$TARGET_DIR" -type f \
 
     # Verificamos si es un archivo de texto (para evitar binarios raros)
     if file "$file" | grep -q "text"; then
-        echo "procesando: $file"
-
         # Formato bonito en el TXT
         echo "" >> "$OUTPUT_FILE"
         echo "################################################################################" >> "$OUTPUT_FILE"

@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Jan 22 09:01:37 PM -03 2026
+ Fecha: Thu Jan 22 10:05:34 PM -03 2026
 ==================================================================
 
 
@@ -485,23 +485,24 @@ ARCHIVO: hypr/.config/hypr/hyprlock.conf
 ################################################################################
 
 # ===================================================================
-# FINAL WORKING HYPRLOCK CONFIGURATION (v0.9.1)
-#
-# - Removes invalid configuration blocks for this version.
-# - Adds a static label as a visual cue for fingerprint scanning.
+# HYPRLOCK CONFIGURATION (Modern & Centered)
 # ===================================================================
 
-# -------------------------------------------------------------------
-# Define a variable for the font for easy reuse
-# -------------------------------------------------------------------
+# --- VARIABLES ---
 $font = JetBrainsMono Nerd Font
-
+$text_color = rgba(255, 255, 255, 1.0)
+$entry_background = rgba(0, 0, 0, 0.3)
+$entry_border = rgba(33ccffee) rgba(00ff99ee) 45deg
+$fail_color = rgba(ff6633ee) rgba(ff0066ee) 40deg
 
 # -------------------------------------------------------------------
 # GENERAL
 # -------------------------------------------------------------------
 general {
     hide_cursor = true
+    no_fade_in = false
+    grace = 0
+    disable_loading_bar = true
 }
 
 # -------------------------------------------------------------------
@@ -509,92 +510,101 @@ general {
 # -------------------------------------------------------------------
 background {
     monitor =
-    path = $HOME/Dotfiles//Wallpapers/Gundam/33.jpg
+    # Fixed the double slash '//' in your previous path
+    path = $HOME/Dotfiles/Wallpapers/Gundam/33.jpg
     color = rgba(25, 20, 20, 1.0)
-    blur_passes = 0
+
+    # Enable blur for a "frosted glass" look (premium feel)
+    blur_passes = 2
+    blur_size = 7
+    noise = 0.0117
+    contrast = 0.8916
+    brightness = 0.8172
+    vibrancy = 0.1696
+    vibrancy_darkness = 0.0
 }
 
 # -------------------------------------------------------------------
-# CLOCK & DATE (TOP RIGHT)
+# TIME (Big & Centered)
 # -------------------------------------------------------------------
 label {
     monitor =
-    text = cmd[update:30000] echo "$(date +"%R")"
-    color = rgb(255, 255, 255)
-    font_size = 90
-    font_family = $font
-    position = -30, 0
-    halign = right
-    valign = top
+    text = cmd[update:1000] echo "$(date +"%H:%M")"
+    color = $text_color
+    font_size = 120
+    font_family = $font ExtraBold
+    position = 0, 100
+    halign = center
+    valign = center
 }
 
+# -------------------------------------------------------------------
+# DATE
+# -------------------------------------------------------------------
 label {
     monitor =
     text = cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"
-    color = rgb(255, 255, 255)
-    font_size = 25
+    color = $text_color
+    font_size = 20
     font_family = $font
-    position = -30, -150
-    halign = right
-    valign = top
+    position = 0, 20
+    halign = center
+    valign = center
 }
 
 # -------------------------------------------------------------------
-# CUSTOM "Mundo Hola" LABEL
+# "Mundo Hola" LABEL
 # -------------------------------------------------------------------
 label {
     monitor =
     text = Mundo Hola
-    color = rgb(255, 255, 255)
-    font_size = 20
-    font_family = "Sans Bold"
-    position = 0, -110
+    color = rgba(200, 200, 200, 1.0)
+    font_size = 14
+    font_family = $font Italic
+    position = 0, -80
     halign = center
     valign = center
 }
-
-# -------------------------------------------------------------------
-# FINGERPRINT HINT LABEL (REPLACES the invalid fingerprint block)
-# -------------------------------------------------------------------
-label {
-    monitor =
-    text = Scan Fingerprint or Enter Password
-    color = rgb(200, 200, 200) # A slightly dimmer white
-    font_size = 16
-    font_family = $font
-    position = 0, 40 # Positioned just below the input box
-    halign = center
-    valign = center
-}
-
 
 # -------------------------------------------------------------------
 # INPUT FIELD
 # -------------------------------------------------------------------
 input-field {
     monitor =
-    size = 450, 60
-    outline_thickness = 3
-    inner_color = rgba(0, 0, 0, 0.0)
-    rounding = 15
-
-    # --- Gradient colors ---
-    outer_color = rgba(33ccffee) rgba(00ff99ee) 45deg
-    check_color = rgba(00ff99ee) rgba(ff6633ee) 120deg
-    fail_color = rgba(ff6633ee) rgba(ff0066ee) 40deg
-
-    # --- Font and dynamic text ---
-    font_color = rgb(143, 143, 143)
-    fade_on_empty = false
-    hide_input = false
+    size = 300, 60
+    outline_thickness = 2
+    dots_size = 0.2
+    dots_spacing = 0.2
     dots_center = true
-    # FIXED: Pango markup with ##RRGGBBAA hex format
-    placeholder_text = <span foreground="##8F8F8FB2"><i>󰌾 Logged in as </i><span foreground="##33CCFFE5">$USER</span></span>
+    outer_color = $entry_border
+    inner_color = $entry_background
+    font_color = $text_color
+    fade_on_empty = false
+
+    # Modern placeholder with icon
+    placeholder_text = <i>󰌾  Password...</i>
+
+    hide_input = false
+    check_color = $entry_border
+    fail_color = $fail_color
     fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
     capslock_color = rgb(255, 204, 0)
 
-    # --- Positioning ---
-    position = 0, -20
+    position = 0, -150
+    halign = center
+    valign = center
+}
+
+# -------------------------------------------------------------------
+# FINGERPRINT HINT
+# -------------------------------------------------------------------
+label {
+    monitor =
+    text = 󰍂  Scan Fingerprint
+    color = rgba(150, 150, 150, 0.8)
+    font_size = 12
+    font_family = $font
+    position = 0, -210
     halign = center
     valign = center
 }

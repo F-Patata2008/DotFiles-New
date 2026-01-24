@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Jan 22 10:06:15 PM -03 2026
+ Fecha: Fri Jan 23 11:33:50 PM -03 2026
 ==================================================================
 
 
@@ -613,9 +613,10 @@ label {
 ARCHIVO: hypr/.config/hypr/hyprpaper.conf
 ################################################################################
 
-preload = /home/F-Patata/Dotfiles/Wallpapers/Gundam/2.jpg
-wallpaper = ,/home/F-Patata/Dotfiles/Wallpapers/Gundam/2.jpg
-splash = false
+wallpaper {
+    monitor = eDP-1
+    path = /home/F-Patata/Dotfiles/Wallpapers/Gundam/11.jpg
+}
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/hyprsunset.conf
@@ -914,9 +915,10 @@ HYPRPAPER_CONF="$CONF_DIR/hyprpaper.conf"
 
 # --- 1. PERSISTENCE ---
 cat > "$HYPRPAPER_CONF" <<EOL
-preload = $WALLPAPER_PATH
-wallpaper = ,$WALLPAPER_PATH
-splash = false
+wallpaper {
+    monitor = eDP-1
+    path = $WALLPAPER_PATH
+}
 EOL
 
 # --- 2. HYPRPAPER ---

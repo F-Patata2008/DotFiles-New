@@ -16,9 +16,10 @@ HYPRPAPER_CONF="$CONF_DIR/hyprpaper.conf"
 
 # --- 1. PERSISTENCE ---
 cat > "$HYPRPAPER_CONF" <<EOL
-preload = $WALLPAPER_PATH
-wallpaper = ,$WALLPAPER_PATH
-splash = false
+wallpaper {
+    monitor = eDP-1
+    path = $WALLPAPER_PATH
+}
 EOL
 
 # --- 2. HYPRPAPER ---

@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: nvim/.config/nvim
- Fecha: Sat Jan 24 09:01:18 PM -03 2026
+ Fecha: Sun Jan 25 09:47:15 PM -03 2026
 ==================================================================
 
 
@@ -8,11 +8,25 @@
 ARCHIVO: nvim/.config/nvim/init.lua
 ################################################################################
 
--- Set <leader> BEFORE lazy
+-- ==========================================================================
+-- INIT.LUA - Modularized for PC & Tablet (Termux)
+-- ==========================================================================
+
+-- 1. Set global options BEFORE loading plugins
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Bootstrap lazy.nvim
+-- 2. Detect Environment (PC vs Tablet)
+-- Check if we are running in Termux via environment variable
+local is_termux = os.getenv("TERMUX_VERSION") ~= nil
+-- Optional: Allow manual override via NVIM_PROFILE env var (e.g. export NVIM_PROFILE=light)
+local is_light_mode = os.getenv("NVIM_PROFILE") == "light" or is_termux
+
+if is_light_mode then
+    print("📱 Mobile/Light Mode Detected: Heavy plugins disabled.")
+end
+
+-- 3. Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -23,38 +37,44 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Load plugins from both plugins/ and custom/
-require("lazy").setup({
-  { import = "plugins" },
-  { import = "custom" }
+-- 4. Build the Plugin Spec dynamically
+local lazy_spec = {
+    -- Always load the CORE plugins (Telescope, Themes, Treesitter, etc.)
+    { import = "plugins.core" },
+}
+
+-- Only load EXTRAS and CUSTOM (Copilot) if NOT in light mode
+if not is_light_mode then
+    table.insert(lazy_spec, { import = "plugins.extras" }) -- Arduino, Latex, Debug, Jupyter
+    table.insert(lazy_spec, { import = "custom" })         -- Copilot (Heavy on battery/network)
+end
+
+-- 5. Setup Lazy
+require("lazy").setup(lazy_spec, {
+    change_detection = { notify = false } -- Reduces notification spam on reload
 })
 
--- 🟢 AHORA SÍ: carga tus opciones y atajos
+-- 6. Load Core Configs
 require("core.autostart")
 require("core.keybinds")
 
+-- 7. Conditional Core Logic
+-- Some autocommands might refer to plugins that are now disabled.
+-- We wrap them in pcall or checks if necessary.
 
--- THIS IS THE SETUP RECOMMENDED BY THE Arduino-Nvim PLUGIN
--- We are putting it back.
+-- Example: Only setup Arduino LSP logic if not in light mode
+if not is_light_mode then
+    -- We use pcall to avoid errors if the module isn't loaded
+    pcall(function() require("Arduino-Nvim.lsp").setup() end)
+end
 
--- Load LSP configuration first
-require("Arduino-Nvim.lsp").setup()
---[[
--- Set up Arduino file type detection
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "arduino",
-    callback = function()
-        require("Arduino-Nvim")
-    end
-})
-]]
+-- Ipynb detection is fine to keep global, but won't do much without the jupyter plugin
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "*.ipynb",
   callback = function()
     vim.bo.filetype = "ipynb"
   end,
 })
-
 
 ################################################################################
 ARCHIVO: nvim/.config/nvim/lua/core/autostart.lua
@@ -936,7 +956,7 @@ return json
 
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/alpha.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/alpha.lua
 ################################################################################
 
 return {
@@ -950,30 +970,7 @@ return {
  }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/arduino.lua
-################################################################################
-
-return {
-    {
-      "yuukiflow/Arduino-Nvim",
-      dependencies = {
-        "nvim-telescope/telescope.nvim",
-        "neovim/nvim-lspconfig",
-      },
-      config = function()
-        -- Load Arduino plugin for .ino files
-        vim.api.nvim_create_autocmd("FileType", {
-          pattern = "arduino",
-          callback = function()
-            require("Arduino-Nvim")
-          end,
-        })
-      end,
-    }
-}
-
-################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/autopairs.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/autopairs.lua
 ################################################################################
 
 return {
@@ -993,7 +990,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/comments.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/comments.lua
 ################################################################################
 
 return {
@@ -1005,7 +1002,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/completion.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/completion.lua
 ################################################################################
 
 return {
@@ -1098,78 +1095,7 @@ return {
 
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/debugging.lua
-################################################################################
-
-return {
-  {
-    "mfussenegger/nvim-dap",
-    dependencies = {
-      "rcarriga/nvim-dap-ui",
-      "nvim-neotest/nvim-nio", -- Optional, but good to have
-    },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-
-      -- Initialize the UI
-      dapui.setup()
-
-      -- UI autocommands (your code was perfect here)
-      dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        dapui.close()
-      end
-
-      -- Keymaps (added more for a better experience)
-      vim.keymap.set('n', '<Leader>dt', dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
-      vim.keymap.set('n', '<Leader>dc', dap.continue, { desc = "Continue" })
-      vim.keymap.set('n', '<Leader>dl', dap.launch, { desc = "Launch" })
-      vim.keymap.set('n', '<Leader>dso', dap.step_over, { desc = "Step Over" })
-      vim.keymap.set('n', '<Leader>dsi', dap.step_into, { desc = "Step Into" })
-      vim.keymap.set('n', '<Leader>dsu', dap.step_out, { desc = "Step Out" })
-
-
-      -- 1. ADAPTER DEFINITION (your code was correct)
-      dap.adapters.gdb = {
-        type = "executable",
-        command = "gdb",
-        args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
-      }
-
-      -- 2. LAUNCH CONFIGURATION (this is the missing part)
-      dap.configurations.cpp = {
-        {
-          name = "Launch with GDB",
-          type = "gdb", -- Use the adapter you defined above
-          request = "launch",
-          program = function()
-            -- Ask for the executable path when you start debugging
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-          end,
-          cwd = "${workspaceFolder}", -- Run the program in the project root
-          stopOnEntry = false, -- Don't stop at the program's entry point
-        },
-      }
-      
-      -- You can reuse the C++ configuration for C and Rust if using GDB
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = dap.configurations.cpp
-
-    end,
-  },
-}
-
-################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/formatter.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/formatter.lua
 ################################################################################
 
 return {
@@ -1223,7 +1149,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/git.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/git.lua
 ################################################################################
 
 return {
@@ -1237,47 +1163,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/jupyter.lua
-################################################################################
-
-return {
-  -- For transparently editing ipynb files as text
-  {
-     "GCBallesteros/jupytext.nvim",
-  config = true,
-  -- Depending on your nvim distro or config you may need to make the loading not lazy
-  -- lazy=false,
-  },
-
-  -- For running cells and interacting with the kernel
-  {
-        "benlubas/molten-nvim",
-        version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
-        dependencies = { "3rd/image.nvim" },
-        build = ":UpdateRemotePlugins",
-        init = function()
-            -- these are examples, not defaults. Please see the readme
-            vim.g.molten_image_provider = "image.nvim"
-            vim.g.molten_output_win_max_height = 20
-        end,
-    },
-    {
-        -- see the image.nvim readme for more information about configuring this plugin
-        "3rd/image.nvim",
-        opts = {
-            backend = "kitty", -- whatever backend you would like to use
-            max_width = 100,
-            max_height = 12,
-            max_height_window_percentage = math.huge,
-            max_width_window_percentage = math.huge,
-            window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
-            window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-        },
-    }
-}
-
-################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/key.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/key.lua
 ################################################################################
 
 return {
@@ -1293,36 +1179,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/latex.lua
-################################################################################
-
--- Tu archivo de configuración de vimtex
-return { 
-    {
-        "lervag/vimtex",
-        ft = { "tex", "latex", "bib" },
-        init = function()
-            vim.g.vimtex_compiler_method = "latexmk"
-            -- vim.g.vimtex_compiler_latexmk = { pdflatex = 'lualatex -interaction=nonstopmode %O %S' }
-
-            vim.g.vimtex_view_zathura = {
-                wayland = 1,
-                nvim_instance = vim.v.servername,
-            }
-
-            vim.g.vimtex_view_method = "zathura"
-            vim.g.vimtex_spell_enabled = 1
-        end,
-
-        config = function()
-            local map = vim.keymap.set
-            local opts = { silent = true, noremap = true }
-        end,
-    }
-}
-
-################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/lsp.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/lsp.lua
 ################################################################################
 
 -- plugins/lsp.lua (or your equivalent file)
@@ -1402,7 +1259,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/lualine.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/lualine.lua
 ################################################################################
 
 return {
@@ -1418,7 +1275,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/luasnip.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/luasnip.lua
 ################################################################################
 
 return {
@@ -1440,7 +1297,7 @@ return {
 
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/markdown.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/markdown.lua
 ################################################################################
 
 -- plugins/markdown.lua
@@ -1457,7 +1314,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/mini.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/mini.lua
 ################################################################################
 
 -- lua/plugins/mini.lua
@@ -1482,7 +1339,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/neo-tree.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/neo-tree.lua
 ################################################################################
 
 return {
@@ -1506,7 +1363,7 @@ return {
 }   
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/telescope.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/telescope.lua
 ################################################################################
 
 return {
@@ -1544,7 +1401,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/themes.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/themes.lua
 ################################################################################
 
 return {
@@ -1585,7 +1442,7 @@ return {
 }
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/treesitter.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/treesitter.lua
 ################################################################################
 
 return {
@@ -1635,7 +1492,7 @@ return {
 
 
 ################################################################################
-ARCHIVO: nvim/.config/nvim/lua/plugins/trouble.lua
+ARCHIVO: nvim/.config/nvim/lua/plugins/core/trouble.lua
 ################################################################################
 
 return {
@@ -1647,6 +1504,169 @@ return {
     opts = {}, -- Use default settings
   },
 
+}
+
+################################################################################
+ARCHIVO: nvim/.config/nvim/lua/plugins/extras/arduino.lua
+################################################################################
+
+return {
+    {
+      "yuukiflow/Arduino-Nvim",
+      dependencies = {
+        "nvim-telescope/telescope.nvim",
+        "neovim/nvim-lspconfig",
+      },
+      config = function()
+        -- Load Arduino plugin for .ino files
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = "arduino",
+          callback = function()
+            require("Arduino-Nvim")
+          end,
+        })
+      end,
+    }
+}
+
+################################################################################
+ARCHIVO: nvim/.config/nvim/lua/plugins/extras/debugging.lua
+################################################################################
+
+return {
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio", -- Optional, but good to have
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+
+      -- Initialize the UI
+      dapui.setup()
+
+      -- UI autocommands (your code was perfect here)
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+      -- Keymaps (added more for a better experience)
+      vim.keymap.set('n', '<Leader>dt', dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+      vim.keymap.set('n', '<Leader>dc', dap.continue, { desc = "Continue" })
+      vim.keymap.set('n', '<Leader>dl', dap.launch, { desc = "Launch" })
+      vim.keymap.set('n', '<Leader>dso', dap.step_over, { desc = "Step Over" })
+      vim.keymap.set('n', '<Leader>dsi', dap.step_into, { desc = "Step Into" })
+      vim.keymap.set('n', '<Leader>dsu', dap.step_out, { desc = "Step Out" })
+
+
+      -- 1. ADAPTER DEFINITION (your code was correct)
+      dap.adapters.gdb = {
+        type = "executable",
+        command = "gdb",
+        args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+      }
+
+      -- 2. LAUNCH CONFIGURATION (this is the missing part)
+      dap.configurations.cpp = {
+        {
+          name = "Launch with GDB",
+          type = "gdb", -- Use the adapter you defined above
+          request = "launch",
+          program = function()
+            -- Ask for the executable path when you start debugging
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}", -- Run the program in the project root
+          stopOnEntry = false, -- Don't stop at the program's entry point
+        },
+      }
+      
+      -- You can reuse the C++ configuration for C and Rust if using GDB
+      dap.configurations.c = dap.configurations.cpp
+      dap.configurations.rust = dap.configurations.cpp
+
+    end,
+  },
+}
+
+################################################################################
+ARCHIVO: nvim/.config/nvim/lua/plugins/extras/jupyter.lua
+################################################################################
+
+return {
+  -- For transparently editing ipynb files as text
+  {
+     "GCBallesteros/jupytext.nvim",
+  config = true,
+  -- Depending on your nvim distro or config you may need to make the loading not lazy
+  -- lazy=false,
+  },
+
+  -- For running cells and interacting with the kernel
+  {
+        "benlubas/molten-nvim",
+        version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+        dependencies = { "3rd/image.nvim" },
+        build = ":UpdateRemotePlugins",
+        init = function()
+            -- these are examples, not defaults. Please see the readme
+            vim.g.molten_image_provider = "image.nvim"
+            vim.g.molten_output_win_max_height = 20
+        end,
+    },
+    {
+        -- see the image.nvim readme for more information about configuring this plugin
+        "3rd/image.nvim",
+        opts = {
+            backend = "kitty", -- whatever backend you would like to use
+            max_width = 100,
+            max_height = 12,
+            max_height_window_percentage = math.huge,
+            max_width_window_percentage = math.huge,
+            window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
+            window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+        },
+    }
+}
+
+################################################################################
+ARCHIVO: nvim/.config/nvim/lua/plugins/extras/latex.lua
+################################################################################
+
+-- Tu archivo de configuración de vimtex
+return { 
+    {
+        "lervag/vimtex",
+        ft = { "tex", "latex", "bib" },
+        init = function()
+            vim.g.vimtex_compiler_method = "latexmk"
+            -- vim.g.vimtex_compiler_latexmk = { pdflatex = 'lualatex -interaction=nonstopmode %O %S' }
+
+            vim.g.vimtex_view_zathura = {
+                wayland = 1,
+                nvim_instance = vim.v.servername,
+            }
+
+            vim.g.vimtex_view_method = "zathura"
+            vim.g.vimtex_spell_enabled = 1
+        end,
+
+        config = function()
+            local map = vim.keymap.set
+            local opts = { silent = true, noremap = true }
+        end,
+    }
 }
 
 ################################################################################

@@ -26,9 +26,6 @@ echo " Fecha: $(date)" >> "$OUTPUT_FILE"
 echo "==================================================================" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-echo "📂 Escaneando: $TARGET_DIR"
-echo "📄 Guardando en: $OUTPUT_FILE"
-
 # 5. Buscar archivos y procesar
 # Ignoramos: .git, el propio archivo de salida, imágenes comunes y lazy-lock
 find "$TARGET_DIR" -type f \
@@ -58,5 +55,3 @@ find "$TARGET_DIR" -type f \
     fi
 done
 
-echo "✅ ¡Listo! Archivo creado en:"
-echo "   $OUTPUT_FILE"

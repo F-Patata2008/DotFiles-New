@@ -1,4 +1,5 @@
 arduino-ide
+aylurs-gtk-shell-git
 ckan
 clipse
 electron30-bin

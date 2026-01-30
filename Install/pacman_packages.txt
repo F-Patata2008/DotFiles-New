@@ -18,6 +18,7 @@ clang
 cmake
 cpio
 cups
+dart-sass
 decibels
 discord
 dmenu

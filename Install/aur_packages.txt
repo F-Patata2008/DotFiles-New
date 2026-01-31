@@ -1,5 +1,4 @@
 arduino-ide
-aylurs-gtk-shell-git
 ckan
 clipse
 electron30-bin
@@ -7,6 +6,12 @@ epson-inkjet-printer-escpr2
 flat-remix-gtk
 grimblast-git
 http-parser
+libastal-battery-git
+libastal-hyprland-git
+libastal-mpris-git
+libastal-network-git
+libastal-tray-git
+libastal-wireplumber-git
 libfprint-goodixtls-55x4
 matugen-bin
 modrinth-app-bin

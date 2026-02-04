@@ -7,6 +7,7 @@ epson-inkjet-printer-escpr2
 flat-remix-gtk
 libastal-battery-git
 libastal-hyprland-git
+libastal-meta
 libastal-mpris-git
 libastal-network-git
 libastal-tray-git

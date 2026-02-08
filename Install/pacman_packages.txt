@@ -44,6 +44,7 @@ fzf
 gdb
 gimp
 git
+glycin-gtk4
 gnome-2048
 gnome-calculator
 gnome-calendar
@@ -105,6 +106,7 @@ hyprsunset
 hyprutils
 hyprwayland-scanner
 i3blocks
+ibus
 jre-openjdk
 just
 kdeconnect
@@ -150,6 +152,7 @@ perl-yaml-tiny
 pipewire-pulse
 plasma5support
 plymouth
+pnpm
 polkit-gnome
 powertop
 python-black
@@ -170,6 +173,7 @@ showtime
 simple-scan
 smartmontools
 snapshot
+socat
 solaar
 sshfs
 steam
@@ -214,6 +218,7 @@ tree-sitter-cli
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols-mono
 tty-clock
+typescript
 ufw
 unzip
 v4l2loopback-dkms
@@ -269,6 +274,7 @@ xorg-xwininfo
 xorg-xwud
 xournalpp
 yay
+yazi
 yelp
 zathura
 zathura-pdf-mupdf

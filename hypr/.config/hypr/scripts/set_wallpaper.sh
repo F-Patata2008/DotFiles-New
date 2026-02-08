@@ -27,8 +27,7 @@ if ! pgrep -x "hyprpaper" > /dev/null; then
     hyprpaper -c "$HYPRPAPER_CONF" &
     sleep 0.5
 else
-    hyprctl hyprpaper preload "$WALLPAPER_PATH"
-    hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
+    hyprctl hyprpaper wallpaper 'eDP-1, "$WALLPAPER_PATH"'
 fi
 
 # --- 3. PYWAL ---

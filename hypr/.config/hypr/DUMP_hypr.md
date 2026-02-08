@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Tue Feb 17 04:53:04 PM -03 2026
+ Fecha: Wed Feb 18 12:07:32 AM -03 2026
 ==================================================================
 
 
@@ -616,7 +616,7 @@ ARCHIVO: hypr/.config/hypr/hyprpaper.conf
 
 wallpaper {
     monitor = eDP-1
-    path = /home/F-Patata/Dotfiles/Wallpapers/Gundam/11.jpg
+    path = /home/F-Patata/Dotfiles/Wallpapers/Miku/Miku10.jpg
 }
 
 ################################################################################
@@ -992,8 +992,7 @@ if ! pgrep -x "hyprpaper" > /dev/null; then
     hyprpaper -c "$HYPRPAPER_CONF" &
     sleep 0.5
 else
-    hyprctl hyprpaper preload "$WALLPAPER_PATH"
-    hyprctl hyprpaper wallpaper ",$WALLPAPER_PATH"
+    hyprctl hyprpaper wallpaper 'eDP-1, "$WALLPAPER_PATH"'
 fi
 
 # --- 3. PYWAL ---

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=colorshell
+Type=Application
+Comment=A Desktop Shell for Hyprland that has colors from your wallpaper!
+Exec=colorshell
+NoDisplay=true
+StartupWMClass=io.github.retrozinndev.colorshell

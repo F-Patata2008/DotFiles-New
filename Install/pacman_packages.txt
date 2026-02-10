@@ -43,6 +43,7 @@ fprintd
 fuzzel
 fwupd
 fzf
+gamescope
 gdb
 gimp
 git

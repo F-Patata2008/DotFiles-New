@@ -8,6 +8,7 @@ base
 base-devel
 biber
 blueman
+blueprint-compiler
 bluez-utils
 bpytop
 breeze

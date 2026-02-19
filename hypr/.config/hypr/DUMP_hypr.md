@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Feb 19 12:30:24 AM -03 2026
+ Fecha: Thu Feb 19 01:37:01 AM -03 2026
 ==================================================================
 
 
@@ -625,13 +625,13 @@ profile {
 ARCHIVO: hypr/.config/hypr/hyprtoolkit.conf
 ################################################################################
 
-background = rgba(131316ff)
-base = rgba(131316ff)
-text = rgba(e4e1e6ff)
-alternate_base = rgba(45464fff)
-bright_text = rgba(2b3042ff)
-accent = rgba(b6c4ffff)
-accent_secondary = rgba(c2c5ddff)
+background = rgba(121316ff)
+base = rgba(121316ff)
+text = rgba(e3e2e6ff)
+alternate_base = rgba(43474eff)
+bright_text = rgba(263141ff)
+accent = rgba(a1c9ffff)
+accent_secondary = rgba(bbc7dbff)
 ################################################################################
 ARCHIVO: hypr/.config/hypr/monitors.conf
 ################################################################################
@@ -645,12 +645,12 @@ monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
 ARCHIVO: hypr/.config/hypr/noctalia/noctalia-colors.conf
 ################################################################################
 
-$primary = rgb(b6c4ff)
-$surface = rgb(131316)
-$secondary = rgb(c2c5dd)
+$primary = rgb(a1c9ff)
+$surface = rgb(121316)
+$secondary = rgb(bbc7db)
 $error = rgb(ffb4ab)
-$tertiary = rgb(e3bada)
-$surface_lowest = rgb(0e0e11)
+$tertiary = rgb(d8bde3)
+$surface_lowest = rgb(0d0e11)
 
 general {
     col.active_border = $primary

@@ -1,68 +1,52 @@
 #!/bin/bash
 
-# --- DIRECTORIOS ---
+# --- CONFIG & DIRECTORIES ---
 SCREENSHOT_DIR="$HOME/Pictures/Screenshots"
 RECORDING_DIR="$HOME/Videos/Recordings"
-mkdir -p "$SCREENSHOT_DIR"
-mkdir -p "$RECORDING_DIR"
+mkdir -p "$SCREENSHOT_DIR" "$RECORDING_DIR"
 
-# --- LÓGICA DE GRABACIÓN ---
+# Nombres de archivo
+TS=$(date +'%Y-%m-%d_%H-%M-%S')
+SCREENSHOT_PATH="$SCREENSHOT_DIR/screenshot_$TS.png"
+RECORDING_PATH="$RECORDING_DIR/recording_$TS.mp4"
+
+# Noctalia IPC (Para notificaciones o triggers)
+IPC="qs -c noctalia-shell ipc call"
+
+# --- LÓGICA DE GRABACIÓN (DETENER) ---
 if pgrep -x "wf-recorder" > /dev/null; then
-    # Si wf-recorder está corriendo, solo mostramos la opción de detener.
-    choice=$(echo -e " Detener Grabación" | rofi -dmenu -i -p "Grabación en curso")
-
-    if [ "$choice" = " Detener Grabación" ]; then
-        # -l SIGINT envía una señal de "parada limpia"
-        pkill -l SIGINT wf-recorder
-        notify-send "Grabación Detenida" "El video se ha guardado en $RECORDING_DIR"
-    fi
+    pkill -l SIGINT wf-recorder
+    notify-send -a "System" " Grabación Detenida" "Video guardado en $RECORDING_DIR"
     exit 0
 fi
 
-# --- SI NO ESTÁ GRABANDO, MOSTRAMOS EL MENÚ COMPLETO ---
+# --- MENÚ (Usando FUZZEL para velocidad instantánea) ---
+# Si no tienes fuzzel: sudo pacman -S fuzzel
+options="🖼️  Pantalla Completa\n󰆞  Seleccionar Área\n󰖵  Ventana Activa\n  Grabar Área\n⏺️  Grabar Pantalla Completa"
 
-# Nombres de archivo con timestamp
-SCREENSHOT_FILE="screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
-RECORDING_FILE="recording_$(date +'%Y-%m-%d_%H-%M-%S').mp4"
-SCREENSHOT_PATH="$SCREENSHOT_DIR/$SCREENSHOT_FILE"
-RECORDING_PATH="$RECORDING_DIR/$RECORDING_FILE"
+choice=$(echo -e "$options" | fuzzel -d -p "󰄀 Centro de Captura: " --width 30)
 
-# Opciones para Rofi (con separadores visuales)
-options="🖼️ CAPTURA DE PANTALLA\n󰹑 Pantalla Completa\n󰆞 Seleccionar Área\n󰖵 Ventana Activa\n\n📹 GRABAR VIDEO\n Grabar Área\n⏺️ Grabar Pantalla Completa"
-
-# Preguntar al usuario con Rofi
-choice=$(echo -e "$options" | rofi -dmenu -i -p "Centro de Captura")
-
-# Lógica del menú
 case "$choice" in
-    # --- Capturas de Pantalla ---
-    "󰹑 Pantalla Completa")
-        hyprshot -m output -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
+    "🖼️  Pantalla Completa")
+        hyprshot -m output -o "$SCREENSHOT_DIR" -f "screenshot_$TS.png"
         ;;
-    "󰆞 Seleccionar Área")
-        hyprshot -m region -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
+    "󰆞  Seleccionar Área")
+        hyprshot -m region -o "$SCREENSHOT_DIR" -f "screenshot_$TS.png"
         ;;
-    "󰖵 Ventana Activa")
-        hyprshot -m window -o "$SCREENSHOT_DIR" -f "$SCREENSHOT_FILE"
+    "󰖵  Ventana Activa")
+        hyprshot -m window -o "$SCREENSHOT_DIR" -f "screenshot_$TS.png"
         ;;
-
-    # --- Grabación de Video ---
-    " Grabar Área")
-        notify-send "Grabando Área" "Selecciona el área. La grabación comenzará al soltar."
+    "  Grabar Área")
+        notify-send -a "System" "🔴 Selecciona Área" "La grabación comenzará al soltar."
         wf-recorder -g "$(slurp)" -f "$RECORDING_PATH" --audio &
-        notify-send "🔴 ¡GRABANDO!" "Presiona [PrintScreen] de nuevo y elige 'Detener Grabación'."
         ;;
-    "⏺️ Grabar Pantalla Completa")
-        monitor=$(hyprctl monitors -j | jq -r '.[].name' | rofi -dmenu -i -p "Selecciona un monitor")
-        if [ -n "$monitor" ]; then
-            notify-send "🔴 ¡GRABANDO!" "Grabando $monitor. Presiona [PrintScreen] y 'Detener'."
-            wf-recorder -o "$monitor" -f "$RECORDING_PATH" --audio &
-        else
-            notify-send "Grabación cancelada."
-        fi
+    "⏺️  Grabar Pantalla Completa")
+        # Detecta automáticamente el monitor activo para evitar otro menú
+        MONITOR=$(hyprctl activeworkspace -j | jq -r '.monitor')
+        notify-send -a "System" "🔴 Grabando Pantalla" "Monitor: $MONITOR"
+        wf-recorder -o "$MONITOR" -f "$RECORDING_PATH" --audio &
         ;;
     *)
-        # Si se presiona Escape
         exit 1
         ;;
 esac

@@ -39,6 +39,7 @@ extension-manager
 fastfetch
 firefox
 fprintd
+fuzzel
 fwupd
 fzf
 gdb

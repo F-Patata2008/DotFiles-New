@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: hypr/.config/hypr
- Fecha: Thu Feb 19 01:37:01 AM -03 2026
+ Fecha: Thu Feb 19 04:20:59 PM -03 2026
 ==================================================================
 
 
@@ -61,66 +61,88 @@ animations {
 ARCHIVO: hypr/.config/hypr/conf/binds.conf
 ################################################################################
 
-# --- Variables ---
+# ==============================================================================
+# VARIABLES
+# ==============================================================================
 $mainMod = SUPER
-$ipc = qs -c noctalia-shell ipc call
+$ipc = env QT_QPA_PLATFORM=wayland qs -c noctalia-shell ipc call
 $terminal = kitty
 $fileManager = thunar
 $browser = zen-browser
 
-# --- Core Noctalia Binds (The "Connected" UI) ---
-bind = $mainMod, R, exec, $ipc launcher toggle          # App Launcher
-bind = $mainMod, Q, exec, $ipc launcher command         # Command Launcher
-bind = $mainMod SHIFT, S, exec, $ipc controlCenter toggle     # The "Mundo Hola" Dashboard
-bind = $mainMod, comma, exec, $ipc settings toggle      # Shell Settings
-bind = $mainMod SHIFT, L, exec, $ipc sessionMenu toggle # Power Menu
-bind = $mainMod SHIFT, R, exec, $ipc launcher emoji      # Emoji Picker
+# ==============================================================================
+# SHELL & UI (Noctalia)
+# ==============================================================================
+bind = $mainMod, R, exec, $ipc launcher toggle                # App Launcher
+bind = $mainMod, Q, exec, $ipc launcher command               # Command Launcher
+bind = $mainMod SHIFT, R, exec, $ipc launcher emoji           # Emoji Picker
+bind = $mainMod SHIFT, S, exec, $ipc controlCenter toggle     # Dashboard
+bind = $mainMod, comma, exec, $ipc settings toggle            # Shell Settings
+bind = $mainMod SHIFT, L, exec, $ipc sessionMenu toggle       # Power Menu
+bind = $mainMod, W, exec, systemctl --user restart noctalia.service
 
-# --- Application Binds ---
-bind = $mainMod, T, exec, $terminal
-bind = $mainMod, B, exec, $browser
-bind = $mainMod, S, exec, spotify
-bind = $mainMod, C, killactive,
-bind = $mainMod, J, togglesplit,
-bind = $mainMod, V, togglefloating,
-bind = $mainMod, F, fullscreen, 1
+# ==============================================================================
+# APPLICATIONS & UTILITIES
+# ==============================================================================
+bind = $mainMod, T, exec, $terminal                           # Terminal
+bind = $mainMod, B, exec, $browser                            # Browser
+bind = $mainMod, S, exec, spotify                             # Spotify
+bind = $mainMod, E, exec, $terminal -e yazi                   # Instant CLI File Manager
+bind = $mainMod SHIFT, E, exec, $fileManager                  # GUI File Manager
+bind = $mainMod SHIFT, V, exec, $terminal --class clipse -e 'clipse'           # Clipboard
+bind = $mainMod SHIFT, N, exec, $terminal --class Notas -e nvim $HOME/Notas.md # Notes
 
-# --- THE SPEED BIND (Objective 2) ---
-# Use Yazi for "Instant" file browsing, Thunar for GUI tasks
-bind = $mainMod, E, exec, $terminal -e yazi
-bind = $mainMod SHIFT, E, exec, $fileManager
-
-# --- System & Hardware (Using Noctalia IPC for OSD) ---
+# ==============================================================================
+# HARDWARE, MEDIA & SYSTEM
+# ==============================================================================
+# Audio
 bindel = , XF86AudioRaiseVolume, exec, $ipc volume increase
 bindel = , XF86AudioLowerVolume, exec, $ipc volume decrease
 bindl  = , XF86AudioMute, exec, $ipc volume muteOutput
 bindl  = , XF86AudioMicMute, exec, $ipc volume muteInput
+
+# Brightness
 bindel = , XF86MonBrightnessUp, exec, $ipc brightness increase
 bindel = , XF86MonBrightnessDown, exec, $ipc brightness decrease
 
-# --- Player Controls ---
-bindl = , XF86AudioNext, exec, playerctl next
-bindl = , XF86AudioPause, exec, playerctl play-pause
+# Media Players
 bindl = , XF86AudioPlay, exec, playerctl play-pause
+bindl = , XF86AudioPause, exec, playerctl play-pause
+bindl = , XF86AudioNext, exec, playerctl next
 bindl = , XF86AudioPrev, exec, playerctl previous
 
-# --- Utilities ---
+# Lock Screen
 bind = $mainMod, L, exec, pidof hyprlock || hyprlock
-bind = $mainMod SHIFT, P, exec, hyprpicker -a
-bind = $mainMod SHIFT, V, exec, kitty --class clipse -e 'clipse'
-bind = $mainMod SHIFT, N, exec, kitty --class Notas -e nvim $HOME/Notas.md
 
-# --- Screenshot ---
+# ==============================================================================
+# SCREENSHOTS & COLOR PICKER
+# ==============================================================================
 bind = , PRINT, exec, ~/.config/hypr/scripts/screenshot.sh
 bind = SHIFT, PRINT, exec, hyprshot -m window -o ~/Pictures/Screenshots
+bind = $mainMod SHIFT, P, exec, hyprpicker -a
 
-# --- Window Management ---
+# ==============================================================================
+# WINDOW MANAGEMENT
+# ==============================================================================
+bind = $mainMod, C, killactive,                               # Close Window
+bind = $mainMod, V, togglefloating,                           # Toggle Float
+bind = $mainMod, J, togglesplit,                              # Toggle Split
+bind = $mainMod, F, fullscreen, 1                             # Fullscreen (Maximize)
+
+# Focus
 bind = $mainMod, left, movefocus, l
 bind = $mainMod, right, movefocus, r
 bind = $mainMod, up, movefocus, u
 bind = $mainMod, down, movefocus, d
 
-# --- Workspaces ---
+# Mouse Bindings
+bindm = $mainMod, mouse:272, movewindow
+bindm = $mainMod, mouse:273, resizewindow
+
+# ==============================================================================
+# WORKSPACES
+# ==============================================================================
+# Switch Workspaces
 bind = $mainMod, 1, workspace, 1
 bind = $mainMod, 2, workspace, 2
 bind = $mainMod, 3, workspace, 3
@@ -132,6 +154,7 @@ bind = $mainMod, 8, workspace, 8
 bind = $mainMod, 9, workspace, 9
 bind = $mainMod, 0, workspace, 10
 
+# Move Active Window to a Workspace
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2
 bind = $mainMod SHIFT, 3, movetoworkspace, 3
@@ -143,11 +166,9 @@ bind = $mainMod SHIFT, 8, movetoworkspace, 8
 bind = $mainMod SHIFT, 9, movetoworkspace, 9
 bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
-# Mouse Scroll Workspace
+# Scroll Through Existing Workspaces
 bind = $mainMod, mouse_down, workspace, e-1
 bind = $mainMod, mouse_up, workspace, e+1
-bindm = $mainMod, mouse:272, movewindow
-bindm = $mainMod, mouse:273, resizewindow
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/conf/general.conf
@@ -214,18 +235,16 @@ ARCHIVO: hypr/.config/hypr/conf/startup.conf
 ################################################################################
 
 # --- CORE SERVICES (Order Matters) ---
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once = systemctl --user start hyprland-session.target
+# 1. Update DBUS, import environment, and start the session target sequentially to avoid race conditions
+exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user start hyprland-session.target
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
 # --- THE SHELL (Noctalia/AGS) ---
 exec-once = wal -R          # Restore Pywal colors
-exec-once = ags &           # Launch Noctalia (replaces waybar, swaync, swayosd, wlsunset)
 
 # --- PERFORMANCE HACKS ---
 # This makes Thunar open INSTANTLY when you call it
-exec-once = thunar --daemon 
+exec-once = thunar --daemon
 
 # --- HARDWARE & SYNC ---
 exec-once = udiskie &       # USB Automount
@@ -239,7 +258,7 @@ exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
 # --- USER APPS ---
 # Only start what you actually need immediately
-exec-once = [workspace 1 silent] kitty --class "Dotfiles" --directory ~/Dotfiles
+exec-once = kitty --class "Dotfiles" --directory ~/Dotfiles
 
 ################################################################################
 ARCHIVO: hypr/.config/hypr/conf/window.conf
@@ -625,13 +644,13 @@ profile {
 ARCHIVO: hypr/.config/hypr/hyprtoolkit.conf
 ################################################################################
 
-background = rgba(121316ff)
-base = rgba(121316ff)
-text = rgba(e3e2e6ff)
-alternate_base = rgba(43474eff)
-bright_text = rgba(263141ff)
-accent = rgba(a1c9ffff)
-accent_secondary = rgba(bbc7dbff)
+background = rgba(131316ff)
+base = rgba(131316ff)
+text = rgba(e4e1e6ff)
+alternate_base = rgba(45464fff)
+bright_text = rgba(2b3042ff)
+accent = rgba(b6c4ffff)
+accent_secondary = rgba(c2c5ddff)
 ################################################################################
 ARCHIVO: hypr/.config/hypr/monitors.conf
 ################################################################################
@@ -645,12 +664,12 @@ monitor=HDMI-A-1,1920x1080@60.0,1366x0,1.0
 ARCHIVO: hypr/.config/hypr/noctalia/noctalia-colors.conf
 ################################################################################
 
-$primary = rgb(a1c9ff)
-$surface = rgb(121316)
-$secondary = rgb(bbc7db)
+$primary = rgb(b6c4ff)
+$surface = rgb(131316)
+$secondary = rgb(c2c5dd)
 $error = rgb(ffb4ab)
-$tertiary = rgb(d8bde3)
-$surface_lowest = rgb(0d0e11)
+$tertiary = rgb(e3bada)
+$surface_lowest = rgb(0e0e11)
 
 general {
     col.active_border = $primary

@@ -22,6 +22,7 @@ cachyos-v3-mirrorlist
 cachyos-v4-mirrorlist
 cava
 clang
+cliphist
 cmake
 cpio
 cups

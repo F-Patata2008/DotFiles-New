@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: zsh
- Fecha: Thu Feb 19 12:29:27 AM -03 2026
+ Fecha: Thu Feb 19 12:30:25 AM -03 2026
 ==================================================================
 
 
@@ -1931,8 +1931,8 @@ alias tl='java -jar ~/Desktop/TLauncher.v16/TLauncher.jar'
 alias cl='clear; tree -d'
 alias arduino='sudo chmod a+rw /dev/ttyACM0'
 
-alias icat = "kitty +kitten icat"
-alias finger = "sudo systemctl restart fprintd.service"
+alias icat= "kitty +kitten icat"
+alias finger= "sudo systemctl restart fprintd.service"
 
 alias wifi='nmcli dev wifi list --rescan yes'
 alias celu='nmcli dev wifi connect "Doxiado" --ask'

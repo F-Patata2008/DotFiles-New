@@ -1,6 +1,6 @@
 ==================================================================
  DUMP DE CONFIGURACIÓN: fastfetch/.config/fastfetch
- Fecha: Wed Feb 18 11:56:52 PM -03 2026
+ Fecha: Thu Feb 19 12:07:42 AM -03 2026
 ==================================================================
 
 
@@ -12,10 +12,10 @@ ARCHIVO: fastfetch/.config/fastfetch/config.jsonc
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
     "type": "kitty-direct",
-    "source": "~/Dotfiles/fastfetch/.config/fastfetch/Saviour.png",
+    "source": "~/Dotfiles/fastfetch/.config/fastfetch/Miku.png",
     "type": "kitty",
     "width": 60,
-    "height": 40,
+    //"height": 20,
     "padding": {
       "top": 1,
       "left": 2,

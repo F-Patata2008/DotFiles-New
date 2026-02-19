@@ -1,80 +1,62 @@
-fastfetch  # <-- REMOVE THIS, IT'S JUST A COMMENT
-
-# Enable Powerlevel10k instant prompt. Should stay at the very top of ~/.zshrc.
+# 1. THE INSTANT PROMPT (Must be at the very top)
+# We set this to 'quiet' so it doesn't show warnings, but it MUST be active.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your Oh My Zsh installation.
+# 2. PATHS (Consolidated)
+export PATH="$HOME/.local/bin:$(go env GOPATH)/bin:$PATH"
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the Oh My Zsh theme to load.
+# 3. THEME & PROMPT CONFIG
 ZSH_THEME="powerlevel10k/powerlevel10k"
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=off  # <-- REMOVE THIS LINE
-export PATH=$HOME/.local/bin:$PATH
-export PATH="$PATH:$(go env GOPATH)/bin"
+# REMOVED: POWERLEVEL9K_INSTANT_PROMPT=off (This was the lag source!)
 
-# Function to open nvim with current directory if no arguments are given
-nv() {
-  if [ $# -eq 0 ]; then
-    # No arguments were provided, so run nvim in the current directory
-    nvim .
-  else
-    # Arguments were provided, so pass them all to nvim
-    nvim "$@"
-  fi
-}
-
-
-# Zsh plugins to load.
+# 4. PLUGINS (Removed autojump and bloat)
+# Note: 'z' is a built-in OMZ plugin that is 10x faster than 'autojump'
 plugins=(
     git
     colored-man-pages
-    command-not-found
-    cp
     archlinux
-    autojump
-    themes
+    z                   # <-- Fast alternative to autojump (no Python needed)
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
 
-# Source Oh My Zsh.
+# 5. SOURCE OH-MY-ZSH (The "Heavy" part)
 source $ZSH/oh-my-zsh.sh
 
-# Source autojump script.
-# This needs to be done on Arch after installing the package.
-[ -f /etc/profile.d/autojump.zsh ] && . /etc/profile.d/autojump.zsh
+# 6. USER LOGIC (Your custom nv function)
+nv() {
+  if [ $# -eq 0 ]; then
+    nvim .
+  else
+    nvim "$@"
+  fi
+}
 
-# --- User Configuration ---
+# 7. CUSTOM DOTFILES LOADER (Optimized)
+# Using a glob check to prevent errors if the directory is empty
+if [ -d ~/.zsh/custom ]; then
+  for file in ~/.zsh/custom/*.zsh(N); do
+    source "$file"
+  done
+fi
 
-# Preferred editor
+# 8. P10K CONFIG SOURCE
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# 9. PERFORMANCE HACK: FASTFETCH
+# In UnixPorn videos, they don't run fastfetch on every shell start
+# because it adds 100ms-200ms of lag.
+# If you want it, keep it, but it's faster to just type 'ff' when you want to see it.
+alias ff='fastfetch'
+
+# 10. EDITOR & BROWSER
 export EDITOR='nvim'
 export BROWSER='zen'
 
-
-# +++ ADD THIS BLOCK +++
-# Load all custom .zsh files (like aliases.zsh and shortcuts.zsh)
-# The path ~/.zsh/custom works because 'stow' symlinks ~/Dotfiles/zsh to ~/.zsh
-for file in ~/.zsh/custom/*.zsh; do
-  if [ -r "$file" ]; then
-    source "$file"
-  fi
-done
-# +++ END OF BLOCK +++
-
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
-# Run fastfetch once, right before the first prompt is drawn
-run_fastfetch_once() {
-  fastfetch
-  # Unregister this function so it only runs once per session
-  precmd_functions=(${precmd_functions[@]/run_fastfetch_once})
-}
-#precmd_functions+=(run_fastfetch_once)
-#
-#
+# Keybinds
 bindkey '^W' backward-kill-word
+bindkey '^[[1;5C' forward-word       # Ctrl+Right
+bindkey '^[[1;5D' backward-word      # Ctrl+Left

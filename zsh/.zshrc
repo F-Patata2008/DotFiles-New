@@ -50,7 +50,6 @@ fi
 # In UnixPorn videos, they don't run fastfetch on every shell start
 # because it adds 100ms-200ms of lag.
 # If you want it, keep it, but it's faster to just type 'ff' when you want to see it.
-alias ff='fastfetch'
 
 # 10. EDITOR & BROWSER
 export EDITOR='nvim'

@@ -7,6 +7,8 @@ alias prob='cd ~/Apunte//Probabilidad\ y\ Estadistica/'
 
 alias please='sudo $(fc -ln -1)'
 alias update='sh $HOME/Dotfiles/hypr/.config/hypr/scripts/update.sh'
+alias ff='clear;fastfetch'
+
 
 alias 'exec zsh'='clear; exec zsh'
 alias tl='java -jar ~/Desktop/TLauncher.v16/TLauncher.jar'

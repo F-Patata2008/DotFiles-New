@@ -1,0 +1,16 @@
+# Static information about the filesystems.
+# See fstab(5) for details.
+
+# <file system> <dir> <type> <options> <dump> <pass>
+# /dev/mapper/ssdm2-arch--root
+UUID=ae8e3c52-3709-43a0-ad3e-f9e9b9c06d8d	/         	ext4      	rw,relatime	0 1
+
+# /dev/mapper/ssdm2-linux--home
+UUID=109ac94d-42ce-4361-8cb9-d4e797acc470	/home     	ext4      	rw,relatime	0 2
+
+# /dev/nvme0n1p1
+UUID=7A61-B890      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+
+# /dev/mapper/ssdm2-swap
+UUID=de3935b4-f816-47e9-8c38-853091fb1642	none      	swap      	defaults  	0 0
+

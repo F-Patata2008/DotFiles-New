@@ -49,7 +49,7 @@ find "$SYSTEM_FILES_DIR" -type f -print0 | while IFS= read -r -d '' repo_file; d
         # 4. Copy the live system file back to the repo, preserving permissions
         # -a: archive mode (preserves permissions, ownership, timestamps)
         # -v: verbose (shows what's being copied)
-        sudo cp -afv "$source_path" "$repo_file"
+        sudo cp -af "$source_path" "$repo_file"
     else
         log_warn "File '$source_path' not found on system. Skipping backup for this file."
     fi

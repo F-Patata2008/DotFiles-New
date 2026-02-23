@@ -24,4 +24,5 @@ sddm-sugar-candy-git
 spicetify-cli
 spotify
 themix-theme-oomox-git
+visual-studio-code-bin
 zoom

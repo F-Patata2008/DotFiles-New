@@ -15,8 +15,6 @@ libfprint-goodixtls-55x4
 matugen-bin
 modrinth-app-bin
 nordic-theme
-opera
-opera-ffmpeg-codecs-bin
 overskride
 python-jupytext
 python-pywal16

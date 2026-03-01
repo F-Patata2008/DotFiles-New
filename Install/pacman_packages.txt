@@ -135,6 +135,7 @@ nano
 neovim
 network-manager-applet
 networkmanager
+nmap
 noctalia-shell
 nodejs
 npm

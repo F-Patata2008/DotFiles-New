@@ -137,7 +137,6 @@ network-manager-applet
 networkmanager
 nmap
 noctalia-shell
-nodejs
 npm
 nss-mdns
 ntfs-3g

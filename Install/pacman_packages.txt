@@ -3,6 +3,7 @@ adw-gtk-theme
 amd-ucode
 arduino-language-server
 aria2
+auto-cpufreq
 baobab
 base
 base-devel
@@ -187,6 +188,7 @@ swaylock-effects
 system-config-printer
 taskwarrior-tui
 tecla
+telegram-desktop
 terminator
 texlive-basic
 texlive-bibtexextra

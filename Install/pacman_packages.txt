@@ -283,4 +283,5 @@ yelp
 zathura
 zathura-pdf-mupdf
 zen-browser-bin
+zip
 zsh

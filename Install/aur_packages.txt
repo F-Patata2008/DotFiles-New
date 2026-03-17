@@ -2,7 +2,6 @@ arduino-ide
 ckan
 clipse
 electron30-bin
-epson-inkjet-printer-escpr2
 flat-remix-gtk
 libastal-battery-git
 libastal-hyprland-git

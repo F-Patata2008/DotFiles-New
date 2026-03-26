@@ -138,6 +138,7 @@ network-manager-applet
 networkmanager
 nmap
 noctalia-shell
+nodejs
 npm
 nss-mdns
 ntfs-3g
@@ -233,6 +234,7 @@ vlc
 waybar
 wf-recorder
 wget
+wlsunset
 wtype
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland

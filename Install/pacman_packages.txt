@@ -153,6 +153,7 @@ pavucontrol
 perl-file-homedir
 perl-yaml-tiny
 pipewire-pulse
+plasma-desktop
 plasma5support
 plymouth
 pnpm

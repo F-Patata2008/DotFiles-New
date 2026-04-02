@@ -133,6 +133,7 @@ lvm2
 malcontent
 meson
 nano
+nautilus
 neovim
 network-manager-applet
 networkmanager

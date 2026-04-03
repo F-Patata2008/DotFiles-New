@@ -3,5 +3,5 @@
 #
 # Syntax: simple "KEY=VAL" pairs on separate lines
 #
-#
-QT_QPA_PLATFORMTHEME=gtk3
+##
+#QT_QPA_PLATFORMTHEME=gtk3

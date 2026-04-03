@@ -1,0 +1,207 @@
+{
+    "spec_version": "v1.6",
+    "identifier": "installed-Kerbal-Space-Program",
+    "name": "installed-Kerbal Space Program",
+    "abstract": "A list of modules installed on the Kerbal Space Program KSP instance",
+    "author": "F-Patata",
+    "version": "2026.04.03.06.29.33",
+    "ksp_version_min": "1.8",
+    "ksp_version_max": "1.12",
+    "license": "unknown",
+    "depends": [
+        {
+            "name": "B9AnimationModules",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "Scatterer-sunflare",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "EnvironmentalVisualEnhancements",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalKonstructs",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "Scatterer",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "TweakScale",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "AstronomersVisualPack",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "AVP-2kTextures",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "B9AerospaceHX",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "B9-props",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "InterstellarFuelSwitch",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalAtomics",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalAtomics-NTRsUseLF",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "TundraSpaceCenter",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "AirplanePlus",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "ModularLaunchPads",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "AutomatedScienceSampler",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "AviationLights",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "B9",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "B9-PWings-Fork",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "B9HXReconfig",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "BDArmoryForRunwayProject",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "BetterBurnTime",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "BetterTimeWarpCont",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "Chatterer",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "ColdWarAerospace",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "CustomBulkheadProfiles",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "DMTanks-CargoBays",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "EskandareHeavyIndustries",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "FelineUtilityRovers",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "FuelWings",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalAircraftExpansion",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalEngineerRedux",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KerbalJointReinforcementContinued",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "SpaceXLegs",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KSCEnhanced",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "KSPInterstellarExtended",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "LithobrakeExplorationTechnologies",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "Mk2Expansion",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "Mk3Expansion",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "NearFutureElectrical",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "NearFutureSolar",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "OPTSpacePlaneMain",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "QuizTechAeroPackContinued",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "RasterPropMonitor",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "SimpleRepaint",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "StockWaterfallEffects",
+            "suppress_recommendations": true
+        },
+        {
+            "name": "TweakScaleCompanion",
+            "suppress_recommendations": true
+        }
+    ],
+    "release_date": "2026-04-03T18:29:33.529183Z",
+    "kind": "metapackage"
+}

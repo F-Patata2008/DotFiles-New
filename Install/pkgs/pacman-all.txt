@@ -11,7 +11,6 @@ blueman
 blueprint-compiler
 bluez-utils
 bpytop
-breeze
 brightnessctl
 btop
 cachyos-keyring
@@ -112,11 +111,8 @@ i3blocks
 ibus
 jre-openjdk
 just
-kdeconnect
 keyd
-kio-fuse
 kitty
-libplasma
 libratbag
 libreoffice-fresh
 libva-utils
@@ -151,7 +147,6 @@ pavucontrol
 perl-file-homedir
 perl-yaml-tiny
 pipewire-pulse
-plasma5support
 plymouth
 pnpm
 polkit-gnome

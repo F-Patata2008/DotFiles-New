@@ -1,0 +1,42 @@
+Apr 06 21:56:23 Saviour-ARCH systemd[1]: Started Simple Desktop Display Manager.
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Initializing...
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Starting...
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Logind interface found
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Adding new display...
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Loaded empty theme configuration
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Xauthority path: "/run/sddm/xauth_xIDeLo"
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Using VT 2
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Display server starting...
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Writing cookie to "/run/sddm/xauth_xIDeLo"
+Apr 06 21:56:23 Saviour-ARCH sddm[954]: Running: /usr/bin/X -nolisten tcp -background none -seat seat0 vt2 -auth /run/sddm/xauth_xIDeLo -noreset -displayfd 16
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Setting default cursor
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Running display setup script  "/usr/share/sddm/scripts/Xsetup"
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Display server started.
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Socket server starting...
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Socket server started.
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Loading theme configuration from "/usr/share/sddm/themes/sddm-astronaut-theme/Themes/black_hole.conf"
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Greeter starting...
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: [PAM] Starting...
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: [PAM] Authenticating...
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: [PAM] returning.
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: pam_unix(sddm-greeter:session): session opened for user sddm(uid=957) by (uid=0)
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: Writing cookie to "/tmp/xauth_JpyLoc"
+Apr 06 21:56:25 Saviour-ARCH sddm-helper[1118]: Starting X11 session: "" "/usr/bin/sddm-greeter-qt6 --socket /tmp/sddm-:0-kPLXmm --theme /usr/share/sddm/themes/sddm-astronaut-theme"
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Greeter session started successfully
+Apr 06 21:56:25 Saviour-ARCH sddm[954]: Message received from greeter: Connect
+Apr 06 21:59:08 Saviour-ARCH sddm[954]: Message received from greeter: Login
+Apr 06 21:59:08 Saviour-ARCH sddm[954]: Reading from "/usr/share/wayland-sessions/hyprland.desktop"
+Apr 06 21:59:08 Saviour-ARCH sddm[954]: Session "/usr/share/wayland-sessions/hyprland.desktop" selected, command: "/usr/bin/start-hyprland" for VT 1
+Apr 06 21:59:08 Saviour-ARCH sddm-helper[1223]: [PAM] Starting...
+Apr 06 21:59:08 Saviour-ARCH sddm-helper[1223]: [PAM] Authenticating...
+Apr 06 21:59:09 Saviour-ARCH sddm-helper[1223]: [PAM] Preparing to converse...
+Apr 06 21:59:09 Saviour-ARCH sddm-helper[1223]: [PAM] Conversation with 1 messages
+Apr 06 21:59:09 Saviour-ARCH sddm[954]: Authentication information: SDDM::Auth::INFO_UNKNOWN "Place your right index finger on the fingerprint reader"
+Apr 06 21:59:09 Saviour-ARCH sddm-helper[1223]: [PAM] returning.
+Apr 06 21:59:09 Saviour-ARCH sddm[954]: Authentication for user  "F-Patata"  successful
+Apr 06 21:59:09 Saviour-ARCH sddm-helper[1223]: pam_unix(sddm:session): session opened for user F-Patata(uid=1000) by F-Patata(uid=0)
+Apr 06 21:59:09 Saviour-ARCH sddm[954]: Auth: sddm-helper exited successfully
+Apr 06 21:59:09 Saviour-ARCH sddm[954]: Greeter stopped. SDDM::Auth::HELPER_SUCCESS
+Apr 06 21:59:10 Saviour-ARCH sddm-helper[1223]: gkr-pam: couldn't unlock the login keyring.
+Apr 06 21:59:10 Saviour-ARCH sddm-helper[1223]: Starting Wayland user session: "/usr/share/sddm/scripts/wayland-session" "/usr/bin/start-hyprland"
+Apr 06 21:59:10 Saviour-ARCH sddm[954]: Session started true

@@ -59,3 +59,6 @@ export BROWSER='zen'
 bindkey '^W' backward-kill-word
 bindkey '^[[1;5C' forward-word       # Ctrl+Right
 bindkey '^[[1;5D' backward-word      # Ctrl+Left
+
+export PATH=$PATH:/home/F-Patata/.spicetify
+export PATH=$PATH:~/.spicetify

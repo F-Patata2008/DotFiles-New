@@ -135,6 +135,7 @@ networkmanager
 niri
 nmap
 noctalia-shell
+nodejs
 nss-mdns
 ntfs-3g
 nwg-displays
@@ -157,6 +158,7 @@ powertop
 python-black
 python-isort
 python-pip
+python-pipx
 python-pynvim
 python-pyqt5
 qt6-5compat

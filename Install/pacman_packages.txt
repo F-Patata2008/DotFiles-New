@@ -164,6 +164,7 @@ python-pyqt5
 qt6-5compat
 qt6-tools
 qt6-virtualkeyboard
+qt6ct
 reflector
 rofi
 rofimoji

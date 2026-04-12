@@ -19,6 +19,7 @@ opera
 overskride
 python-jupytext
 python-pywal16
+python-pywalfox
 sddm-sugar-candy-git
 spotify
 themix-theme-oomox-git

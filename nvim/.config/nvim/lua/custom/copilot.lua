@@ -5,15 +5,20 @@ return {
     event = "InsertEnter",
     config = function()
       require("copilot").setup({
-        suggestion = { enabled = false }, -- disable ghost text inline
-        panel = { enabled = false },      -- disable side panel
-        filetypes = { ["*"] = true },
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+        filetypes = {
+          yaml = false,
+          markdown = false,
+          help = false,
+          gitcommit = false,
+        },
       })
     end,
   },
   {
     "zbirenbaum/copilot-cmp",
-    after = "copilot.lua",
+    dependencies = { "zbirenbaum/copilot.lua" },
     config = function()
       require("copilot_cmp").setup()
     end,
@@ -22,13 +27,23 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     branch = "main",
     dependencies = {
-      { "zbirenbaum/copilot.lua" },  -- use copilot.lua as backend
+      { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim" },
     },
     config = function()
-      require("CopilotChat").setup({})
-      vim.keymap.set("n", "<C-c>", ":CopilotChat<CR>", { noremap = true, silent = true })
+      require("CopilotChat").setup({
+        debug = false,
+        allow_insecure = false,
+        proxy = nil,
+        system_prompt = "You are an AI assistant that helps with coding.",
+        model = "gpt-4",
+        temperature = 0.1,
+        agent = "copilot",
+      })
+
+      vim.keymap.set("n", "<leader>cc", ":CopilotChat<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<leader>ce", ":CopilotChatExplain<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<leader>cr", ":CopilotChatReview<CR>", { noremap = true, silent = true })
     end,
   },
 }
-

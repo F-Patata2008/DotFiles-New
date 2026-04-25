@@ -205,6 +205,13 @@ if ! grep -q "\[multilib\]" /etc/pacman.conf || grep -q "^#\[multilib\]" /etc/pa
 fi
 echo "Installing packages from 'pacman_packages.txt' one by one..."
 while read -r package; do
+
+
+
+
+
+
+lsllsssss
     if [[ -z "$package" || "$package" =~ ^# ]]; then continue; fi
     sudo pacman -S --needed --noconfirm "$package" || echo -e "${RED}--> FAILED to install '$package'. Continuing...${NC}"
 done < pacman_packages.txt

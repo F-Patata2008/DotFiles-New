@@ -20,12 +20,14 @@ cachyos-v3-mirrorlist
 cachyos-v4-mirrorlist
 cava
 cliphist
+cmatrix
 cpio
 cryptsetup
 dart-sass
 decibels
 discord
 dmenu
+dosfstools
 efibootmgr
 endeavour
 eog

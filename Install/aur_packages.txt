@@ -23,5 +23,6 @@ sddm-sugar-candy-git
 spotify
 themix-theme-oomox-git
 visual-studio-code-bin
+weylus-bin
 yay-debug
 zoom

@@ -17,21 +17,9 @@ return {
       -- keep/merge your settings
       opts.ensure_installed = opts.ensure_installed or {}
       vim.list_extend(opts.ensure_installed, {
-        "c",
-        "lua",
-        "vim",
-        "vimdoc",
-        "cpp",
-        "hyprlang",
-        "latex",
-        "markdown",
-        "markdown_inline",
-        "html",
-        "css",
-        "scss",
-        "json",
-        "bash",
-        "javascript",
+        "c", "lua", "vim", "vimdoc", "cpp", "hyprlang", "latex",
+        "markdown", "markdown_inline", "html", "css", "scss", "json",
+        "bash", "javascript",
       })
 
       opts.sync_install = false

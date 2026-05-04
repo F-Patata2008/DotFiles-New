@@ -36,7 +36,7 @@ return {
         allow_insecure = false,
         proxy = nil,
         system_prompt = "You are an AI assistant that helps with coding.",
-        model = "gpt-4",
+        model = "gpt-5.2",
         temperature = 0.1,
         agent = "copilot",
       })

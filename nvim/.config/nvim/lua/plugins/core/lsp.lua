@@ -55,20 +55,28 @@ return {
 
       -- The main setup function for mason-lspconfig
       require('mason-lspconfig').setup({
-        ensure_installed = {"lua_ls", "clangd", "arduino_language_server", "texlab", "pyright", "hyprls", "marksman"},
-        handlers = {
-          -- The default handler.
-          function(server_name)
-            require('lspconfig')[server_name].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-            })
-          end,
-            ["arduino_language_server"] = function ()
-            -- Intentionally left empty
-            end,
-        },
+  ensure_installed = { "lua_ls", "arduino_language_server", "texlab", "pyright", "hyprls", "marksman" }, -- no clangd
+  handlers = {
+    function(server_name)
+      require('lspconfig')[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
       })
+    end,
+
+    ["clangd"] = function()
+      require("lspconfig").clangd.setup({
+        cmd = { "clangd", "--background-index", "--clang-tidy" },
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end,
+
+    ["arduino_language_server"] = function()
+      -- Intentionally left empty
+    end,
+  },
+})
       
          end
   }

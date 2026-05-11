@@ -11,6 +11,9 @@ return {
 
             -- También cargar snippets tipo vscode friendly-snippets
             require("luasnip.loaders.from_vscode").lazy_load()
+            local ls = require("luasnip")
+            ls.filetype_extend("plaintex", { "tex" })
+            ls.filetype_extend("latex", { "tex" })
         end,
     }
 }

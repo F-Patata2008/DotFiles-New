@@ -15,7 +15,6 @@ hl.bind(mainMod .. " + Q",         hl.dsp.exec_cmd(ipc .. " launcher command")) 
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(ipc .. " launcher emoji"))         -- Emoji Picker
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(ipc .. " controlCenter toggle"))   -- Dashboard
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(ipc .. " sessionMenu toggle"))     -- Power Menu
-hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("systemctl --user restart noctalia.service"))
 
 -- ==============================================================================
 -- APPLICATIONS & UTILITIES

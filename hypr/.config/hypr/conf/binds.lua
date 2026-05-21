@@ -22,7 +22,7 @@ hl.bind(mainMod .. " + W",         hl.dsp.exec_cmd("systemctl --user restart noc
 -- ==============================================================================
 hl.bind(mainMod .. " + T",         hl.dsp.exec_cmd(terminal))                                            -- Terminal
 hl.bind(mainMod .. " + B",         hl.dsp.exec_cmd(browser))                                             -- Browser
-hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd("spotify"))                                           -- Spotify
+hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd("flatpak run com.spotify.Client"))                                           -- Spotify
 hl.bind(mainMod .. " + E",         hl.dsp.exec_cmd(terminal .. " -e yazi"))                              -- CLI File Manager
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(fileManager))                                         -- GUI File Manager
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(terminal .. " --class clipse -e 'clipse'"))           -- Clipboard

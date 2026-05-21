@@ -102,7 +102,7 @@ hl.window_rule({
 -- Workspace 2: Multimedia & Social
 hl.window_rule({
     name      = "workspace-social-media",
-    match     = { class = "^(Spotify|discord)$" },
+    match     = { class = "^(spotify|discord)$" },
     workspace = "2 silent",
 })
 

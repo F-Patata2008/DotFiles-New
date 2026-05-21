@@ -29,4 +29,5 @@ map("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "
 
 map("n", "<leader>mp", "<cmd>RenderMarkdownToggle<CR>", { desc = "Toggle Markdown Render" })
 
-
+map("n", "<leader>/", "gcc", {remap=true})
+map("v", "<leader>/", "gc", {remap=true})

@@ -1,0 +1,40 @@
+-- ==============================================================================
+-- AESTHETICS
+-- ==============================================================================
+
+-- Pywal colors — load variables before using them elsewhere
+
+-- ==============================================================================
+-- LAYER RULES — Noctalia shell background & widgets
+-- ==============================================================================
+hl.layer_rule({
+    name         = "noctalia",
+    match        = { namespace = "noctalia-background-.*$" },
+    ignore_alpha = 0.5,
+    blur         = true,
+    blur_popups  = true,
+})
+
+-- ==============================================================================
+-- DECORATION
+-- ==============================================================================
+hl.config({
+    decoration = {
+        rounding = 12,      -- Middle ground: 5 is too blocky, 20 is too much
+        -- rounding_power = 2, -- Optional: creates "squarcles" (smooth corners)
+
+        blur = {
+            enabled            = true,
+            size               = 3,
+            passes             = 1,     -- CRITICAL: 2 passes doubles GPU work. 1 pass + noise looks great.
+            vibrancy           = 0.1696,
+            ignore_opacity     = true,
+            new_optimizations  = true,  -- Crucial for performance
+            xray               = true,  -- Saves battery/CPU by not blurring windows under the active one
+        },
+
+        shadow = {
+            enabled = false,            -- Performance over looks for the Ryzen 3
+        },
+    },
+})

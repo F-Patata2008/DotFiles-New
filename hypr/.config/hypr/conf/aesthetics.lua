@@ -2,6 +2,8 @@
 -- AESTHETICS
 -- ==============================================================================
 
+dofile(os.getenv("HOME") .. "/.config/hypr/noctalia/noctalia-colors.conf")
+
 -- Pywal colors — load variables before using them elsewhere
 
 -- ==============================================================================

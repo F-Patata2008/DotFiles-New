@@ -5,6 +5,9 @@
 -- # (You might have these in a separate file like scripts/env.sh, # but if they are here, leave them at the top)
 -- # env = HYPRCURSOR_THEME,Sweet-cursors
 -- # env = HYPRCURSOR_SIZE,20
+
+-- dofile(os.getenv("HOME") .. "/.config/hypr/noctalia/noctalia-colors.conf")
+
 -- # ...etc
 -- # -- Variables para que Hyprland arranque bien desde SDDM
 hl.env("XDG_CURRENT_DESKTOP","Hyprland")

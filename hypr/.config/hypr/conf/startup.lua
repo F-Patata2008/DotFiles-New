@@ -33,5 +33,6 @@ hl.on("hyprland.start", function()
     -- USER APPS
     -- --------------------------------------------------------------------------
     hl.exec_cmd("kitty --class Dotfiles --directory ~/Dotfiles")
+    hl.exec_cmd("kitty --class Dotfiles --directory ~/Dotfiles")
 
 end)

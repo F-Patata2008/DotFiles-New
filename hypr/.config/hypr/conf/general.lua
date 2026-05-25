@@ -41,9 +41,16 @@ hl.config({
         column_width             = 0.9,
         direction                = "right",
     },
+
+    master = {
+        new_status = "slave",
+        mfact      = 0.80,    -- 80% master / 20% stack
+        orientation = "left",
+    },
 })
 
 -- ==============================================================================
 -- WORKSPACE RULES
 -- ==============================================================================
 hl.workspace_rule({ workspace = "2", layout = "scrolling" })
+hl.workspace_rule({ workspace = "3", layout = "master" })

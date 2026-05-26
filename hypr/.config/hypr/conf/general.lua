@@ -1,6 +1,9 @@
 -- ==============================================================================
 -- GENERAL
 -- ==============================================================================
+dofile(os.getenv("HOME") .. "/.cache/noctalia/hyprland-colors.lua")
+
+
 hl.config({
     general = {
         gaps_in     = 2,
@@ -8,8 +11,8 @@ hl.config({
         border_size = 1,
 
         col = {
-            active_border   = color4,
-            inactive_border = color0,
+            active_border   = primary,
+            inactive_border = surface,
         },
 
         layout = "dwindle",

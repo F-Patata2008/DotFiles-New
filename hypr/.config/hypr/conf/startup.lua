@@ -34,5 +34,6 @@ hl.on("hyprland.start", function()
     -- --------------------------------------------------------------------------
     hl.exec_cmd("kitty --class Dotfiles --directory ~/Dotfiles")
     hl.exec_cmd("kitty --class Dotfiles --directory ~/Dotfiles")
+    hl.exec_cmd("kitty --class Ai -e 'ollama run miku' ")
 
 end)

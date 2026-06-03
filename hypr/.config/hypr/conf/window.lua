@@ -113,11 +113,7 @@ hl.window_rule({
     workspace = "3 silent",
 })
 
-hl.window_rule({
-    name      = "workspace-dotfiles",
-    match     = { class = "^(Ai)$" },
-    workspace = "3 silent",
-})
+
 
 -- -----------------------------------------------------------------------------
 -- ✨ SECTION: VISUAL OVERRIDES

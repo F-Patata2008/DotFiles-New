@@ -20,6 +20,7 @@ hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(ipc .. " sessionMenu toggle")
 -- APPLICATIONS & UTILITIES
 -- ==============================================================================
 hl.bind(mainMod .. " + T",         hl.dsp.exec_cmd(terminal))                                              -- Terminal
+hl.bind(mainMod .. " + A",         hl.dsp.exec_cmd(terminal .. " --class Ai -e ollama run miku"))        -- Ollama Running Miku
 hl.bind(mainMod .. " + B",         hl.dsp.exec_cmd(browser))                                               -- Browser
 hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd("flatpak run com.spotify.Client"))                      -- Spotify
 hl.bind(mainMod .. " + E",         hl.dsp.exec_cmd(terminal .. " -e yazi"))                                -- CLI File Manager

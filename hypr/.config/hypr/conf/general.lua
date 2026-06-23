@@ -52,5 +52,4 @@ hl.config({
 -- ==============================================================================
 -- WORKSPACE RULES
 -- ==============================================================================
-hl.workspace_rule({ workspace = "2", layout = "scrolling" })
 hl.workspace_rule({ workspace = "3", layout = "master" })

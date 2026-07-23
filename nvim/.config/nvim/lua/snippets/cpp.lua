@@ -34,7 +34,7 @@ return {
     }
   ),
 
-  -- New snippet "Papa" without test cases
+  -- Snippet "Papa" sin test cases
   s(
     "Papa",
     {
@@ -60,15 +60,56 @@ return {
       description = "Competitive Programming Template (Without test cases)",
     }
   ),
-    s(
-        "for",
-        {
-            t({
-                "for (int i = 0; i < n; i++) {",
-            }),
-                i(0),
-                t({"}"
-            })
-        }
-    )
+
+  s(
+    "Segment-Tree",
+    {
+      t({
+        "struct SegmentTree {",
+        "    int n;",
+        "    vec<ll> Tree;",
+        "",
+        "    SegmentTree(vec<ll>& a) {",
+        "        n = a.size();",
+        "        Tree.resize(4 * n);",
+        "        build(a, 0, 0, n - 1);",
+        "    }",
+        "",
+        "    void build(vec<ll>& a, int nodo, int izq, int der) {",
+        "        if (izq == der) {",
+        "            Tree[nodo] = a[izq];",
+        "            return;",
+        "        }",
+        "        int mid = izq + (der - izq) / 2;",
+        "        build(a, 2 * nodo + 1, izq, mid);",
+        "        build(a, 2 * nodo + 2, mid + 1, der);",
+        "        Tree[nodo] = min(Tree[2 * nodo + 1], Tree[2 * nodo + 2]);",
+        "    }",
+        "",
+        "    ll query(int nodo, int izq, int der, int l, int r) {",
+        "        if (r < izq || l > der) return LLONG_MAX;",
+        "        if (l <= izq && der <= r) return Tree[nodo];",
+        "        int mid = izq + (der - izq) / 2;",
+        "        return min(query(2 * nodo + 1, izq, mid, l, r),",
+        "                   query(2 * nodo + 2, mid + 1, der, l, r));",
+        "    }",
+        "};",
+      }),
+    },
+    {
+      description = "Segment Tree (Min Query)",
+    }
+  ),
+
+  s(
+    "for",
+    {
+      t("for (int i = 0; i < n; i++) {"),
+      i(0),
+      t("}"),
+    },
+    {
+      description = "For loop template",
+    }
+  ),
 }

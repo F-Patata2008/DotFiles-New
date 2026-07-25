@@ -21,7 +21,7 @@ return {
         "    while (t--) {",
         "        ",
       }),
-      i(0), -- cursor inside while loop
+      i(0),
       t({
         "",
         "    }",
@@ -34,7 +34,6 @@ return {
     }
   ),
 
-  -- Snippet "Papa" sin test cases
   s(
     "Papa",
     {
@@ -49,7 +48,7 @@ return {
         "int main() {",
         "    ",
       }),
-      i(0), -- cursor inside main
+      i(0),
       t({
         "",
         "    return 0;",
@@ -62,7 +61,7 @@ return {
   ),
 
   s(
-    "Segment-Tree",
+    "ST-Min",
     {
       t({
         "struct SegmentTree {",
@@ -86,6 +85,10 @@ return {
         "        Tree[nodo] = min(Tree[2 * nodo + 1], Tree[2 * nodo + 2]);",
         "    }",
         "",
+        "    ll q(int l, int r) {",
+        "        return query(0, 0, n - 1, l, r);",
+        "    }",
+        "",
         "    ll query(int nodo, int izq, int der, int l, int r) {",
         "        if (r < izq || l > der) return LLONG_MAX;",
         "        if (l <= izq && der <= r) return Tree[nodo];",
@@ -97,33 +100,77 @@ return {
       }),
     },
     {
-      description = "Segment Tree (Min Query)",
+      description = "Segment Tree (Min Query) - Optimized",
     }
   ),
 
   s(
-  "kmp",
-  {
-    t({
-      "vector<ll> prefix_function(const string &s) {",
-      "    int n = s.size();",
-      "    vector<ll> pi(n, 0);",
-      "    for (int i = 1; i < n; i++) {",
-      "        int j = pi[ i - 1 ];",
-      "        while (j > 0 && s[ i ] != s[ j ])",
-      "            j = pi[ j - 1 ];",
-      "        if (s[ i ] == s[ j ])",
-      "            j++;",
-      "        pi[ i ] = j;",
-      "    }",
-      "    return pi;",
-      "}",
-    }),
-  },
-  {
-    description = "KMP Prefix Function",
-  }
-),
+    "ST-Max",
+    {
+      t({
+        "struct SegmentTree {",
+        "    int n;",
+        "    vec<ll> Tree;",
+        "",
+        "    SegmentTree(vec<ll>& a) {",
+        "        n = a.size();",
+        "        Tree.resize(4 * n);",
+        "        build(a, 0, 0, n - 1);",
+        "    }",
+        "",
+        "    void build(vec<ll>& a, int nodo, int izq, int der) {",
+        "        if (izq == der) {",
+        "            Tree[nodo] = a[izq];",
+        "            return;",
+        "        }",
+        "        int mid = izq + (der - izq) / 2;",
+        "        build(a, 2 * nodo + 1, izq, mid);",
+        "        build(a, 2 * nodo + 2, mid + 1, der);",
+        "        Tree[nodo] = max(Tree[2 * nodo + 1], Tree[2 * nodo + 2]);",
+        "    }",
+        "",
+        "    ll q(int l, int r) {",
+        "        return query(0, 0, n - 1, l, r);",
+        "    }",
+        "",
+        "    ll query(int nodo, int izq, int der, int l, int r) {",
+        "        if (r < izq || l > der) return LLONG_MIN;",
+        "        if (l <= izq && der <= r) return Tree[nodo];",
+        "        int mid = izq + (der - izq) / 2;",
+        "        return max(query(2 * nodo + 1, izq, mid, l, r),",
+        "                   query(2 * nodo + 2, mid + 1, der, l, r));",
+        "    }",
+        "};",
+      }),
+    },
+    {
+      description = "Segment Tree (Max Query) - Optimized",
+    }
+  ),
+
+  s(
+    "kmp",
+    {
+      t({
+        "vector<ll> prefix_function(const string& s) {",
+        "    int n = s.size();",
+        "    vector<ll> pi(n, 0);",
+        "    for (int i = 1; i < n; i++) {",
+        "        int j = pi[i - 1];",
+        "        while (j > 0 && s[i] != s[j])",
+        "            j = pi[j - 1];",
+        "        if (s[i] == s[j])",
+        "            j++;",
+        "        pi[i] = j;",
+        "    }",
+        "    return pi;",
+        "}",
+      }),
+    },
+    {
+      description = "KMP Prefix Function",
+    }
+  ),
 
   s(
     "for",

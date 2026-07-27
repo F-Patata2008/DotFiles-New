@@ -4,7 +4,7 @@ return {
       event = { "BufReadPre", "BufNewFile" },
       config = function()
         require("formatter").setup({
-          logging = true,  -- Cambia a true temporalmente para debug
+          logging = true,
           filetype = {
             tex = { require("formatter.defaults").latexindent },
             lua = { require("formatter.defaults").stylua },
@@ -32,10 +32,18 @@ return {
                 }
               end,
             },
-            -- ... resto del config igual
             python = {
               require("formatter.defaults").isort,
               require("formatter.defaults").black,
+            },
+            markdown = {
+              function()
+                return {
+                  exe = "prettier",
+                  args = { "--parser", "markdown" },
+                  stdin = true,
+                }
+              end,
             },
             ["*"] = {
               require("formatter.filetypes.any").remove_trailing_whitespace,
@@ -46,7 +54,7 @@ return {
         local augroup = vim.api.nvim_create_augroup("FormatOnSave", { clear = true })
         vim.api.nvim_create_autocmd("BufWritePre", {
           group = augroup,
-          pattern = "*.cpp,*.c,*.h",  -- Sé específico aquí
+          pattern = "*.cpp,*.c,*.h,*.md",
           command = "Format",
         })
       end,

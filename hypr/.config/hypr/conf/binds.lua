@@ -77,8 +77,8 @@ for i = 1, 10 do
 end
 
 -- Scroll through existing workspaces
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- Column layout (only applies when layout = scrolling)
 hl.bind(mainMod .. " + period",         hl.dsp.layout("move +col"))

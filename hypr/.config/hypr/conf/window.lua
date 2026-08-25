@@ -103,7 +103,7 @@ hl.window_rule({
 hl.window_rule({
     name      = "workspace-social-media",
     match     = { class = "^(spotify|discord)$" },
-    workspace = "2 silent",
+    workspace = "5 silent",
 })
 
 -- Workspace 3: Development / Dotfiles
@@ -111,6 +111,12 @@ hl.window_rule({
     name      = "workspace-dotfiles",
     match     = { class = "^(Dotfiles)$" },
     workspace = "3 silent",
+})
+
+hl.window_rule({
+    name      = "Steam",
+    match     = { class = "^(steam)$" },
+    workspace = "6 silent",
 })
 
 

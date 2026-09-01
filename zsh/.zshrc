@@ -62,3 +62,4 @@ bindkey '^[[1;5D' backward-word      # Ctrl+Left
 
 export PATH=$PATH:/home/F-Patata/.spicetify
 export PATH=$PATH:~/.spicetify
+export PYTHONPATH="/home/fpatata/Progra/Python/Yo/Codigo_fuente:$PYTHONPATH"

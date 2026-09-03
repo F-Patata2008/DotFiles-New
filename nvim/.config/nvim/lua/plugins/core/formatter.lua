@@ -33,8 +33,21 @@ return {
               end,
             },
             python = {
-              require("formatter.defaults").isort,
-              require("formatter.defaults").black,
+              function()
+                if vim.fn.executable("ruff") == 1 then
+                  return {
+                    exe = "ruff",
+                    args = { "format", "--stdin-filename", vim.api.nvim_buf_get_name(0), "-" },
+                    stdin = true,
+                  }
+                elseif vim.fn.executable("black") == 1 then
+                  return {
+                    exe = "black",
+                    args = { "-" },
+                    stdin = true,
+                  }
+                end
+              end,
             },
             markdown = {
               function()
@@ -54,7 +67,7 @@ return {
         local augroup = vim.api.nvim_create_augroup("FormatOnSave", { clear = true })
         vim.api.nvim_create_autocmd("BufWritePre", {
           group = augroup,
-          pattern = "*.cpp,*.c,*.h,*.md",
+          pattern = "*.cpp,*.c,*.h,*.md,*.py",
           command = "Format",
         })
       end,

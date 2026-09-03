@@ -61,6 +61,52 @@ return {
       dap.configurations.c = dap.configurations.cpp
       dap.configurations.rust = dap.configurations.cpp
 
+      -- Python adapter (debugpy)
+      dap.adapters.python = function(cb, config)
+        if config.request == 'attach' then
+          local port = (config.connect or config).port
+          local host = (config.connect or config).host or '127.0.0.1'
+          cb({
+            type = 'server',
+            port = assert(port, '`connect.port` is required for a python `attach` configuration'),
+            host = host,
+            options = {
+              source_filetype = 'python',
+            },
+          })
+        else
+          cb({
+            type = 'executable',
+            command = vim.fn.exepath('python3') or 'python',
+            args = { '-m', 'debugpy.adapter' },
+            options = {
+              source_filetype = 'python',
+            },
+          })
+        end
+      end
+
+      dap.configurations.python = {
+        {
+          type = 'python',
+          request = 'launch',
+          name = 'Launch file',
+          program = '${file}',
+          pythonPath = function()
+            local venv = os.getenv('VIRTUAL_ENV')
+            if venv and vim.fn.executable(venv .. '/bin/python') == 1 then
+              return venv .. '/bin/python'
+            end
+            for _, name in ipairs({ '.venv', 'venv', 'env', '.env' }) do
+              local match = vim.fn.getcwd() .. '/' .. name .. '/bin/python'
+              if vim.fn.executable(match) == 1 then
+                return match
+              end
+            end
+            return vim.fn.exepath('python3') or 'python'
+          end,
+        },
+      }
     end,
   },
 }

@@ -47,21 +47,16 @@ require("lazy").setup(lazy_spec, {
 -- 6. Load Core Configs
 require("core.autostart")
 require("core.keybinds")
+pcall(require, "core.current-theme")
 
 -- 7. Conditional Core Logic
--- Some autocommands might refer to plugins that are now disabled.
--- We wrap them in pcall or checks if necessary.
-
--- Example: Only setup Arduino LSP logic if not in light mode
+-- Setup Arduino LSP only when an arduino file is opened
 if not is_light_mode then
-    -- We use pcall to avoid errors if the module isn't loaded
-    pcall(function() require("Arduino-Nvim.lsp").setup() end)
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "arduino",
+        callback = function()
+            pcall(function() require("Arduino-Nvim.lsp").setup() end)
+        end,
+        once = true,
+    })
 end
-
--- Ipynb detection is fine to keep global, but won't do much without the jupyter plugin
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "*.ipynb",
-  callback = function()
-    vim.bo.filetype = "ipynb"
-  end,
-})

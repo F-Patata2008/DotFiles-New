@@ -48,11 +48,10 @@ return {
         -- Formatting (only if server supports it)
         if client.supports_method("textDocument/formatting") then
           nmap("<leader>gf", vim.lsp.buf.format, "[G]o [F]ormat Buffer")
+          vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+            vim.lsp.buf.format()
+          end, { desc = "Format current buffer with LSP" })
         end
-
-        vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-          vim.lsp.buf.format()
-        end, { desc = "Format current buffer with LSP" })
       end
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -62,6 +61,43 @@ return {
       local function has(bin)
         return vim.fn.executable(bin) == 1
       end
+
+      -- Helper: auto-detect Python virtualenv
+      local function get_python_path(workspace)
+        local venv = os.getenv("VIRTUAL_ENV")
+        if venv and vim.fn.executable(venv .. "/bin/python") == 1 then
+          return venv .. "/bin/python"
+        end
+        if workspace then
+          for _, name in ipairs({ ".venv", "venv", "env", ".env" }) do
+            local match = workspace .. "/" .. name .. "/bin/python"
+            if vim.fn.executable(match) == 1 then
+              return match
+            end
+          end
+        end
+        return vim.fn.exepath("python3") or "python"
+      end
+
+      local pyright_opts = {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        before_init = function(_, config)
+          config.settings = config.settings or {}
+          config.settings.python = config.settings.python or {}
+          config.settings.python.pythonPath = get_python_path(config.root_dir or vim.fn.getcwd())
+        end,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+              typeCheckingMode = "basic",
+            },
+          },
+        },
+      }
 
       -- =========================
       -- PC / Normal (Mason-managed)
@@ -83,6 +119,9 @@ return {
                 on_attach = on_attach,
                 capabilities = capabilities,
               })
+            end,
+            ["pyright"] = function()
+              lspconfig.pyright.setup(pyright_opts)
             end,
             ["arduino_language_server"] = function()
               -- Intentionally left empty
@@ -110,11 +149,10 @@ return {
 
       -- Python (installed via: npm i -g pyright)
       if has("pyright-langserver") then
-        lspconfig.pyright.setup({
+        local termux_pyright = vim.tbl_deep_extend("force", pyright_opts, {
           cmd = { "pyright-langserver", "--stdio" },
-          on_attach = on_attach,
-          capabilities = capabilities,
         })
+        lspconfig.pyright.setup(termux_pyright)
       end
 
       -- LaTeX (installed via: pkg install texlab)

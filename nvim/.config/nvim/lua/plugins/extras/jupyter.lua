@@ -1,24 +1,29 @@
 return {
   -- For transparently editing ipynb files as text
   {
-     "GCBallesteros/jupytext.nvim",
-  config = true,
-  -- Depending on your nvim distro or config you may need to make the loading not lazy
-  -- lazy=false,
+    "GCBallesteros/jupytext.nvim",
+    lazy = false,
+    opts = {
+      style = "percent",
+      output_extension = "py",
+      force_ft = "python",
+    },
   },
 
   -- For running cells and interacting with the kernel
   {
-        "benlubas/molten-nvim",
-        version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
-        dependencies = { "3rd/image.nvim" },
-        build = ":UpdateRemotePlugins",
-        init = function()
-            -- these are examples, not defaults. Please see the readme
-            vim.g.molten_image_provider = "image.nvim"
-            vim.g.molten_output_win_max_height = 20
-        end,
-    },
+    "benlubas/molten-nvim",
+    version = "^1.0.0",
+    dependencies = { "3rd/image.nvim" },
+    build = ":UpdateRemotePlugins",
+    init = function()
+      vim.g.molten_image_provider = "image.nvim"
+      vim.g.molten_output_win_max_height = 20
+      vim.g.molten_auto_open_output = true
+      vim.g.molten_wrap_output = true
+      vim.g.molten_virt_text_output = true
+    end,
+  },
     {
         -- see the image.nvim readme for more information about configuring this plugin
         "3rd/image.nvim",

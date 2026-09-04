@@ -1,65 +1,80 @@
 #!/bin/bash
 # ==============================================================================
-# "REVERSE STOW" SCRIPT FOR SYSTEM-FILES (V5.0 MODULAR)
-# Updates tracked system configurations from the live root filesystem.
+# PROFILE-SAFE SYSTEM-FILES REVERSE BACKUP (V6.0)
+# Syncs live root configurations into the dotfiles repo safely
 # ==============================================================================
 
-set -u; set -o pipefail
-cd "$(dirname "$0")" # Run from the Install/ directory
-readonly DOTFILES_DIR=$(git rev-parse --show-toplevel)
-readonly SYSTEM_FILES_DIR="$DOTFILES_DIR/Install/system-files"
+set -e; set -u; set -o pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# --- HELPER FUNCTIONS ---
-readonly GREEN='\033[0;32m'; readonly RED='\033[0;31m'; readonly YELLOW='\033[1;33m'; readonly NC='\033[0m'
-print_header() { echo -e "\n${YELLOW}>>> $1${NC}"; }
+GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; BLUE='\033[0;34m'; NC='\033[0m'
 log_info() { echo -e "${GREEN}  ✓${NC} $1"; }
 log_warn() { echo -e "${YELLOW}  !${NC} $1"; }
-log_error() { echo -e "${RED}  ✗${NC} $1"; }
+log_err() { echo -e "${RED}  ✗${NC} $1"; }
 
-sudo -v # Request sudo privileges upfront
+sudo -v
 
-print_header "Backing up system files to Dotfiles repo"
-log_info "Source: / (Root Filesystem)"
-log_info "Destination: $SYSTEM_FILES_DIR"
-echo ""
+echo -e "\n${BLUE}========================================\n PROFILE-SAFE SYSTEM BACKUP \n========================================${NC}\n"
 
-if [ ! -d "$SYSTEM_FILES_DIR" ]; then
-    log_error "Directory '$SYSTEM_FILES_DIR' not found. Aborting."
-    exit 1
+# Helper to reverse-sync files from a directory
+sync_system_files() {
+    local target_dir="$1"
+    local desc="$2"
+
+    [ ! -d "$target_dir" ] && return 0
+    echo -e "${YELLOW}>>> Syncing $desc: $target_dir${NC}"
+
+    find "$target_dir" -type f -print0 | while IFS= read -r -d '' repo_file; do
+        # Extract relative path after system-files/
+        local clean_path
+        clean_path="${repo_file#$target_dir/}"
+        local source_path="/$clean_path"
+
+        # Ignore backup reference files
+        if [[ "$repo_file" =~ \.reference$ ]]; then
+            continue
+        fi
+
+        if [ -f "$source_path" ]; then
+            sudo cp -af "$source_path" "$repo_file"
+            log_info "$source_path -> ${repo_file#$DOTFILES_DIR/}"
+        else
+            log_warn "$source_path not present on live filesystem (skipped)"
+        fi
+    done
+}
+
+# 1. Always safe: Universal system files
+sync_system_files "$SCRIPT_DIR/system-files/common" "Universal Configurations"
+
+# 2. Distro-specific system files
+if [ -f /etc/fedora-release ]; then
+    log_info "Active OS: Fedora Linux. Syncing Fedora profiles..."
+    sync_system_files "$SCRIPT_DIR/profiles/distros/fedora/system-files" "Fedora System Files"
+elif [ -f /etc/arch-release ]; then
+    log_info "Active OS: Arch Linux. Syncing Arch profiles..."
+    sync_system_files "$SCRIPT_DIR/profiles/distros/arch/system-files" "Arch System Files"
 fi
 
-# Find every FILE inside the system-files directory
-find "$SYSTEM_FILES_DIR" -type f -print0 | while IFS= read -r -d '' repo_file; do
+# 3. Machine Hardware profile
+if lsusb | grep -qi "27c6:55b4" || ( [ -f /sys/class/dmi/id/product_name ] && grep -qi "E41-55" /sys/class/dmi/id/product_name ); then
+    sync_system_files "$SCRIPT_DIR/profiles/machines/lenovo-e41-55/system-files" "Lenovo E41-55 Hardware Files"
+fi
 
-    # 1. Get relative path (e.g., "common/etc/tlp.conf" or "machines/lenovo/etc/fstab")
-    relative_path="${repo_file#$SYSTEM_FILES_DIR/}"
-
-    # 2. Strip the 'common/' or 'machines/<name>/' prefix dynamically
-    clean_path=$(echo "$relative_path" | sed -E 's/^(common|machines\/[^/]+)\///')
-
-    # 3. Add root slash to get the real system path (e.g., "/etc/tlp.conf")
-    source_path="/$clean_path"
-
-    # 4. Check and Copy
-    if [ -f "$source_path" ]; then
-        sudo cp -af "$source_path" "$repo_file"
-    else
-        log_warn "File '$source_path' not found on system. Skipping."
+# 4. Arch SN750 Custom Boot (Only on Arch when explicitly confirmed)
+if [ -f /etc/arch-release ] && [ -d "$SCRIPT_DIR/profiles/machines/arch-sn750-custom-boot/system-files" ]; then
+    echo -e "\n${YELLOW}Sync WD Black SN750 Custom Bootloader files (GRUB, mkinitcpio)?${NC}"
+    read -rp "Sync SN750 boot configs? [y/N]: " SYNC_BOOT
+    if [[ "$SYNC_BOOT" =~ ^[Yy]$ ]]; then
+        sync_system_files "$SCRIPT_DIR/profiles/machines/arch-sn750-custom-boot/system-files" "SN750 Boot Configuration"
     fi
-done
-
-print_header "Fixing file ownership"
-log_info "Ensuring all files in the repo belong to your user..."
-
-# Safely get the real user, even if running via sudo
-MY_USER=$(logname 2>/dev/null || echo $SUDO_USER)
-if [ -n "$MY_USER" ]; then
-    sudo chown -R "$MY_USER":"$(id -gn "$MY_USER")" "$DOTFILES_DIR/Install/system-files"
-    log_info "✔️ Permissions fixed."
-else
-    log_warn "Could not determine user. Run 'sudo chown -R \$USER:\$USER .' manually."
 fi
 
-echo ""
-print_header "Backup complete!"
-log_info "You can now review the changes with 'git diff'."
+# Fix ownership back to standard user
+MY_USER=$(logname 2>/dev/null || echo "${SUDO_USER:-$USER}")
+if [ -n "$MY_USER" ]; then
+    sudo chown -R "$MY_USER":"$(id -gn "$MY_USER")" "$SCRIPT_DIR"
+fi
+
+echo -e "\n${GREEN}Backup completed safely without cross-distro corruption!${NC}\n"

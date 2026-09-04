@@ -1,3 +1,40 @@
+# 🛠️ Modular Deployment & Profiles Toolbox
+
+This directory contains the automated deployment, backup, and package synchronization tools for Comrade Patata's workstation across **Fedora Linux**, **Arch Linux**, and other hardware profiles.
+
+## Architecture
+
+```
+Install/
+├── install.sh                       # Unified Master Installer (Auto-detects OS & Hardware)
+├── install-core.sh                  # Backward-compatible wrapper
+├── install-termux.sh                # Android / Termux minimal CLI deployment
+├── bakup.sh                         # Profile-safe reverse sync from / to repo
+├── update_packages.sh               # Distro-aware package synchronizer
+├── dump.sh                          # Markdown configuration dumper
+├── profiles/
+│   ├── distros/
+│   │   ├── fedora/                  # Fedora DNF5/DNF, Copr, and Flatpak manifests
+│   │   └── arch/                    # Arch Pacman & AUR manifests, pacman.conf, cron
+│   └── machines/
+│       ├── lenovo-e41-55/           # Lenovo hardware: Goodix biometrics, check-bat hibernation
+│       ├── arch-sn750-custom-boot/  # Isolated Arch SN750 SSD: LUKS, LVM, Minegrub, Plymouth MC
+│       └── generic/                 # Agnostic PC profile
+└── system-files/
+    ├── common/                      # Universal system files (sddm, logind, sleep, vconsole)
+    └── extra/                       # Optional configurations (CUPS, UFW)
+```
+
+### Quick Commands
+
+- **Deploy on Current System**: `bash install.sh`
+- **Reverse Backup Live Configs**: `bash bakup.sh`
+- **Export Package Lists**: `bash update_packages.sh`
+
+---
+
+## 📖 Manual Arch Linux Base Installation Guide
+
 ### **1. Preinstalación**
 
 **1.1. Descargar la ISO de Arch Linux**

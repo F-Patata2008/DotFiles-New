@@ -1,0 +1,47 @@
+# Core Terminal & CLI Tools
+git
+zsh
+kitty
+neovim
+fastfetch
+stow
+btop
+fzf
+tree
+curl
+wget2
+unzip
+tar
+
+# Desktop & Wayland Compositor (Hyprland ecosystem)
+hyprland
+hyprshot
+solaar
+clipse
+yazi
+zen-browser
+noctalia
+adw-gtk3-theme
+
+# Audio & Media
+pipewire
+pipewire-pulseaudio
+pipewire-alsa
+pipewire-utils
+wireplumber
+playerctl
+
+# Build & Compilation Tools (C++ / Competitive Programming & Dev)
+gcc-c++
+clang
+cmake
+ninja-build
+golang
+cargo
+python3-pip
+
+# System & Hardware
+NetworkManager
+bluez
+fprintd-pam
+libfprint-goodixtls

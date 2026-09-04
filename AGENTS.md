@@ -9,28 +9,44 @@ stow --restow --verbose fastfetch hypr kitty nvim ohmyzsh zsh
 ```
 
 - `Legacy/` is **not stowed** — it holds old Waybar/Rofi/Swaync configs replaced by Noctalia Shell
-- `Install/` is **not stowed** — it's the deployment/backup toolbox
-- `systemd` is listed in the install script but the directory does **not exist**
+- `Install/` is **not stowed** — it's the multi-distro deployment & backup toolbox
 - `ohmyzsh/` and `nvim/.config/nvim/lua/Arduino-Nvim` are **git submodules**
 
 ## Deploying
 
-- **Full install**: `Install/install-core.sh` — GPU profile + machine profile (Lenovo vs Generic), packages, system files, stow, services
+- **Universal Installer**: `Install/install.sh` (or wrapper `install-core.sh`) — detects OS (Fedora vs Arch vs Generic) and hardware profile (Lenovo E41-55 vs Generic)
 - **Termux (Android)**: `Install/install-termux.sh` — stows only `fastfetch nvim ohmyzsh zsh`
-- **Backup system files**: `Install/bakup.sh` — reverse-copies tracked `/etc` files back into `Install/system-files/`
-- **Update package lists**: `Install/update_packages.sh` — regenerates `Install/pacman_packages.txt` / `aur_packages.txt` from the live system
+- **Backup system files**: `Install/bakup.sh` — profile-safe reverse-sync from `/` into the active profile without cross-distro contamination
+- **Update package lists**: `Install/update_packages.sh` — exports package manifests for the currently running distro (DNF + Copr + Flatpaks on Fedora, Pacman + AUR on Arch)
 - **Dump config to markdown**: `Install/dump.sh <dir>` — generates `**/DUMP_*.md` (gitignored)
 
-## Package lists (two sets)
+## Modular Architecture (`Install/profiles/`)
 
-| Set       | Used by           | Path                                                                   |
-| --------- | ----------------- | ---------------------------------------------------------------------- |
-| Canonical | `install-core.sh` | `Install/pkgs/pacman-all.txt`, `aur-all.txt`                           |
-| Stale     | cron job          | `Install/pacman_packages.txt`, `aur_packages.txt` (slightly different) |
+| Profile Group | Target | Description |
+| ------------- | ------ | ----------- |
+| `distros/fedora` | Fedora 44 | DNF/DNF5 manifests, Flatpaks, Copr repos (`clipse`, `libfprint-goodixtls`, `Hyprland`, `PyCharm`, `zen-browser`), native `power-profiles-daemon` integration |
+| `distros/arch` | Arch Linux | Pacman & AUR package manifests, multilib `pacman.conf`, PAM configs |
+| `machines/lenovo-e41-55` | Lenovo Laptop HW | Goodix 27c6:55b4 fingerprint udev rule, `check-bat` low-battery hibernation watchdog at 5%, TLP power profile (used on Arch) |
+| `machines/arch-sn750-custom-boot` | WD Black 500GB SSD | Isolated custom Arch boot stack: LUKS encryption, LVM (`Patata-root`, `home`, `swap`), Minegrub GRUB theme, Minecraft Plymouth theme, and `mkinitcpio.conf` |
+| `machines/generic` | Other PCs / VMs | Agnostic baseline hardware profile |
+| `system-files/common` | Universal | Truly distro-agnostic configs: `sddm.conf` (Astronaut theme), `vconsole.conf`, `logind.conf`, `sleep.conf` |
+
+## Multi-Boot Drive Topology
+
+1. **Drive 1 (256GB Samsung SSD)**:
+   - OS: **Fedora 44 Workstation** (btrfs on LUKS)
+   - Window Manager: Hyprland (via `copr:lionheartp:Hyprland`) with Noctalia Shell
+   - Power: Native Fedora `power-profiles-daemon` / tuned integration (TLP is not needed or enabled here)
+2. **Drive 2 (500GB WD Black SN750 NVMe SSD)**:
+   - OS: **Arch Linux**
+   - Storage: LUKS container with LVM virtual partitions (`/dev/Patata/root`, `/dev/Patata/home`, `/dev/Patata/swap`)
+   - Boot: GRUB with `minegrub` theme + Plymouth `mc` theme + custom `mkinitcpio` hooks
+   - Power: Aggressive TLP tuning for Ryzen 3 3250U & Vega 3
 
 ## Hyprland quirks
 
 - Config is **Lua** (`hyprland.lua` + `conf/*.lua`), not `.conf` files
+- Polkit agent dynamically probed via `hypr/.config/hypr/scripts/polkit.sh` across Fedora & Arch
 - `.luarc.json` registers the global `hl` — required for Lua LSP
 - Colors from Noctalia: `~/.cache/noctalia/hyprland-colors.lua`
 
@@ -43,12 +59,6 @@ stow --restow --verbose fastfetch hypr kitty nvim ohmyzsh zsh
 
 - Single `main` branch. `push.sh` stages all (or specified) files, prompts for message, commits, and pushes to `origin main`
 - Default commit message: `"Auto-commit: $timestamp"`
-
-## Machine-specific notes
-
-- **Lenovo E41-55** profile (`Install/profiles/Lenovo.sh`): TLP tuning, Goodix fingerprint (`libfprint-goodixtls-55x4` AUR), mkinitcpio with plymouth/lvm2/encrypt hooks, battery hibernation timer at 5%
-- **fstab is NOT auto-copied** — UUIDs change between installs
-- Supported GPU profiles: AMD, NVIDIA, Intel/VM
 
 ## Persona & Communication Rules
 

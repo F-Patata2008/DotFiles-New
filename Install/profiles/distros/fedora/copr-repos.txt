@@ -1,0 +1,5 @@
+azandure:clipse
+d-k-bo:libfprint-goodixtls
+lionheartp:Hyprland
+phracek:PyCharm
+sneexy:zen-browser

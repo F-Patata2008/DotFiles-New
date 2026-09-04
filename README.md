@@ -9,11 +9,11 @@
 
 ![Desktop Screenshot](assets/hero.png)
 
-This repository hosts my complete personal configuration for a **Hyprland** desktop environment on **Arch Linux**.
+This repository hosts my complete personal configuration for a **Hyprland** desktop environment, fully modularized for **Fedora Linux** and **Arch Linux**.
 
 Recently migrated from the traditional Waybar/Rofi stack to the **Noctalia Shell** (based on Quickshell), this setup aims for a seamless, unified UI experience. It is optimized specifically for efficiency on modest hardware, squeezing every drop of performance out of a Ryzen mobile APU while maintaining a visually stunning aesthetic.
 
-Everything is managed via [GNU Stow](https://www.gnu.org/software/stow/) and includes a master installation script for rapid deployment.
+Everything is managed via [GNU Stow](https://www.gnu.org/software/stow/) and includes a modular multi-distro installer for rapid deployment on new machines.
 
 ---
 
@@ -29,20 +29,20 @@ Everything is managed via [GNU Stow](https://www.gnu.org/software/stow/) and inc
 
 - **Noctalia Shell Ecosystem**: A unified interface handling the Status Bar, App Launcher, Notification Center, and OSDs. No more mismatched configs between Waybar, Dunst, and Rofi.
 - **Dynamic Theming**: The entire system (Shell, Terminal, GTK) adapts to your wallpaper using `pywal` and internal IPC hooks.
+- **Multi-Distro Modular Deployment**: Native installers and profiles for both **Fedora** (DNF5/DNF + Copr + Flatpaks) and **Arch Linux** (Pacman + AUR).
 - **Performance Optimized**:
-  - tuned `tlp` configuration for the Ryzen 3250U (Aggressive battery saving on Vega 3, Max performance on NVMe).
-  - `zRAM` configured (Half of physical RAM) to prevent paging to disk.
-  - **LVM Layout**: Logical volumes for `/`, `/home`, and `swap` for maximum flexibility.
-- **Hardware Specifics**:
-  - **Fingerprint Support**: Pre-configured PAM and drivers for Goodix 27c6:55b4 sensors.
-  - **SSD Optimization**: Specific rules to prevent PCIe power-saving glitches on WD Black SN750 drives.
-- **Automated Install**: A master `install.sh` script handles packages, services, fonts, and dotfile linking.
+  - Distro-aware power management: native `power-profiles-daemon` integration on Fedora, tuned `tlp` profile on Arch for the Ryzen 3250U.
+  - `zRAM` configured to prevent paging to disk.
+  - Zero-fork shell startup: instant Zsh prompt with Powerlevel10k.
+- **Hardware & Boot Specifics**:
+  - **Fingerprint Support**: Automated PAM/authselect integration and USB power rules for Goodix 27c6:55b4 sensors.
+  - **Arch SN750 Custom Boot Profile**: Dedicated LUKS encryption + LVM virtual partitions (`root`, `home`, `swap`) + Minegrub theme + Minecraft Plymouth theme.
+  - **Battery Watchdog**: Automatic hibernation at <= 5% battery to prevent sudden power loss.
+- **Automated Install**: A master `Install/install.sh` script detects your distro and machine hardware.
 
 ## 🚀 Installation
 
-> **Warning:** This setup is tailored for the **Lenovo E41-55**. While the configs are modular, the install script assumes an Arch base. Use at your own risk.
-
-**Prerequisites:** A base Arch Linux install with `git`, `sudo`, and an active internet connection.
+**Prerequisites:** A base Fedora or Arch Linux install with `git`, `sudo`, and an active internet connection.
 
 1.  **Clone the Repository**
     ```bash
@@ -51,10 +51,9 @@ Everything is managed via [GNU Stow](https://www.gnu.org/software/stow/) and inc
     ```
 
 2.  **Run the Master Installer**
-    The script handles dependencies (Pacman/AUR), drivers, and symlinks.
+    The script automatically detects your distribution, presents profile options, and deploys packages, system files, and symlinks.
     ```bash
     cd Install
-    chmod +x install.sh
     ./install.sh
     ```
 

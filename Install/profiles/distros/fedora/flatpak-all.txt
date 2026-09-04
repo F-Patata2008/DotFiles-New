@@ -1,0 +1,5 @@
+com.mattjakeman.ExtensionManager
+com.spotify.Client
+org.gnome.Mines
+org.gnome.TwentyFortyEight
+org.localsend.localsend_app

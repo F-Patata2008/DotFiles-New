@@ -37,3 +37,6 @@ require("conf.aesthetics")
 require("conf.animations")
 require("conf.binds")
 require("conf.window")
+
+-- For Noctalia Color templates
+require("noctalia").apply_theme()

@@ -13,7 +13,7 @@ hl.on("hyprland.start", function()
     -- SHELL
     -- --------------------------------------------------------------------------
     hl.exec_cmd("wal -R")              -- Restore Pywal colors
-    hl.exec_cmd("qs -c noctalia-shell")
+    hl.exec_cmd("noctalia")
 
     -- --------------------------------------------------------------------------
     -- HARDWARE & SYNC

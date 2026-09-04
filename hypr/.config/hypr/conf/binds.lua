@@ -2,7 +2,7 @@
 -- VARIABLES
 -- ==============================================================================
 local mainMod     = "SUPER"
-local ipc         = "qs -c noctalia-shell ipc call"
+local ipc         = "noctalia msg"
 local terminal    = "kitty"
 local fileManager = "nautilus"
 local browser     = "zen-browser"
@@ -10,21 +10,21 @@ local browser     = "zen-browser"
 -- ==============================================================================
 -- NOCTALIA SHELL
 -- ==============================================================================
-hl.bind(mainMod .. " + R",         hl.dsp.exec_cmd(ipc .. " launcher toggle"))       -- App Launcher
-hl.bind(mainMod .. " + Q",         hl.dsp.exec_cmd(ipc .. " launcher command"))      -- Command Mode
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(ipc .. " launcher emoji"))        -- Emoji Picker
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(ipc .. " controlCenter toggle"))  -- Dashboard
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(ipc .. " sessionMenu toggle"))    -- Power Menu
+hl.bind(mainMod .. " + R",         hl.dsp.exec_cmd(ipc .. " panel-toggle launcher"))       -- App Launcher
+hl.bind(mainMod .. " + Q",         hl.dsp.exec_cmd(ipc .. " panel-toggle launcher :"))      -- Command Mode
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(ipc .. " panel-toggle launcher /emo"))   -- Emoji Picker
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(ipc .. " panel-toggle control-center"))  -- Dashboard
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(ipc .. " panel-toggle session"))         -- Power Menu
 
 -- ==============================================================================
 -- APPLICATIONS & UTILITIES
 -- ==============================================================================
 hl.bind(mainMod .. " + T",         hl.dsp.exec_cmd(terminal))                                              -- Terminal
-hl.bind(mainMod .. " + A",         hl.dsp.exec_cmd(terminal .. " --class Ai -e ollama run miku"))        -- Ollama Running Miku
+hl.bind(mainMod .. " + A",         hl.dsp.exec_cmd(terminal .. " --class Ai -e agy"))                      -- Antigravity CLI
 hl.bind(mainMod .. " + B",         hl.dsp.exec_cmd(browser))                                               -- Browser
 hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd("flatpak run com.spotify.Client"))                      -- Spotify
 hl.bind(mainMod .. " + E",         hl.dsp.exec_cmd(terminal .. " -e yazi"))                                -- CLI File Manager
-hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd(ipc .. " lockScreen lock"))                             -- Lock Screen
+hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd(ipc .. " session lock"))                               -- Lock Screen
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd(fileManager))                                           -- GUI File Manager
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd(terminal .. " --class clipse -e 'clipse'"))             -- Clipboard
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd(terminal .. " --class Notas -e nvim $HOME/Notas.md"))   -- Notes
@@ -32,13 +32,13 @@ hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd(terminal .. " --class Notas -
 -- ==============================================================================
 -- HARDWARE — Volume & Brightness
 -- ==============================================================================
-hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd(ipc .. " volume increase"),    { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd(ipc .. " volume decrease"),    { locked = true, repeating = true })
-hl.bind("XF86AudioMute",         hl.dsp.exec_cmd(ipc .. " volume muteOutput"),  { locked = true })
-hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd(ipc .. " volume muteInput"),   { locked = true })
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd(ipc .. " volume-up"),       { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd(ipc .. " volume-down"),     { locked = true, repeating = true })
+hl.bind("XF86AudioMute",         hl.dsp.exec_cmd(ipc .. " volume-mute"),     { locked = true })
+hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd(ipc .. " mic-mute"),        { locked = true })
 
-hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd(ipc .. " brightness increase"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(ipc .. " brightness decrease"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd(ipc .. " brightness-up"),   { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(ipc .. " brightness-down"), { locked = true, repeating = true })
 
 -- ==============================================================================
 -- MEDIA PLAYERS

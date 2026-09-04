@@ -16,8 +16,6 @@ hl.config({
 -- ==============================================================================
 -- GESTURES
 -- ==============================================================================
-local ipc = "qs -c noctalia-shell ipc call"
-
 hl.gesture({
     fingers   = 3,
     direction = "horizontal",
@@ -28,6 +26,6 @@ hl.gesture({
     fingers   = 3,
     direction = "up",
     action    = function()
-        hl.exec_cmd(ipc .. " launcher windows")
+        hl.exec_cmd("noctalia msg window-switcher")
     end,
 })

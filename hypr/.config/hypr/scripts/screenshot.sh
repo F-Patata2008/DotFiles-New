@@ -11,7 +11,7 @@ SCREENSHOT_PATH="$SCREENSHOT_DIR/screenshot_$TS.png"
 RECORDING_PATH="$RECORDING_DIR/recording_$TS.mp4"
 
 # Noctalia IPC (Para notificaciones o triggers)
-IPC="qs -c noctalia-shell ipc call"
+IPC="noctalia msg"
 
 # --- LÓGICA DE GRABACIÓN (DETENER) ---
 if pgrep -x "wf-recorder" > /dev/null; then

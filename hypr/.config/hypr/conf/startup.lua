@@ -7,7 +7,7 @@ hl.on("hyprland.start", function()
     -- CORE SERVICES (order matters — sequential to avoid race conditions)
     -- --------------------------------------------------------------------------
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user start hyprland-session.target")
-    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+    hl.exec_cmd("~/.config/hypr/scripts/polkit.sh")
 
     -- --------------------------------------------------------------------------
     -- SHELL

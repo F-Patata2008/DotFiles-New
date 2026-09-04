@@ -4,29 +4,43 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# 2. PATHS (Consolidated)
-export PATH="$HOME/.local/bin:$(go env GOPATH)/bin:$PATH"
+# 2. PATHS (Consolidated & Fast - No fork subprocesses)
+typeset -U path
+path=(
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+    "$HOME/go/bin"
+    "${GOPATH:-$HOME/go}/bin"
+    "$HOME/.opencode/bin"
+    "$HOME/.spicetify"
+    $path
+)
+export PATH
 export ZSH="$HOME/.oh-my-zsh"
 
 # 3. THEME & PROMPT CONFIG
 ZSH_THEME="powerlevel10k/powerlevel10k"
-# REMOVED: POWERLEVEL9K_INSTANT_PROMPT=off (This was the lag source!)
 
-# 4. PLUGINS (Removed autojump and bloat)
-# Note: 'z' is a built-in OMZ plugin that is 10x faster than 'autojump'
+# 4. PLUGINS (Modular & Distro-Aware)
 plugins=(
     git
     colored-man-pages
-    archlinux
-    z                   # <-- Fast alternative to autojump (no Python needed)
+    z                   # Fast alternative to autojump
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
 
-# 5. SOURCE OH-MY-ZSH (The "Heavy" part)
+# Dynamically load distro plugins without hardcoded locks
+if [[ -f /etc/arch-release ]]; then
+    plugins+=(archlinux)
+elif [[ -f /etc/fedora-release ]]; then
+    plugins+=(dnf)
+fi
+
+# 5. SOURCE OH-MY-ZSH
 source $ZSH/oh-my-zsh.sh
 
-# 6. USER LOGIC (Your custom nv function)
+# 6. USER LOGIC
 nv() {
   if [ $# -eq 0 ]; then
     nvim .
@@ -35,10 +49,9 @@ nv() {
   fi
 }
 
-# 7. CUSTOM DOTFILES LOADER (Optimized)
-# Using a glob check to prevent errors if the directory is empty
-if [ -d ~/.zsh/custom ]; then
-  for file in ~/.zsh/custom/*.zsh(N); do
+# 7. CUSTOM DOTFILES LOADER
+if [ -d "$HOME/.zsh/custom" ]; then
+  for file in "$HOME"/.zsh/custom/*.zsh(N); do
     source "$file"
   done
 fi
@@ -47,19 +60,17 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # 9. PERFORMANCE HACK: FASTFETCH
-# In UnixPorn videos, they don't run fastfetch on every shell start
-# because it adds 100ms-200ms of lag.
-# If you want it, keep it, but it's faster to just type 'ff' when you want to see it.
+# Fastfetch can be summoned anytime using 'ff'
 
-# 10. EDITOR & BROWSER
+# 10. EDITOR, BROWSER & ENVIRONMENT
 export EDITOR='nvim'
 export BROWSER='zen'
+
+if [[ -d "$HOME/Progra/Python/Yo/Codigo_fuente" ]]; then
+    export PYTHONPATH="$HOME/Progra/Python/Yo/Codigo_fuente${PYTHONPATH:+:$PYTHONPATH}"
+fi
 
 # Keybinds
 bindkey '^W' backward-kill-word
 bindkey '^[[1;5C' forward-word       # Ctrl+Right
 bindkey '^[[1;5D' backward-word      # Ctrl+Left
-
-export PATH=$PATH:/home/F-Patata/.spicetify
-export PATH=$PATH:~/.spicetify
-export PYTHONPATH="/home/fpatata/Progra/Python/Yo/Codigo_fuente:$PYTHONPATH"

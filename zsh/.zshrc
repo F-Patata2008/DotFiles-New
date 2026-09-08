@@ -24,6 +24,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # 4. PLUGINS (Modular & Distro-Aware)
 plugins=(
     git
+    git-auto-fetch
     colored-man-pages
     z                   # Fast alternative to autojump
     zsh-autosuggestions

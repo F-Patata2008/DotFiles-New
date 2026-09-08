@@ -1,3 +1,4 @@
+com.heroicgameslauncher.hgl
 com.mattjakeman.ExtensionManager
 com.spotify.Client
 org.gnome.Mines

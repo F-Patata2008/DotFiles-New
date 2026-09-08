@@ -216,6 +216,7 @@ java-25-openjdk
 java-latest-openjdk
 kbd
 kbd-legacy
+kde-connect
 kdenlive
 kernel
 kernel-core

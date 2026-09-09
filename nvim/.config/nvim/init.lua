@@ -50,13 +50,5 @@ require("core.keybinds")
 pcall(require, "core.current-theme")
 
 -- 7. Conditional Core Logic
--- Setup Arduino LSP only when an arduino file is opened
-if not is_light_mode then
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = "arduino",
-        callback = function()
-            pcall(function() require("Arduino-Nvim.lsp").setup() end)
-        end,
-        once = true,
-    })
-end
+-- (Arduino environment, lcd, config reloading & LSP setup are handled modularly in plugins.extras.arduino)
+

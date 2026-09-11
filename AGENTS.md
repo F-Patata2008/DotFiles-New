@@ -8,13 +8,15 @@ Each top-level directory is a **GNU Stow package** mirroring `$HOME`:
 stow --restow --verbose fastfetch gamemode hypr kitty nvim ohmyzsh zsh
 ```
 
-- `Legacy/` is **not stowed** — it holds old Waybar/Rofi/Swaync configs replaced by Noctalia Shell
-- `Install/` is **not stowed** — it's the multi-distro deployment & backup toolbox
+- `Legacy/` is **not stowed** — archived standalone Waybar/Rofi/Swaync configs replaced by Noctalia Shell
+- `Install/` is **not stowed** — multi-distro deployment & backup toolbox
+- `docs/` is **not stowed** — personal developer docs, hardware audits, and checklists
+- `assets/` and `Wallpapers/` are **not stowed** — media assets, certificates, and rice wallpapers
 - `ohmyzsh/` and `nvim/.config/nvim/lua/Arduino-Nvim` are **git submodules**
 
 ## Deploying
 
-- **Universal Installer**: `Install/install.sh` (or wrapper `install-core.sh`) — detects OS (Fedora vs Arch vs Generic) and hardware profile (Lenovo E41-55 vs Generic)
+- **Universal Installer**: `./install.sh` (or `Install/install.sh` / wrapper `install-core.sh`) — detects OS (Fedora vs Arch vs Generic) and hardware profile (Lenovo E41-55 vs Generic)
 - **Termux (Android)**: `Install/install-termux.sh` — stows only `fastfetch nvim ohmyzsh zsh`
 - **Backup system files**: `Install/bakup.sh` — profile-safe reverse-sync from `/` into the active profile without cross-distro contamination
 - **Update package lists**: `Install/update_packages.sh` — exports package manifests for the currently running distro (DNF + Copr + Flatpaks on Fedora, Pacman + AUR on Arch)

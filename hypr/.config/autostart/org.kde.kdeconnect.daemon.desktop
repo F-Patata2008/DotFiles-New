@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=KDE Connect
+Exec=/usr/bin/kdeconnectd
+X-GNOME-Autostart-enabled=false
+NotShowIn=GNOME;

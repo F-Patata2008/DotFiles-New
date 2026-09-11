@@ -54,18 +54,24 @@ Each user-facing configuration is a self-contained **GNU Stow package** mirrorin
 
 ```text
 Dotfiles/
+├── install.sh                   # 🚀 Master installation entrypoint (root wrapper)
 ├── fastfetch/                   # Fastfetch with custom Hatsune Miku banner
-├── hypr/                        # Hyprland Lua configuration & helper scripts
-│   └── .config/hypr/
-│       ├── conf/                # Modular Lua configs (binds, startup, animations, etc.)
-│       └── scripts/             # polkit.sh (dynamic agent), update.sh, screenshot.sh
+├── gamemode/                    # GameMode config with dynamic tuned governor scaling
+├── hypr/                        # Hyprland Lua configuration, Noctalia configs & helper scripts
+│   └── .config/
+│       ├── autostart/           # XDG autostart overrides (e.g. masking kdeconnect in GNOME)
+│       └── hypr/
+│           ├── conf/            # Modular Lua configs (binds, startup, animations, etc.)
+│           └── scripts/         # polkit.sh (dynamic agent), update.sh, screenshot.sh
 ├── kitty/                       # Kitty terminal configuration & pywal integration
-├── nvim/                        # Neovim IDE setup (Lazy.nvim, LSP, Treesitter)
+├── nvim/                        # Neovim IDE setup (Lazy.nvim, LSP, Treesitter, Arduino)
 ├── ohmyzsh/                     # Oh-My-Zsh git submodule
 ├── zsh/                         # Zsh configuration, aliases, and p10k prompt
 ├── Wallpapers/                  # Rice wallpapers collection
+├── docs/                        # 📚 Personal documentation, hardware audit & notes
+├── Legacy/                      # 🏛️ Archived classic rice (Waybar, Rofi, SwayNC) replaced by Noctalia
 └── Install/                     # Multi-distro deployment & backup toolbox
-    ├── install.sh               # 🚀 Universal master installer
+    ├── install.sh               # Universal master installer
     ├── bakup.sh                 # 🛡️ Profile-safe reverse sync from / to repo
     ├── update_packages.sh       # 📦 Distro-aware package synchronizer
     └── profiles/
@@ -97,7 +103,6 @@ cd ~/Dotfiles
 ### 2. Run the Universal Installer
 The interactive installer automatically detects your active operating system, checks for laptop hardware specifics, and prompts for your desired profile:
 ```bash
-cd Install
 ./install.sh
 ```
 

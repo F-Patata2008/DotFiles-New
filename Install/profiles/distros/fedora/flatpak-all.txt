@@ -1,6 +1,7 @@
 com.heroicgameslauncher.hgl
 com.mattjakeman.ExtensionManager
 com.spotify.Client
+org.cryptomator.Cryptomator
 org.gnome.Mines
 org.gnome.TwentyFortyEight
 org.localsend.localsend_app

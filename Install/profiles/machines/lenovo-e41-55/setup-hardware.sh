@@ -11,11 +11,20 @@ GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
 log_info() { echo -e "${GREEN}[LENOVO HW]${NC} $1"; }
 log_warn() { echo -e "${YELLOW}[LENOVO HW]${NC} $1"; }
 
-# 1. Goodix Fingerprint Power-Saving Udev Rule
-log_info "Installing Goodix fingerprint USB power-saving udev rule..."
-if [ -f "$SCRIPT_DIR/system-files/etc/udev/rules.d/50-fingerprint-powersave.rules" ]; then
-    sudo cp "$SCRIPT_DIR/system-files/etc/udev/rules.d/50-fingerprint-powersave.rules" /etc/udev/rules.d/
+# 1. Hardware Udev Rules (Fingerprint power-save & Arduino/serial permissions)
+log_info "Installing hardware udev rules..."
+if [ -d "$SCRIPT_DIR/system-files/etc/udev/rules.d" ]; then
+    sudo cp -r "$SCRIPT_DIR/system-files/etc/udev/rules.d/"* /etc/udev/rules.d/
     sudo udevadm control --reload-rules && sudo udevadm trigger || true
+fi
+
+# 2. Goodix Fingerprint Hang Watchdog (fprintd drop-in)
+if [ -d "$SCRIPT_DIR/system-files/etc/systemd/system/fprintd.service.d" ]; then
+    log_info "Installing fprintd watchdog timeout drop-in..."
+    sudo mkdir -p /etc/systemd/system/fprintd.service.d/
+    sudo cp -r "$SCRIPT_DIR/system-files/etc/systemd/system/fprintd.service.d/"* /etc/systemd/system/fprintd.service.d/
+    sudo systemctl daemon-reload
+    sudo systemctl restart fprintd.service || true
 fi
 
 # 2. Battery Watchdog (check-bat at <= 5% -> Hibernate)
@@ -56,6 +65,11 @@ log_info "Deploying zRAM and kernel performance parameters..."
 if [ -f "$SCRIPT_DIR/system-files/etc/systemd/zram-generator.conf" ]; then
     sudo mkdir -p /etc/systemd/
     sudo cp "$SCRIPT_DIR/system-files/etc/systemd/zram-generator.conf" /etc/systemd/zram-generator.conf
+    # Restart zram service to reconfigure with zstd & full RAM allocation
+    if command -v systemctl &>/dev/null; then
+        sudo systemctl daemon-reload
+        sudo systemctl restart systemd-zram-setup@zram0.service || true
+    fi
 fi
 if [ -f "$SCRIPT_DIR/system-files/etc/sysctl.d/99-lenovo-performance.conf" ]; then
     sudo mkdir -p /etc/sysctl.d/

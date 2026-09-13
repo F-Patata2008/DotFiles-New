@@ -25,7 +25,6 @@ hl.on("hyprland.start", function()
     -- --------------------------------------------------------------------------
     -- UTILS
     -- --------------------------------------------------------------------------
-    hl.exec_cmd("hypridle")
     hl.exec_cmd("clipse -listen")                                                -- Clipboard manager
     hl.exec_cmd("gnome-keyring-daemon --start --components=pkcs11,secrets,ssh")
 

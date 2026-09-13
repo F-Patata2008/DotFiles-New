@@ -1,0 +1,5 @@
+# ==============================================================================
+# Arduino & USB Serial Port Access for Lenovo E41-55
+# Grants active seat user and dialout group read/write access without sudo
+# ==============================================================================
+KERNEL=="ttyACM[0-9]*|ttyUSB[0-9]*", MODE="0666", GROUP="dialout", TAG+="uaccess"

@@ -1,5 +1,6 @@
 com.heroicgameslauncher.hgl
 com.mattjakeman.ExtensionManager
+com.modrinth.ModrinthApp
 com.spotify.Client
 org.cryptomator.Cryptomator
 org.gnome.Mines

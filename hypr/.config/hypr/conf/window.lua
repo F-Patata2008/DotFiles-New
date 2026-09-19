@@ -39,6 +39,12 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    name  = "localsend",
+    match = { class = "^(org.localsend.localsend_app)$" },
+    float = true,
+})
+
+hl.window_rule({
     name  = "desktop-portals-float",
     match = {
         class = "^(xdg-desktop-portal-gtk)$",
@@ -99,10 +105,10 @@ hl.window_rule({
 -- Automatically send apps to specific workspaces.
 -- -----------------------------------------------------------------------------
 
--- Workspace 2: Multimedia & Social
+-- Workspace 5: Multimedia & Social
 hl.window_rule({
     name      = "workspace-social-media",
-    match     = { class = "^(spotify|discord)$" },
+    match     = { class = "^(spotify|discord|org.telegram.desktop|TelegramDesktop)$" },
     workspace = "5 silent",
 })
 

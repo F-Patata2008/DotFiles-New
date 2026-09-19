@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=LocalSend
+Comment=LocalSend (Silent Autostart)
+Exec=flatpak run org.localsend.localsend_app --hidden
+Icon=org.localsend.localsend_app
+Terminal=false
+X-GNOME-Autostart-enabled=true

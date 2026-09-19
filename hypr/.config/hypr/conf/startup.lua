@@ -20,6 +20,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("udiskie")                                                       -- USB automount
     hl.exec_cmd("solaar --window=hide --battery-icons=symbolic > /dev/null 2>&1")-- Logitech devices
     hl.exec_cmd("kdeconnectd")                                                   -- Backend only (Noctalia has a widget)
+    hl.exec_cmd("Telegram -startintray > /dev/null 2>&1")                        -- Telegram background tray
+    hl.exec_cmd("flatpak run org.localsend.localsend_app --hidden > /dev/null 2>&1") -- LocalSend background tray
 
     -- --------------------------------------------------------------------------
     -- UTILS

@@ -52,4 +52,22 @@ sudo cp "$SCRIPT_DIR/system-files/etc/default/grub" /etc/default/grub
 log_info "Updating GRUB boot menu..."
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 
+# 4. UEFI Fallback / Drive-Swap Immunity
+log_info "Ensuring UEFI Fallback bootloader (/EFI/BOOT/BOOTX64.EFI) is active..."
+if [ -d /boot/EFI ]; then
+    sudo mkdir -p /boot/EFI/BOOT
+    if [ -f /boot/EFI/GRUB/grubx64.efi ]; then
+        sudo cp /boot/EFI/GRUB/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
+    elif [ -f /boot/EFI/arch/grubx64.efi ]; then
+        sudo cp /boot/EFI/arch/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI
+    fi
+elif [ -d /boot/efi/EFI ]; then
+    sudo mkdir -p /boot/efi/EFI/BOOT
+    if [ -f /boot/efi/EFI/GRUB/grubx64.efi ]; then
+        sudo cp /boot/efi/EFI/GRUB/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+    elif [ -f /boot/efi/EFI/arch/grubx64.efi ]; then
+        sudo cp /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+    fi
+fi
+
 log_info "Custom SN750 Boot setup completed successfully!"

@@ -28,6 +28,6 @@ chsh -s zsh
 
 # 4. Stow CLI configs (We skip Hyprland, SDDM, etc. because they don't work on Android)
 cd ..
-stow --restow --verbose fastfetch nvim ohmyzsh zsh
+stow --restow --verbose clang fastfetch nvim ohmyzsh ruff zsh
 
 echo "✔️ Termux Setup Complete! Restart your terminal."

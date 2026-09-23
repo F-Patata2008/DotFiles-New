@@ -5,7 +5,7 @@
 Each top-level directory is a **GNU Stow package** mirroring `$HOME`:
 
 ```
-stow --restow --verbose fastfetch gamemode hypr kitty nvim ohmyzsh zsh
+stow --restow --verbose clang fastfetch gamemode hypr kitty nvim ohmyzsh ruff zsh
 ```
 
 - `Legacy/` is **not stowed** — archived standalone Waybar/Rofi/Swaync configs replaced by Noctalia Shell
@@ -17,7 +17,7 @@ stow --restow --verbose fastfetch gamemode hypr kitty nvim ohmyzsh zsh
 ## Deploying
 
 - **Universal Installer**: `./install.sh` (or `Install/install.sh` / wrapper `install-core.sh`) — detects OS (Fedora vs Arch vs Generic) and hardware profile (Lenovo E41-55 vs Generic)
-- **Termux (Android)**: `Install/install-termux.sh` — stows only `fastfetch nvim ohmyzsh zsh`
+- **Termux (Android)**: `Install/install-termux.sh` — stows `clang fastfetch nvim ohmyzsh ruff zsh`
 - **Backup system files**: `Install/bakup.sh` — profile-safe reverse-sync from `/` into the active profile without cross-distro contamination
 - **Update package lists**: `Install/update_packages.sh` — exports package manifests for the currently running distro (DNF + Copr + Flatpaks on Fedora, Pacman + AUR on Arch)
 - **Dump config to markdown**: `Install/dump.sh <dir>` — generates `**/DUMP_*.md` (gitignored)

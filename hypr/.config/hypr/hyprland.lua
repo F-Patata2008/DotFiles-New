@@ -3,9 +3,14 @@
 -- =====================================================
 
 -- -----------------------------------------------------
--- COLORS (Noctalia — auto-generated, do not edit)
+-- COLORS (Noctalia — auto-generated, safe cross-distro fallback)
 -- -----------------------------------------------------
-local colors = dofile(os.getenv("HOME") .. "/.cache/noctalia/hyprland-colors.lua")
+local colors_path = os.getenv("HOME") .. "/.cache/noctalia/hyprland-colors.lua"
+local ok, colors = pcall(dofile, colors_path)
+if not ok then
+    local noctalia = require("noctalia")
+    colors = noctalia and noctalia.colors or {}
+end
 
 -- -----------------------------------------------------
 -- ENVIRONMENT VARIABLES

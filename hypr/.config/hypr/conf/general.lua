@@ -1,8 +1,12 @@
 -- ==============================================================================
 -- GENERAL
 -- ==============================================================================
-dofile(os.getenv("HOME") .. "/.cache/noctalia/hyprland-colors.lua")
+local colors_path = os.getenv("HOME") .. "/.cache/noctalia/hyprland-colors.lua"
+pcall(dofile, colors_path)
 
+local noctalia = require("noctalia")
+local active_border = primary or (noctalia and noctalia.colors and noctalia.colors.primary) or "rgb(e6b450)"
+local inactive_border = surface or (noctalia and noctalia.colors and noctalia.colors.surface) or "rgb(0b0e14)"
 
 hl.config({
     general = {
@@ -11,8 +15,8 @@ hl.config({
         border_size = 1,
 
         col = {
-            active_border   = primary,
-            inactive_border = surface,
+            active_border   = active_border,
+            inactive_border = inactive_border,
         },
 
         layout = "dwindle",

@@ -25,6 +25,11 @@ else
     log_warn "Hardware setup script not found, skipping."
 fi
 
+if [ -d "$SCRIPT_DIR/system-files/common" ]; then
+    log_info "Synchronizing universal system files (Option A: pure suspend logind.conf & sleep.conf)..."
+    sudo cp -rT "$SCRIPT_DIR/system-files/common/" /
+fi
+
 if [ -f /etc/arch-release ] && [ -d /boot/grub ]; then
     if grep -q "pcie_aspm=off" /proc/cmdline || ! grep -q "allow-discards" /proc/cmdline; then
         log_info "Synchronizing GRUB configuration to enable TRIM (allow-discards) and PCIe ASPM..."

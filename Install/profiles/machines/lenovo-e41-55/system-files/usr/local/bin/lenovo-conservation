@@ -1,0 +1,36 @@
+#!/bin/bash
+# ==============================================================================
+# LENOVO BATTERY CONSERVATION CONTROLLER (IdeaPad / Lenovo E41-55)
+# Limits charging to ~60-80% to preserve lithium-ion health when on AC,
+# or disables it to allow 100% full charge for mobile KC-135 tanker missions.
+# ==============================================================================
+
+SYSFS_NODE="/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode"
+
+if [ ! -f "$SYSFS_NODE" ]; then
+    echo "Error: Lenovo conservation mode not supported by kernel/ACPI." >&2
+    exit 1
+fi
+
+case "${1:-status}" in
+    on|enable|1)
+        echo 1 | sudo tee "$SYSFS_NODE" >/dev/null
+        echo "✅ Battery Conservation Mode: ENABLED (Charge capped at ~60-80% to protect battery health)"
+        ;;
+    off|disable|0)
+        echo 0 | sudo tee "$SYSFS_NODE" >/dev/null
+        echo "🔋 Battery Conservation Mode: DISABLED (Charges to 100% for KC-135 Stratotanker Duty)"
+        ;;
+    status)
+        STATUS=$(cat "$SYSFS_NODE")
+        if [ "$STATUS" = "1" ]; then
+            echo "Battery Conservation: ENABLED (Desk mode - capped at ~60-80%)"
+        else
+            echo "Battery Conservation: DISABLED (Mobile mode - charges to 100%)"
+        fi
+        ;;
+    *)
+        echo "Usage: lenovo-conservation [on|off|status]"
+        exit 1
+        ;;
+esac

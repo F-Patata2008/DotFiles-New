@@ -33,6 +33,10 @@ if [ -f "$SCRIPT_DIR/system-files/usr/local/bin/check-bat" ]; then
     sudo cp "$SCRIPT_DIR/system-files/usr/local/bin/check-bat" /usr/local/bin/
     sudo chmod +x /usr/local/bin/check-bat
 fi
+if [ -f "$SCRIPT_DIR/system-files/usr/local/bin/lenovo-conservation" ]; then
+    sudo cp "$SCRIPT_DIR/system-files/usr/local/bin/lenovo-conservation" /usr/local/bin/
+    sudo chmod +x /usr/local/bin/lenovo-conservation
+fi
 if [ -f "$SCRIPT_DIR/system-files/etc/systemd/system/check-bat.service" ]; then
     sudo cp "$SCRIPT_DIR/system-files/etc/systemd/system/check-bat.service" /etc/systemd/system/
     sudo cp "$SCRIPT_DIR/system-files/etc/systemd/system/check-bat.timer" /etc/systemd/system/
@@ -79,6 +83,11 @@ if [ -f "$SCRIPT_DIR/system-files/etc/sysctl.d/99-lenovo-performance.conf" ]; th
     sudo mkdir -p /etc/sysctl.d/
     sudo cp "$SCRIPT_DIR/system-files/etc/sysctl.d/99-lenovo-performance.conf" /etc/sysctl.d/
     sudo sysctl --system >/dev/null 2>&1 || true
+fi
+if [ -d "$SCRIPT_DIR/system-files/etc/modules-load.d" ]; then
+    sudo mkdir -p /etc/modules-load.d/
+    sudo cp -r "$SCRIPT_DIR/system-files/etc/modules-load.d/"* /etc/modules-load.d/
+    sudo modprobe tcp_bbr 2>/dev/null || true
 fi
 
 # 5. SSD TRIM Optimization

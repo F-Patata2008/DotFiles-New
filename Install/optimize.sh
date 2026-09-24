@@ -85,7 +85,22 @@ fi
 log_info "Vacuuming systemd journals older than 14 days..."
 sudo journalctl --vacuum-time=14d || true
 
-header "5. POST-OPTIMIZATION AUDIT"
+header "5. BOOT ACCELERATION & BACKGROUND DEBLOAT"
+if command -v systemctl &>/dev/null; then
+    # Disable NetworkManager-wait-online (shaves ~5.5s off boot)
+    if systemctl is-enabled NetworkManager-wait-online.service &>/dev/null; then
+        log_info "Disabling NetworkManager-wait-online.service (shaves 5.5s off boot time)..."
+        sudo systemctl disable NetworkManager-wait-online.service || true
+    fi
+    # Mask speech-dispatcher user service (saves ~20MB RAM and 13 unused threads)
+    if systemctl --user is-active speech-dispatcher.service &>/dev/null || systemctl --user is-enabled speech-dispatcher.socket &>/dev/null; then
+        log_info "Stopping and masking speech-dispatcher (saves ~20MB RAM & CPU threads)..."
+        systemctl --user stop speech-dispatcher.service speech-dispatcher.socket 2>/dev/null || true
+        systemctl --user mask speech-dispatcher.service speech-dispatcher.socket 2>/dev/null || true
+    fi
+fi
+
+header "6. POST-OPTIMIZATION AUDIT"
 echo "=== DISK REAL ESTATE ==="
 df -h / /home
 

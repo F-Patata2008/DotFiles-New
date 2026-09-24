@@ -67,6 +67,7 @@ if [ -f "$SCRIPT_DIR/system-files/etc/systemd/zram-generator.conf" ]; then
     sudo cp "$SCRIPT_DIR/system-files/etc/systemd/zram-generator.conf" /etc/systemd/zram-generator.conf
     # Restart zram service to reconfigure with zstd & full RAM allocation
     if command -v systemctl &>/dev/null; then
+        sudo swapoff /dev/zram0 2>/dev/null || true
         sudo systemctl daemon-reload
         sudo systemctl restart systemd-zram-setup@zram0.service || true
     fi
@@ -75,6 +76,12 @@ if [ -f "$SCRIPT_DIR/system-files/etc/sysctl.d/99-lenovo-performance.conf" ]; th
     sudo mkdir -p /etc/sysctl.d/
     sudo cp "$SCRIPT_DIR/system-files/etc/sysctl.d/99-lenovo-performance.conf" /etc/sysctl.d/
     sudo sysctl --system >/dev/null 2>&1 || true
+fi
+
+# 5. SSD TRIM Optimization
+if command -v systemctl &>/dev/null; then
+    log_info "Enabling weekly SSD TRIM timer (fstrim.timer)..."
+    sudo systemctl enable --now fstrim.timer || true
 fi
 
 log_info "Lenovo E41-55 hardware profile successfully applied!"

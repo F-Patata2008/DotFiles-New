@@ -49,8 +49,29 @@ sudo mkinitcpio -P
 # 3. GRUB Configuration
 log_info "Deploying GRUB default configuration..."
 sudo cp "$SCRIPT_DIR/system-files/etc/default/grub" /etc/default/grub
+
+# Dynamic LUKS UUID Detection (Critical for Arch Reinstalls!)
+LUKS_UUID=$(lsblk -sno FSTYPE,UUID "$(findmnt -no SOURCE /)" 2>/dev/null | awk '$1=="crypto_LUKS"{print $2}' | head -n 1 || true)
+if [ -n "$LUKS_UUID" ]; then
+    log_info "Detected active LUKS container UUID: $LUKS_UUID"
+    sudo sed -i -E "s/cryptdevice=UUID=[a-f0-9-]+:cryptlvm/cryptdevice=UUID=${LUKS_UUID}:cryptlvm/g" /etc/default/grub
+else
+    log_warn "Could not automatically resolve crypto_LUKS UUID. Retaining template UUID in /etc/default/grub."
+fi
+
+# Ensure TRIM (:allow-discards) is active
+if ! grep -q ":allow-discards" /etc/default/grub; then
+    sudo sed -i "s/:cryptlvm/:cryptlvm:allow-discards/g" /etc/default/grub
+fi
+
 log_info "Updating GRUB boot menu..."
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+# 3B. NVMe fstab Optimization (noatime,commit=60)
+if [ -f /etc/fstab ]; then
+    log_info "Optimizing /etc/fstab with noatime and commit=60 for NVMe longevity..."
+    sudo sed -i -E 's/(\/(home)?\s+ext4\s+)rw,relatime/\1rw,noatime,commit=60/g' /etc/fstab || true
+fi
 
 # 4. UEFI Fallback / Drive-Swap Immunity
 log_info "Ensuring UEFI Fallback bootloader (/EFI/BOOT/BOOTX64.EFI) is active..."

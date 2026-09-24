@@ -65,9 +65,14 @@ fi
 # 3. Arch SN750 Custom Boot Prompt (Only applicable when Arch is selected)
 SN750_BOOT=false
 if [ "$DISTRO_CHOICE" == "2" ] && [ "$MACH_PROFILE" == "lenovo-e41-55" ]; then
+    DEFAULT_SN750="n"
+    if lsblk 2>/dev/null | grep -q "Patata-root"; then
+        DEFAULT_SN750="y"
+    fi
     echo -e "\n${YELLOW}[SPECIAL DRIVE DETECTED]${NC}"
     echo "Is this target drive the 500GB WD Black SN750 (with LUKS + LVM + Minegrub)?"
-    read -rp "Deploy custom SN750 boot configuration? [y/N]: " SN750_RESP
+    read -rp "Deploy custom SN750 boot configuration? [Y/n, default: $DEFAULT_SN750]: " SN750_RESP
+    SN750_RESP=${SN750_RESP:-$DEFAULT_SN750}
     if [[ "$SN750_RESP" =~ ^[Yy]$ ]]; then
         SN750_BOOT=true
     fi
@@ -154,14 +159,34 @@ log_info "Stowing user dotfiles..."
 (cd "$ROOT_DIR" && stow --restow --verbose clang fastfetch gamemode hypr kitty nvim ohmyzsh ruff zsh)
 
 # ------------------------------------------------------------------------------
-# PHASE 7: CORE SYSTEM SERVICES
+# PHASE 7: CORE SYSTEM SERVICES & OPTIMIZATIONS
 # ------------------------------------------------------------------------------
-print_header "PHASE 7: ENABLING CORE SERVICES"
+print_header "PHASE 7: ENABLING CORE SERVICES & OPTIMIZATIONS"
 
+# Enable networking and display manager
 sudo systemctl enable NetworkManager.service bluetooth.service || true
-if systemctl list-unit-files | grep -q sddm.service; then
+# Prevent 5.5s boot delay on laptops
+sudo systemctl disable NetworkManager-wait-online.service 2>/dev/null || true
+
+if systemctl list-unit-files 2>/dev/null | grep -q sddm.service; then
     sudo systemctl enable sddm.service || true
 fi
 systemctl --user enable pipewire.service wireplumber.service 2>/dev/null || true
 
-print_header "🎉 DEPLOYMENT COMPLETE! SYSTEM READY 🎉"
+# Power management, battery watchdog & SSD TRIM
+sudo systemctl enable fstrim.timer 2>/dev/null || true
+if [ -f /etc/systemd/system/check-bat.timer ]; then
+    sudo systemctl enable --now check-bat.timer || true
+fi
+if [ -f /etc/systemd/system/disable-usb-wakeup.service ]; then
+    sudo systemctl enable --now disable-usb-wakeup.service || true
+fi
+if [ -f /etc/arch-release ]; then
+    sudo systemctl enable tlp.service 2>/dev/null || true
+fi
+
+# Debloat speech-dispatcher
+systemctl --user stop speech-dispatcher.service speech-dispatcher.socket 2>/dev/null || true
+systemctl --user mask speech-dispatcher.service speech-dispatcher.socket 2>/dev/null || true
+
+print_header "🎉 DEPLOYMENT COMPLETE! SYSTEM READY & FULLY OPTIMIZED 🎉"

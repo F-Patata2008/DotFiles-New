@@ -1,0 +1,11 @@
+[Unit]
+Description=Disable USB XHC0 ACPI Wakeup (Prevent Backpack Oven)
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'if grep -q "XHC0.*\*enabled" /proc/acpi/wakeup; then echo XHC0 > /proc/acpi/wakeup; fi'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

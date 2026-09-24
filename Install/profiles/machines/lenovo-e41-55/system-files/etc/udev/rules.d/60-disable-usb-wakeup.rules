@@ -1,0 +1,11 @@
+# ==============================================================================
+# Disable Wakeup for USB Peripherals (Prevent Backpack Oven Syndrome)
+# ==============================================================================
+# Prevents accidental resumes from suspend caused by Logitech G502 Lightspeed
+# wireless receiver, USB hubs, or external devices moving inside a backpack.
+
+# Specific rule for Logitech G502 Lightspeed Wireless Receiver (046d:c539)
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c539", ATTR{power/wakeup}="disabled"
+
+# Generic rule: disable wake-up on any external USB device claiming wake capability
+ACTION=="add", SUBSYSTEM=="usb", ATTR{power/wakeup}=="enabled", ATTR{power/wakeup}="disabled"

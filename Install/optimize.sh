@@ -19,10 +19,21 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 header "1. HARDWARE POWER & PERFORMANCE TUNING"
 if [ -f "$SCRIPT_DIR/profiles/machines/lenovo-e41-55/setup-hardware.sh" ]; then
-    log_info "Executing Lenovo E41-55 hardware tuning (TLP, zRAM, sysctl, watchdog)..."
+    log_info "Executing Lenovo E41-55 hardware tuning (TLP, zRAM, sysctl, watchdog, USB sleep)..."
     bash "$SCRIPT_DIR/profiles/machines/lenovo-e41-55/setup-hardware.sh"
 else
     log_warn "Hardware setup script not found, skipping."
+fi
+
+if [ -f /etc/arch-release ] && [ -d /boot/grub ]; then
+    if grep -q "pcie_aspm=off" /proc/cmdline || ! grep -q "allow-discards" /proc/cmdline; then
+        log_info "Synchronizing GRUB configuration to enable TRIM (allow-discards) and PCIe ASPM..."
+        if [ -f "$SCRIPT_DIR/profiles/machines/arch-sn750-custom-boot/system-files/etc/default/grub" ]; then
+            sudo cp "$SCRIPT_DIR/profiles/machines/arch-sn750-custom-boot/system-files/etc/default/grub" /etc/default/grub
+        fi
+        sudo grub-mkconfig -o /boot/grub/grub.cfg || true
+        log_info "GRUB boot config updated successfully."
+    fi
 fi
 
 header "2. FINGERPRINT REBUILT PACKAGE INSTALLATION"

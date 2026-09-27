@@ -154,9 +154,9 @@ if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
 fi
 
-# Stow active packages (clang fastfetch gamemode hypr kitty nvim ohmyzsh ruff zsh)
+# Stow active packages (clang fastfetch gamemode hypr kitty noctalia nvim ohmyzsh ruff zsh)
 log_info "Stowing user dotfiles..."
-(cd "$ROOT_DIR" && stow --restow --verbose clang fastfetch gamemode hypr kitty nvim ohmyzsh ruff zsh)
+(cd "$ROOT_DIR" && stow --restow --verbose clang fastfetch gamemode hypr kitty noctalia nvim ohmyzsh ruff zsh)
 
 # ------------------------------------------------------------------------------
 # PHASE 7: CORE SYSTEM SERVICES & OPTIMIZATIONS

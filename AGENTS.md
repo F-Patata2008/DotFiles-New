@@ -5,7 +5,7 @@
 Each top-level directory is a **GNU Stow package** mirroring `$HOME`:
 
 ```
-stow --restow --verbose clang fastfetch gamemode hypr kitty nvim ohmyzsh ruff zsh
+stow --restow --verbose clang fastfetch gamemode hypr kitty noctalia nvim ohmyzsh ruff zsh
 ```
 
 - `Legacy/` is **not stowed** — archived standalone Waybar/Rofi/Swaync configs replaced by Noctalia Shell

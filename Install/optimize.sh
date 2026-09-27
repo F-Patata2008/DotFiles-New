@@ -67,6 +67,11 @@ else
 fi
 
 header "4. TRIMMING PACKAGE CACHE & BUILD ARTIFACTS"
+# Purge orphaned alpm parallel download directories, partial downloads, and corrupted stubs
+log_info "Purging stale pacman download artifacts and corrupted packages..."
+sudo rm -rf /var/cache/pacman/pkg/download-* /var/cache/pacman/pkg/*.part 2>/dev/null || true
+sudo find /var/cache/pacman/pkg/ -type f -name "*.pkg.tar.*" -size -2k -delete 2>/dev/null || true
+
 if command -v paccache &>/dev/null; then
     log_info "Trimming pacman cache (retaining last 2 versions for safety rollback)..."
     sudo paccache -rk2

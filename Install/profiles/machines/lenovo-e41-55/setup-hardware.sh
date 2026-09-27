@@ -121,4 +121,13 @@ EOF
     done
 fi
 
+# 8. Cross-Distro Username Symlink (/home/fpatata <-> /home/F-Patata)
+if [ -d /home/F-Patata ] && [ ! -e /home/fpatata ]; then
+    log_info "Creating /home/fpatata -> /home/F-Patata compatibility symlink..."
+    sudo ln -s /home/F-Patata /home/fpatata || true
+elif [ -d /home/fpatata ] && [ ! -e /home/F-Patata ]; then
+    log_info "Creating /home/F-Patata -> /home/fpatata compatibility symlink..."
+    sudo ln -s /home/fpatata /home/F-Patata || true
+fi
+
 log_info "Lenovo E41-55 hardware profile successfully applied!"

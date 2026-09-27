@@ -100,6 +100,16 @@ if command -v systemctl &>/dev/null; then
     fi
 fi
 
+header "5B. GNU STOW & NOCTALIA INTEGRITY CHECK"
+if [ -d "$HOME/.config/noctalia" ] && [ ! -L "$HOME/.config/noctalia" ]; then
+    log_warn "Existing non-symlink ~/.config/noctalia detected. Backing up and restowing..."
+    mv "$HOME/.config/noctalia" "$HOME/.config/noctalia.bak"
+    (cd "$ROOT_DIR" && stow --restow --verbose noctalia)
+elif [ ! -e "$HOME/.config/noctalia" ]; then
+    log_info "Stowing noctalia package..."
+    (cd "$ROOT_DIR" && stow --restow --verbose noctalia)
+fi
+
 header "6. POST-OPTIMIZATION AUDIT"
 echo "=== DISK REAL ESTATE ==="
 df -h / /home

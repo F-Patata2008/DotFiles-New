@@ -1,6 +1,9 @@
 #%PAM-1.0
 
-auth 	    sufficient 	pam_fprintd.so timeout=5
+# Fingerprint in SDDM blocks typed password input (Existing authentication ongoing)
+# and fails to supply password to gnome-keyring, leaving it locked.
+# Use password at boot SDDM for instant keyring unlock; use fingerprint for sudo/lockscreen.
+#auth 	    sufficient 	pam_fprintd.so timeout=5
 auth        include     system-login
 -auth       optional    pam_gnome_keyring.so
 -auth       optional    pam_kwallet5.so

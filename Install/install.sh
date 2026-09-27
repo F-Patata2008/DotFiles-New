@@ -154,6 +154,12 @@ if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
     mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
 fi
 
+# Backup non-symlink ~/.config/noctalia if present (prevents stow collision)
+if [ -d "$HOME/.config/noctalia" ] && [ ! -L "$HOME/.config/noctalia" ]; then
+    log_warn "Existing non-symlink ~/.config/noctalia found. Backing up to ~/.config/noctalia.bak..."
+    mv "$HOME/.config/noctalia" "$HOME/.config/noctalia.bak"
+fi
+
 # Stow active packages (clang fastfetch gamemode hypr kitty noctalia nvim ohmyzsh ruff zsh)
 log_info "Stowing user dotfiles..."
 (cd "$ROOT_DIR" && stow --restow --verbose clang fastfetch gamemode hypr kitty noctalia nvim ohmyzsh ruff zsh)

@@ -1,0 +1,69 @@
+# ==============================================================================
+# Noctalia v5 Shell Configuration
+# Converted from Comrade Patata Dotfiles (Fedora <-> Arch unified)
+# ==============================================================================
+
+[shell]
+telemetry_enabled = true
+font_family = "sans-serif"
+corner_radius_scale = 1.0
+
+    [shell.launcher]
+    show_icons = true
+    categories = true
+    compact = true
+    sort_by_usage = true
+
+    [shell.panel]
+    borders = true
+    shadow = true
+
+[bar]
+order = [ "default" ]
+
+    [bar.default]
+    enabled = true
+    position = "top"
+    thickness = 32
+    margin_edge = 4
+    margin_ends = 4
+    margin_opposite_edge = 0
+    padding = 6
+    radius = 12
+    background_opacity = 0.93
+    font_scale = 0.8
+    widget_spacing = 6
+    start = [ "launcher", "workspaces", "active-window", "media" ]
+    center = [ "notifications", "cpu", "ram", "temp" ]
+    end = [ "tray", "power-profile", "battery", "network", "bluetooth", "volume", "brightness", "control-center", "clock", "wallpaper" ]
+
+[dock]
+enabled = true
+position = "bottom"
+auto_hide = true
+background_opacity = 0.93
+icon_size = 48
+item_spacing = 6
+magnification = true
+
+[theme]
+builtin = "Ayu"
+source = "wallpaper"
+mode = "dark"
+wallpaper_scheme = "m3-content"
+
+[wallpaper]
+directory = "/home/fpatata/Dotfiles/Wallpapers"
+fill_mode = "crop"
+transition = [ "fade", "wipe", "disc", "stripes", "zoom", "honeycomb" ]
+transition_duration = 1500.0
+
+[hooks]
+colors_changed = [
+    "noctalia theme -c /home/fpatata/.config/noctalia/templates/templates.toml /home/fpatata/.local/state/noctalia/wallpaper.png 2>/dev/null || true",
+    "hyprctl reload"
+]
+wallpaper_changed = [
+    "noctalia theme -c /home/fpatata/.config/noctalia/templates/templates.toml $NOCTALIA_WALLPAPER 2>/dev/null || true",
+    "hyprctl reload"
+]

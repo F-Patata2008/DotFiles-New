@@ -1,0 +1,5 @@
+# Noctalia dynamic theme template for Hyprland (Lua)
+[templates.hyprland-colors]
+input_path  = "~/.config/noctalia/templates/hyprland-colors.lua.tpl"
+output_path = "~/.cache/noctalia/hyprland-colors.lua"
+post_hook   = "hyprctl reload"

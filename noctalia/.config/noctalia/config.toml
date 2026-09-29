@@ -50,11 +50,11 @@ show_dots = true
 
 [hooks]
 colors_changed = [
-    "noctalia theme -c /home/fpatata/.config/noctalia/templates/templates.toml /home/fpatata/.local/state/noctalia/wallpaper.png 2>/dev/null || true",
+    "noctalia theme -c ~/.config/noctalia/templates/templates.toml ~/.local/state/noctalia/wallpaper.png 2>/dev/null || true",
     "hyprctl reload"
 ]
 wallpaper_changed = [
-    "noctalia theme -c /home/fpatata/.config/noctalia/templates/templates.toml $NOCTALIA_WALLPAPER 2>/dev/null || true",
+    "noctalia theme -c ~/.config/noctalia/templates/templates.toml $NOCTALIA_WALLPAPER 2>/dev/null || true",
     "hyprctl reload"
 ]
 
@@ -63,7 +63,7 @@ auto_locate = true
 
 [lockscreen]
 allow_empty_password = true
-wallpaper = "/home/fpatata/Dotfiles/Wallpapers/Macross/4.jpg"
+wallpaper = "~/Dotfiles/Wallpapers/Macross/4.jpg"
 
 [lockscreen_widgets]
 enabled = true
@@ -173,16 +173,16 @@ wallpaper_scheme = "m3-content"
     ]
 
 [wallpaper]
-directory = "/home/fpatata/Dotfiles/Wallpapers/Gundam"
+directory = "~/Dotfiles/Wallpapers/Gundam"
 fill_mode = "crop"
 transition = [ "fade", "wipe", "disc", "stripes", "zoom", "honeycomb" ]
 transition_duration = 1500.0
 
     [wallpaper.default]
-    path = "/home/fpatata/Dotfiles/Wallpapers/Gundam/10.jpg"
+    path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
 
     [wallpaper.last]
-    path = "/home/fpatata/Dotfiles/Wallpapers/Gundam/10.jpg"
+    path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
 
 [widget.bar]
 type = "icefish/phone-connect:bar"

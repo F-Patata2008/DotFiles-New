@@ -17,7 +17,15 @@ return {
       if ok then
         install.ts_generate_args = { "generate", "--abi", tostring(vim.treesitter.language_version) }
       end
-      require("nvim-treesitter.configs").setup(opts)
+      local ok_configs, configs = pcall(require, "nvim-treesitter.configs")
+      if ok_configs then
+        configs.setup(opts)
+      else
+        local ok_config, cfg = pcall(require, "nvim-treesitter.config")
+        if ok_config then
+          cfg.setup(opts)
+        end
+      end
     end,
     opts = {
       -- custom parser (new-style)

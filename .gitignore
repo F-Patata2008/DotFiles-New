@@ -1,3 +1,6 @@
 push.log
 **/DUMP_*.md
 .aider*
+nvim/.config/nvim/lua/matugen.lua
+nvim/.config/nvim/lua/plugins/base16.lua
+

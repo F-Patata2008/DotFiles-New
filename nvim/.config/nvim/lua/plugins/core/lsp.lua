@@ -120,6 +120,42 @@ return {
                 capabilities = capabilities,
               })
             end,
+            ["clangd"] = function()
+              local clangd_capabilities = vim.tbl_deep_extend("force", capabilities, {
+                offsetEncoding = { "utf-16" },
+              })
+              lspconfig.clangd.setup({
+                cmd = {
+                  "clangd",
+                  "--background-index",
+                  "--clang-tidy",
+                  "--header-insertion=iwyu",
+                  "--completion-style=detailed",
+                  "--fallback-style=llvm",
+                },
+                on_attach = on_attach,
+                capabilities = clangd_capabilities,
+              })
+            end,
+            ["lua_ls"] = function()
+              lspconfig.lua_ls.setup({
+                on_attach = on_attach,
+                capabilities = capabilities,
+                settings = {
+                  Lua = {
+                    runtime = { version = "LuaJIT" },
+                    diagnostics = { globals = { "vim", "hl" } },
+                    workspace = {
+                      checkThirdParty = false,
+                      library = {
+                        vim.env.VIMRUNTIME,
+                      },
+                    },
+                    telemetry = { enable = false },
+                  },
+                },
+              })
+            end,
             ["pyright"] = function()
               lspconfig.pyright.setup(pyright_opts)
             end,

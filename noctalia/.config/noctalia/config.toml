@@ -161,6 +161,7 @@ wallpaper_scheme = "m3-content"
     builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kitty", "niri", "qt", "sway" ]
     community_ids = [
         "zen-browser",
+        "pywalfox",
         "discord",
         "telegram",
         "neovim",

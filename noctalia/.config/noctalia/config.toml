@@ -1,52 +1,133 @@
 # ==============================================================================
 # Noctalia v5 Shell Configuration
-# Full Declarative Config (Fedora <-> Arch unified)
+# Synced from local machine (Fedora 44 / Saviour Gundam) for upstream default
 # ==============================================================================
 
-[bar]
-order = [ "default" ]
+config_version = 14
 
-    [bar.default]
-    background_opacity = 0.93
-    center = [ "notifications", "cpu", "ram", "temp", "bar" ]
-    enabled = true
+[accessibility]
+ui_scale = 0.80000000447034836
+
+[bar]
+order = [ "Top_Bar" ]
+
+    [bar.Top_Bar]
+    center = [ "notifications", "sysmon", "ram", "temp", "bar", "activity" ]
     end = [
         "tray",
-        "power-profile",
-        "battery",
         "network",
         "bluetooth",
         "volume",
         "brightness",
-        "control-center",
+        "battery",
         "clock",
-        "wallpaper"
+        "control-center",
+        "wallpaper",
+        "session"
     ]
-    font_scale = 0.8
-    margin_edge = 4
-    margin_ends = 4
-    margin_opposite_edge = 0
-    padding = 6
-    position = "top"
-    radius = 12
+    font_scale = 0.79999998956918716
+    margin_ends = 3
+    scale = 0.80000000447034836
     start = [ "launcher", "workspaces", "active_window", "media" ]
     thickness = 32
-    widget_spacing = 6
+
+[battery]
+warning_threshold = 30
+
+    [battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0"]
+    warning_threshold = 10
+
+    [battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_1"]
+    warning_threshold = 15
 
 [calendar]
 enabled = true
 
-[dock]
-active_monitor_only = true
-auto_hide = true
-background_opacity = 0.93
-enabled = true
-icon_size = 24
-item_spacing = 6
-magnification = true
-position = "right"
-reserve_space = false
-show_dots = true
+    [calendar.account.colli]
+    name = "Personal"
+    type = "google"
+
+    [calendar.account.u_de_chile]
+    name = "Uni"
+    type = "google"
+
+[desktop_widgets]
+schema_version = 2
+widget_order = [
+    "desktop-widget-0000000000000001",
+    "desktop-widget-0000000000000002",
+    "desktop-widget-0000000000000003",
+    "desktop-widget-0000000000000004",
+    "desktop-widget-0000000000000005"
+]
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.desktop-widget-0000000000000001]
+    box_height = 96.0
+    box_width = 464.0
+    cx = 251.0
+    cy = 160.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000001.settings]
+        format = "{:%H:%M:%S}"
+
+    [desktop_widgets.widget.desktop-widget-0000000000000002]
+    box_height = 256.0
+    box_width = 336.0
+    cx = 187.0
+    cy = 624.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "calendar"
+
+    [desktop_widgets.widget.desktop-widget-0000000000000003]
+    box_height = 80.0
+    box_width = 176.0
+    cx = 123.0
+    cy = 312.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "weather"
+
+    [desktop_widgets.widget.desktop-widget-0000000000000004]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 149.39999389648438
+    cy = 424.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "media_player"
+
+    [desktop_widgets.widget.desktop-widget-0000000000000005]
+    box_height = 96.0
+    box_width = 208.0
+    cx = 1235.0
+    cy = 688.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "sysmon"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000005.settings]
+        stat = "cpu_usage"
+        stat2 = "ram_pct"
+
 
 [hooks]
 colors_changed = [
@@ -58,17 +139,56 @@ wallpaper_changed = [
     "hyprctl reload"
 ]
 
+[dock]
+active_monitor_only = true
+enabled = true
+icon_size = 24
+layer = "overlay"
+pinned = [ "kitty", "zen-browser", "steam" ]
+position = "right"
+reserve_space = false
+show_dots = true
+smart_auto_hide = true
+
+[hot_corners]
+enabled = true
+
+[idle]
+behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+pre_action_fade_seconds = 4
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = true
+    timeout = 300.0
+
+    [idle.behavior.lock-and-suspend]
+    action = "lock_and_suspend"
+    enabled = true
+    timeout = 600.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 120.0
+
 [location]
 auto_locate = true
 
 [lockscreen]
-allow_empty_password = true
-wallpaper = "~/Dotfiles/Wallpapers/Macross/4.jpg"
+wallpaper = "~/Dotfiles/Wallpapers/Gundam/33.jpg"
 
 [lockscreen_widgets]
 enabled = true
 schema_version = 2
-widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-widget-0000000000000001" ]
+widget_order = [
+    "lockscreen-login-box@eDP-1",
+    "lockscreen-widget-0000000000000001",
+    "lockscreen-widget-0000000000000002",
+    "lockscreen-widget-0000000000000003",
+    "lockscreen-widget-0000000000000004",
+    "lockscreen-widget-0000000000000005"
+]
 
     [lockscreen_widgets.grid]
     cell_size = 16
@@ -78,8 +198,8 @@ widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-widget-00000000000000
     [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
     box_height = 196.0
     box_width = 810.0
-    cx = 411.0
-    cy = 594.0
+    cx = 443.0
+    cy = 606.0
     output = "eDP-1"
     placement_height = 768.0
     placement_width = 1366.0
@@ -90,23 +210,23 @@ widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-widget-00000000000000
         background_color = "surface_variant"
         background_opacity = 0.88
         background_radius = 12.0
-        center_password_text = false
+        center_password_text = true
         input_opacity = 1.0
         input_radius = 6.0
         layout = "regular"
         show_caps_lock = true
-        show_keyboard_layout = true
+        show_keyboard_layout = false
         show_login_button = true
         show_media = true
         show_session_buttons = true
-        show_unlock_hint = true
+        show_unlock_hint = false
         show_weather = true
 
     [lockscreen_widgets.widget.lockscreen-widget-0000000000000001]
-    box_height = 144.0
-    box_width = 352.0
-    cx = 187.0
-    cy = 104.0
+    box_height = 112.0
+    box_width = 400.0
+    cx = 211.0
+    cy = 80.0
     output = "eDP-1"
     placement_height = 768.0
     placement_width = 1366.0
@@ -116,6 +236,59 @@ widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-widget-00000000000000
         [lockscreen_widgets.widget.lockscreen-widget-0000000000000001.settings]
         format = "{:%H:%M:%S}"
 
+    [lockscreen_widgets.widget.lockscreen-widget-0000000000000002]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 107.0
+    cy = 160.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "label"
+
+        [lockscreen_widgets.widget.lockscreen-widget-0000000000000002.settings]
+        title = "Mundo Hola"
+
+    [lockscreen_widgets.widget.lockscreen-widget-0000000000000003]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 955.0
+    cy = 560.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "sysmon"
+
+        [lockscreen_widgets.widget.lockscreen-widget-0000000000000003.settings]
+        display = "graph"
+        gauge_layout = "horizontal"
+        stat = "cpu_usage"
+        stat2 = "ram_pct"
+
+    [lockscreen_widgets.widget.lockscreen-widget-0000000000000004]
+    box_height = 80.0
+    box_width = 160.0
+    cx = 955.0
+    cy = 660.0
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "volume"
+
+    [lockscreen_widgets.widget.lockscreen-widget-0000000000000005]
+    box_height = 192.0
+    box_width = 272.0
+    cx = 1187.0
+    cy = 605.29998779296875
+    output = "eDP-1"
+    placement_height = 768.0
+    placement_width = 1366.0
+    rotation = 0.0
+    type = "calendar"
+
 [nightlight]
 enabled = true
 
@@ -124,60 +297,53 @@ position = "top_center"
 
 [osd]
 position = "bottom_center"
-position_vertical = "bottom_right"
 
 [plugins]
-enabled = [ "icefish/phone-connect" ]
+enabled = [ "alexmnrs/github-activity", "icefish/phone-connect" ]
 
 [shell]
-corner_radius_scale = 1.0
-font_family = "sans-serif"
+corner_radius_scale = 0.80000001192092896
+font_family = "JetBrainsMono NF"
 password_style = "random"
 polkit_agent = true
 screen_time_enabled = true
 telemetry_enabled = true
 time_format = "{:%H:%M:%S}"
 
-    [shell.keyboard_layout.custom_labels]
-    "Spanish (Latin American)" = "LA"
-
     [shell.launcher]
-    categories = true
-    compact = true
-    show_icons = true
-    sort_by_usage = true
+    pinned = [ "zen-browser", "kitty", "steam", "spotify" ]
+    show_app_actions = true
 
     [shell.panel]
-    borders = true
-    shadow = true
+    transparency_mode = "glass"
 
 [theme]
 builtin = "Ayu"
+community_palette = "Oxocarbon"
 mode = "dark"
-source = "wallpaper"
-wallpaper_scheme = "m3-content"
+source = "builtin"
+wallpaper_scheme = "soft"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "hyprland", "kitty", "niri", "qt", "sway" ]
+    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "hyprland", "kitty", "qt" ]
     community_ids = [
+        "antigravity",
+        "spicetify",
         "zen-browser",
-        "pywalfox",
-        "discord",
         "telegram",
-        "neovim",
-        "vscode",
-        "heroiclauncher",
+        "gimp",
         "steam",
         "fuzzel",
+        "rofi",
+        "fastfetch",
         "zathura",
+        "hyprtoolkit",
+        "fzf",
         "yazi"
     ]
 
 [wallpaper]
-directory = "~/Dotfiles/Wallpapers/Gundam"
-fill_mode = "crop"
-transition = [ "fade", "wipe", "disc", "stripes", "zoom", "honeycomb" ]
-transition_duration = 1500.0
+directory = "~/Dotfiles/Wallpapers"
 
     [wallpaper.default]
     path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
@@ -185,5 +351,57 @@ transition_duration = 1500.0
     [wallpaper.last]
     path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
 
+    [wallpaper.monitors.eDP-1]
+    path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "~/Dotfiles/Wallpapers/Macross/8.jpeg"
+    theme_mode = "dark"
+    wallpaper_scheme = "soft"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Ayu"
+    palette_source = "builtin"
+    path = "~/Dotfiles/Wallpapers/Gundam/10.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Ayu"
+    palette_source = "builtin"
+    path = "~/Dotfiles/Wallpapers/Gundam/20.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Ayu"
+    palette_source = "builtin"
+    path = "~/Dotfiles/Wallpapers/Gundam/37.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "~/Dotfiles/Wallpapers/Gundam/36.png"
+    theme_mode = "dark"
+    wallpaper_scheme = "soft"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Ayu"
+    palette_source = "builtin"
+    path = "~/Dotfiles/Wallpapers/Miku/Miku10.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "~/Dotfiles/Wallpapers/Gundam/34.png"
+    theme_mode = "dark"
+    wallpaper_scheme = "soft"
+
+[widget.activity]
+enabled = false
+type = "alexmnrs/github-activity:activity"
+
 [widget.bar]
 type = "icefish/phone-connect:bar"
+
+[widget.media]
+hide_when_no_media = true

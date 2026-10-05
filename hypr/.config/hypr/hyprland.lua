@@ -35,6 +35,7 @@ hl.env("GDK_SCALE",                          "1")
 -- -----------------------------------------------------
 -- MODULES
 -- -----------------------------------------------------
+require("conf.monitors")
 require("conf.startup")
 require("conf.input")
 require("conf.general")

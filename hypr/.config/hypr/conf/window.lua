@@ -146,3 +146,24 @@ hl.window_rule({
     match   = { title = "^(Picture in Picture)$" },
     no_blur = true,
 })
+
+-- -----------------------------------------------------------------------------
+-- 🚫 SECTION: MAXIMIZE & FULLSCREEN MANAGEMENT
+-- Suppress maximize events so apps obey 50/50 tiling, with LibreOffice exception
+-- -----------------------------------------------------------------------------
+
+-- Global: Prevent apps from opening maximized/fullscreen over existing windows
+hl.window_rule({
+    name           = "suppress-maximize",
+    match          = { class = ".*" },
+    suppress_event = "maximize",
+})
+
+-- LibreOffice: Allow opening maximized/fullscreen for document editing
+hl.window_rule({
+    name       = "libreoffice-maximize",
+    match      = { class = "^(libreoffice.*|soffice.*)$" },
+    fullscreen = 1,
+})
+
+

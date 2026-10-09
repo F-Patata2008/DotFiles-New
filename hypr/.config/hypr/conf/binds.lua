@@ -54,6 +54,9 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),    { locked = t
 hl.bind(mainMod .. " + C", hl.dsp.window.close())                       -- Close Window
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))  -- Toggle Float
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))                 -- Toggle Split (dwindle)
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen(0))                 -- Toggle Fullscreen
+hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen(1))                 -- Toggle Maximize (monocle)
+
 
 -- Focus
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left"  }))

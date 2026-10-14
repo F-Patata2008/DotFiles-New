@@ -10,11 +10,11 @@ hl.monitor({
     scale    = 1,
 })
 
--- External 1080p Display connected to the LEFT (HDMI-A-1: 1920x1080 @ 60Hz)
+-- External 1080p Display connected to the RIGHT (HDMI-A-1: 1920x1080 @ 60Hz)
 hl.monitor({
     output   = "HDMI-A-1",
     mode     = "1920x1080@60",
-    position = "auto-left",
+    position = "auto-right",
     scale    = 1,
 })
 
@@ -22,6 +22,6 @@ hl.monitor({
 hl.monitor({
     output   = "",
     mode     = "preferred",
-    position = "auto-left",
+    position = "auto-right",
     scale    = 1,
 })

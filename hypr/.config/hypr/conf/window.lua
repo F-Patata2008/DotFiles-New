@@ -29,13 +29,16 @@ hl.window_rule({
     name   = "clipboard",
     match  = { class = "^(clipse)$" },
     float  = true,
+    size   = "622 652",
     center = true,
 })
 
 hl.window_rule({
-    name  = "Notes",
-    match = { class = "^(Notas)$" },
-    float = true,
+    name   = "Notes",
+    match  = { class = "^(Notas)$" },
+    float  = true,
+    size   = "500 350",
+    center = true,
 })
 
 hl.window_rule({
@@ -75,20 +78,6 @@ hl.window_rule({
     center = true,
 })
 
--- Clipboard manager (Clipse)
-hl.window_rule({
-    name  = "clipse-geometry",
-    match = { class = "^(clipse)$" },
-    size  = "622 652",
-})
-
--- Quick Notes app
-hl.window_rule({
-    name   = "notes-geometry",
-    match  = { class = "^(Notas)$" },
-    size   = "300 200",
-    center = true,
-})
 
 -- Browser Picture-in-Picture (fixed position, bottom-right corner)
 hl.window_rule({

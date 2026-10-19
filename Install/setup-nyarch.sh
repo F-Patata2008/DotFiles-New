@@ -92,7 +92,6 @@ declare -A NYARCH_BUNDLES=(
     ["nyarchcustomize.flatpak"]="https://github.com/nyarchlinux/nyarchcustomize/releases/latest/download/nyarchcustomize.flatpak"
     ["nyarchscript.flatpak"]="https://github.com/nyarchlinux/nyarchscript/releases/latest/download/nyarchscript.flatpak"
     ["waifudownloader.flatpak"]="https://github.com/nyarchlinux/waifudownloader/releases/latest/download/waifudownloader.flatpak"
-    ["nyarchassistant.flatpak"]="https://github.com/nyarchlinux/nyarchassistant/releases/latest/download/nyarchassistant.flatpak"
 )
 
 for bundle in "${!NYARCH_BUNDLES[@]}"; do

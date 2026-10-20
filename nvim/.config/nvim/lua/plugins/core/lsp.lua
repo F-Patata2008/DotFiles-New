@@ -7,6 +7,7 @@ return {
   {
     -- LSP Configuration & Plugins
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       -- LSP installer/manager
       { "williamboman/mason.nvim", config = true },

@@ -2,6 +2,7 @@
 alias clases='cd ~/Apunte/'
 alias brain='~/Brain/bin/query.sh'
 alias cdbrain='cd ~/Brain'
+alias brain-sync='~/Brain/bin/sync.sh'
 alias PE='nvim ~/Apunte/Probabilidad\ y\ Estadistica/Apunte/Apunte.tex'
 alias g++='clang++'
 alias prob='cd ~/Apunte/Probabilidad\ y\ Estadistica/'

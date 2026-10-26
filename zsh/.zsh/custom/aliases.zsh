@@ -1,5 +1,7 @@
 # Quick directory navigation
 alias clases='cd ~/Apunte/'
+alias brain='~/Brain/bin/query.sh'
+alias cdbrain='cd ~/Brain'
 alias PE='nvim ~/Apunte/Probabilidad\ y\ Estadistica/Apunte/Apunte.tex'
 alias g++='clang++'
 alias prob='cd ~/Apunte/Probabilidad\ y\ Estadistica/'

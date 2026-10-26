@@ -5,16 +5,25 @@
 -- Pywal colors — load variables before using them elsewhere
 
 -- ==============================================================================
--- LAYER RULES — Noctalia shell background & widgets
+-- LAYER RULES — Noctalia shell background, widgets & session blur
 -- ==============================================================================
 hl.layer_rule({
     name         = "noctalia",
     match        = {
-        namespace = "^noctalia-(bar-.+|notification|dock|panel)$",
+        namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel.*)$",
     },
     ignore_alpha = 0.5,
     blur         = true,
     blur_popups  = true,
+})
+
+hl.layer_rule({
+    name         = "noctalia-session-scrim-blur",
+    match        = {
+        namespace = "^(noctalia-session-scrim)$",
+    },
+    ignore_alpha = 0.0,
+    blur         = true,
 })
 
 -- ==============================================================================

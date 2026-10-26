@@ -14,7 +14,7 @@ hl.bind(mainMod .. " + R",         hl.dsp.exec_cmd(ipc .. " panel-toggle launche
 hl.bind(mainMod .. " + Q",         hl.dsp.exec_cmd(ipc .. " panel-toggle launcher :"))      -- Command Mode
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(ipc .. " panel-toggle launcher /emo"))   -- Emoji Picker
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(ipc .. " panel-toggle control-center"))  -- Dashboard
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(ipc .. " panel-toggle session"))         -- Power Menu
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("/home/fpatata/.config/hypr/scripts/session-scrim.py")) -- Power Menu
 
 -- ==============================================================================
 -- APPLICATIONS & UTILITIES
@@ -98,6 +98,6 @@ hl.bind(mainMod .. " + SHIFT + comma",  hl.dsp.layout("swapcol l"))
 -- ==============================================================================
 -- SCREENSHOTS & TOOLS
 -- ==============================================================================
-hl.bind("PRINT",                   hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
+hl.bind("PRINT",                   hl.dsp.exec_cmd("/home/fpatata/.config/hypr/scripts/screenshot.sh"))
 hl.bind("SHIFT + PRINT",           hl.dsp.exec_cmd("hyprshot -m window -o ~/Pictures/Screenshots"))
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("hyprpicker -a"))

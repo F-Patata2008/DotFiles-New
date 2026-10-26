@@ -1,0 +1,10 @@
+[Unit]
+Description=Automated Brain Git Synchronization Engine
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/fpatata/Brain/bin/sync.sh
+StandardOutput=journal
+StandardError=journal

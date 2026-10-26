@@ -1,0 +1,11 @@
+[Unit]
+Description=Trigger Brain Auto-Sync Periodically and at End of Day
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target

@@ -208,6 +208,9 @@
                     "textColor": "none"
                 },
                 {
+                    "id": "plugin:patata/redmi-buds:bar"
+                },
+                {
                     "displayMode": "onhover",
                     "iconColor": "none",
                     "id": "Volume",
@@ -243,9 +246,6 @@
                 {
                     "iconColor": "none",
                     "id": "WallpaperSelector"
-                },
-                {
-                    "id": "plugin:patata/redmi-buds:bar"
                 },
                 {
                     "defaultSettings": {

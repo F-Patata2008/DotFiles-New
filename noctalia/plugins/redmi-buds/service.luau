@@ -4,12 +4,10 @@
 local scriptPath = "/home/fpatata/Dotfiles/noctalia/plugins/redmi-buds/scripts/redmi_buds_ctl.py"
 
 local function refresh()
-  noctalia.runAsync({ "python3", scriptPath, "status" }, function(result)
+  noctalia.runAsync({ "/usr/bin/python3", scriptPath, "status" }, function(result)
     if result.exitCode == 0 and result.stdout and result.stdout ~= "" then
-      local ok, data = pcall(function()
-        return noctalia.jsonDecode(result.stdout)
-      end)
-      if ok and data then
+      local ok, data = pcall(noctalia.json.decode, result.stdout)
+      if ok and data and data.connected then
         noctalia.state.set("buds.status", data)
       else
         noctalia.state.set("buds.status", { connected = false })
@@ -25,11 +23,11 @@ noctalia.state.watch("buds.cmd", function(cmd)
   if not cmd or not cmd.action then return end
   if cmd.action == "set_anc" then
     local mode = tostring(cmd.mode or 1)
-    noctalia.runAsync({ "python3", scriptPath, "set-anc", mode }, function(res)
+    noctalia.runAsync({ "/usr/bin/python3", scriptPath, "set-anc", mode }, function(_res)
       refresh()
     end)
   elseif cmd.action == "toggle_anc" then
-    noctalia.runAsync({ "python3", scriptPath, "toggle-anc" }, function(res)
+    noctalia.runAsync({ "/usr/bin/python3", scriptPath, "toggle-anc" }, function(_res)
       refresh()
     end)
   elseif cmd.action == "refresh" then
@@ -37,8 +35,8 @@ noctalia.state.watch("buds.cmd", function(cmd)
   end
 end)
 
--- Update interval: 25 seconds
-noctalia.setUpdateInterval(25000)
+-- Update interval: 20 seconds
+noctalia.setUpdateInterval(20000)
 
 function update()
   refresh()

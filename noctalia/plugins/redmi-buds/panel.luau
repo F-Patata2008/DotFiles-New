@@ -1,12 +1,25 @@
 --!nonstrict
 -- Panel entry for Redmi Buds 8 Lite
 
+local scriptPath = "/home/fpatata/Dotfiles/noctalia/plugins/redmi-buds/scripts/redmi_buds_ctl.py"
+
 local function sendCmd(action, mode)
   noctalia.state.set("buds.cmd", {
     action = action,
     mode = mode,
     seq = os.time()
   })
+end
+
+local function refresh()
+  noctalia.runAsync({ "/usr/bin/python3", scriptPath, "status" }, function(result)
+    if result.exitCode == 0 and result.stdout and result.stdout ~= "" then
+      local ok, data = pcall(noctalia.json.decode, result.stdout)
+      if ok and data and data.connected then
+        noctalia.state.set("buds.status", data)
+      end
+    end
+  end)
 end
 
 local function batteryRow(title, glyphName, level, color)
@@ -38,7 +51,7 @@ local function render()
     ui.column({ gap = 2, flexGrow = 1 }, {
       ui.label({ text = "REDMI Buds 8 Lite", fontSize = 14, fontWeight = "bold", color = "on_surface" }),
       ui.label({
-        text = isConn and "CONNECTED (RFCOMM 17)" or "DISCONNECTED",
+        text = isConn and "CONNECTED (RFCOMM 17)" or "CONNECTING...",
         fontSize = 9,
         fontWeight = "bold",
         color = isConn and "primary" or "outline"
@@ -49,7 +62,7 @@ local function render()
       variant = "ghost",
       controlSize = "sm",
       tooltip = "Refresh Battery Status",
-      onClick = function() sendCmd("refresh") end
+      onClick = function() refresh() end
     }),
     ui.button({
       glyph = "close",
@@ -111,7 +124,7 @@ local function render()
   else
     table.insert(kids, ui.column({ gap = 6, align = "center", paddingV = 20 }, {
       ui.glyph({ name = "bluetooth-off", size = 32, color = "outline" }),
-      ui.label({ text = "Buds are disconnected or out of range", fontSize = 11, color = "outline" })
+      ui.label({ text = "Querying buds status over Bluetooth...", fontSize = 11, color = "outline" })
     }))
   end
 
@@ -119,7 +132,7 @@ local function render()
 end
 
 function onOpen(_ctx)
-  sendCmd("refresh")
+  refresh()
   render()
 end
 

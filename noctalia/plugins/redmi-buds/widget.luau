@@ -24,12 +24,19 @@ local function render()
   end
 
   local left = status.left or 0
+  local leftCharging = status.left_charging == true
   local right = status.right or 0
+  local rightCharging = status.right_charging == true
   local caseLevel = status.case or 0
+  local caseCharging = status.case_charging == true
   local ancName = status.anc_name or "ANC"
 
-  local text = string.format("%d%% | %d%% · %s", left, right, ancName)
-  local tooltip = string.format("🎧 REDMI Buds 8 Lite\nLeft: %d%%\nRight: %d%%\nCase: %d%%\nMode: %s\n\n• Left-click: Open Controls\n• Right-click: Toggle ANC Mode", left, right, caseLevel, ancName)
+  local lStr = string.format("%d%%", left) .. (leftCharging and "⚡" or "")
+  local rStr = string.format("%d%%", right) .. (rightCharging and "⚡" or "")
+  local cStr = string.format("%d%%", caseLevel) .. (caseCharging and "⚡" or "")
+
+  local text = string.format("%s | %s · %s", lStr, rStr, ancName)
+  local tooltip = string.format("🎧 REDMI Buds 8 Lite\nLeft: %s\nRight: %s\nCase: %s\nMode: %s\n\n• Left-click: Open Controls\n• Right-click: Toggle ANC Mode", lStr, rStr, cStr, ancName)
 
   barWidget.setGlyph("headphones")
   barWidget.setText(text)

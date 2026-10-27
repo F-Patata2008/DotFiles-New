@@ -22,15 +22,20 @@ local function refresh()
   end)
 end
 
-local function batteryRow(title, glyphName, level, color)
+local function batteryRow(title, glyphName, level, isCharging, color)
+  local levelText = string.format("%d%%", level)
+  if isCharging then
+    levelText = levelText .. " ⚡"
+  end
+
   return ui.row({ gap = 8, align = "center", paddingV = 4 }, {
     ui.glyph({ name = glyphName, size = 16, color = color or "primary" }),
     ui.label({ text = title, fontSize = 12, flexGrow = 1, color = "on_surface" }),
     ui.label({
-      text = string.format("%d%%", level),
+      text = levelText,
       fontSize = 12,
       fontWeight = "bold",
-      color = (level > 20 and "primary" or "error")
+      color = isCharging and "secondary" or (level > 20 and "primary" or "error")
     })
   })
 end
@@ -39,8 +44,11 @@ local function render()
   local status = noctalia.state.get("buds.status") or { connected = false }
   local isConn = status.connected == true
   local left = status.left or 0
+  local leftCharging = status.left_charging == true
   local right = status.right or 0
+  local rightCharging = status.right_charging == true
   local caseLevel = status.case or 0
+  local caseCharging = status.case_charging == true
   local ancMode = status.anc or 1
 
   local kids = {}
@@ -79,9 +87,9 @@ local function render()
   if isConn then
     -- Battery Levels
     table.insert(kids, ui.column({ gap = 2 }, {
-      batteryRow("Left Earbud", "ear", left, "primary"),
-      batteryRow("Right Earbud", "ear", right, "primary"),
-      batteryRow("Charging Case", "box", caseLevel, "secondary")
+      batteryRow("Left Earbud", "ear", left, leftCharging, "primary"),
+      batteryRow("Right Earbud", "ear", right, rightCharging, "primary"),
+      batteryRow("Charging Case", "box", caseLevel, caseCharging, "secondary")
     }))
 
     -- Divider

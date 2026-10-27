@@ -48,7 +48,6 @@ def is_bluez_connected(mac=MAC_ADDRESS):
         if dev_path in objects and 'org.bluez.Device1' in objects[dev_path]:
             return bool(objects[dev_path]['org.bluez.Device1'].get('Connected', False))
     except Exception:
-        # Fallback to bluetoothctl
         try:
             import subprocess
             out = subprocess.check_output(["bluetoothctl", "info", mac], stderr=subprocess.DEVNULL).decode()
@@ -78,19 +77,38 @@ def get_battery_info(mac=MAC_ADDRESS, channel=CHANNEL, timeout=1.5):
                 # Find battery TLV tag: 03 03 00 03 <left> <right> <case>
                 for i in range(len(chunk) - 6):
                     if chunk[i] == 0x03 and chunk[i+1] == 0x03 and chunk[i+2] == 0x00 and chunk[i+3] == 0x03:
-                        left = chunk[i+4]
-                        right = chunk[i+5]
-                        case = chunk[i+6]
+                        l_raw = chunk[i+4]
+                        r_raw = chunk[i+5]
+                        c_raw = chunk[i+6]
+
+                        left = l_raw & 0x7F
+                        left_charging = bool(l_raw & 0x80)
+
+                        right = r_raw & 0x7F
+                        right_charging = bool(r_raw & 0x80)
+
+                        case = c_raw & 0x7F
+                        case_charging = bool(c_raw & 0x80)
+
                         anc = get_saved_anc_mode()
+                        anc_label = ANC_MODES.get(anc, "ANC")
+
+                        l_str = f"{left}%" + ("⚡" if left_charging else "")
+                        r_str = f"{right}%" + ("⚡" if right_charging else "")
+                        c_str = f"{case}%" + ("⚡" if case_charging else "")
+
                         return {
                             "connected": True,
                             "left": left,
+                            "left_charging": left_charging,
                             "right": right,
+                            "right_charging": right_charging,
                             "case": case,
+                            "case_charging": case_charging,
                             "anc": anc,
-                            "anc_name": ANC_MODES.get(anc, "ANC"),
-                            "text": f"L:{left}% R:{right}% [{ANC_MODES.get(anc, 'ANC')}]",
-                            "tooltip": f"🎧 REDMI Buds 8 Lite\nLeft: {left}%\nRight: {right}%\nCase: {case}%\nMode: {ANC_MODES.get(anc, 'ANC')}"
+                            "anc_name": anc_label,
+                            "text": f"L:{l_str} R:{r_str} · {anc_label}",
+                            "tooltip": f"🎧 REDMI Buds 8 Lite\nLeft: {l_str}\nRight: {r_str}\nCase: {c_str}\nMode: {anc_label}\n\n• Left-click: Open details panel\n• Right-click: Toggle ANC mode"
                         }
             except socket.timeout:
                 break

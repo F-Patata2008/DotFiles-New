@@ -245,6 +245,9 @@
                     "id": "WallpaperSelector"
                 },
                 {
+                    "id": "plugin:patata/redmi-buds:bar"
+                },
+                {
                     "defaultSettings": {
                     },
                     "id": "plugin:kde-connect"

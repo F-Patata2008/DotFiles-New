@@ -10,6 +10,9 @@
         "kde-connect": {
             "enabled": true,
             "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "redmi-buds": {
+            "enabled": true
         }
     },
     "version": 2

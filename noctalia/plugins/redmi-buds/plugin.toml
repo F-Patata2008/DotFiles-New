@@ -1,0 +1,27 @@
+id = "patata/redmi-buds"
+name = "Redmi Buds 8 Lite"
+version = "1.0.0"
+plugin_api = 16
+author = "Comrade Patata"
+license = "MIT"
+icon = "headphones"
+description = "Real-time battery telemetry and ANC control for REDMI Buds 8 Lite"
+tags = ["bar", "panel", "service", "hardware", "bluetooth"]
+
+[[widget]]
+id = "bar"
+entry = "widget.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 340
+height = 280
+placement = "attached"
+position = "auto"
+open_near_click = true
+dismiss_on_outside_click = true
+
+[[service]]
+id = "service"
+entry = "service.luau"

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Redmi Buds 8 Lite Control & Telemetry Script
-Engineered by Hatsune Miku for Saviour Gundam (Comrade Patata)
+Reverse-Engineered by Hatsune Miku for Saviour Gundam (Comrade Patata)
+Protocol: Xiaomi RCSP / MIUI SPP (RFCOMM Channel 16/13) & GFPS (Channel 17)
 """
 
 import sys
@@ -11,7 +12,8 @@ import socket
 import time
 
 MAC_ADDRESS = "A0:90:B5:23:6C:F2"
-CHANNEL = 17
+SPP_CHANNELS = [16, 13]
+GFPS_CHANNEL = 17
 STATE_FILE = os.path.expanduser("~/.cache/redmi_buds_state.json")
 
 ANC_MODES = {
@@ -19,6 +21,15 @@ ANC_MODES = {
     1: "ANC",
     2: "Transparency"
 }
+
+_seq_counter = 1
+
+def get_next_seq():
+    global _seq_counter
+    _seq_counter = (_seq_counter + 1) & 0x7F
+    if _seq_counter == 0:
+        _seq_counter = 1
+    return _seq_counter
 
 def get_saved_anc_mode():
     try:
@@ -28,13 +39,17 @@ def get_saved_anc_mode():
                 return data.get("anc", 1)
     except Exception:
         pass
-    return 1  # Default to ANC
+    return 1
 
 def save_anc_mode(mode):
     try:
         os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
         with open(STATE_FILE, "w") as f:
-            json.dump({"anc": mode, "anc_name": ANC_MODES.get(mode, "Unknown"), "updated_at": time.time()}, f)
+            json.dump({
+                "anc": mode,
+                "anc_name": ANC_MODES.get(mode, "Unknown"),
+                "updated_at": time.time()
+            }, f)
     except Exception:
         pass
 
@@ -56,82 +71,55 @@ def is_bluez_connected(mac=MAC_ADDRESS):
             pass
     return False
 
-def get_battery_info(mac=MAC_ADDRESS, channel=CHANNEL, timeout=1.5):
-    if not is_bluez_connected(mac):
-        return {"connected": False}
+def open_rfcomm_socket(mac=MAC_ADDRESS, channels=SPP_CHANNELS, timeout=1.2):
+    for ch in channels:
+        s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+        s.settimeout(timeout)
+        try:
+            s.connect((mac, ch))
+            return s, ch
+        except Exception:
+            s.close()
+    return None, None
 
-    s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-    s.settimeout(timeout)
-    try:
-        s.connect((mac, channel))
-        # Send device info request
-        req = bytes.fromhex('fedcbac402000501ffffffffef')
-        s.send(req)
-
-        deadline = time.time() + timeout
-        while time.time() < deadline:
-            try:
-                chunk = s.recv(1024)
-                if not chunk:
-                    break
-                # Find battery TLV tag: 03 03 00 03 <left> <right> <case>
-                for i in range(len(chunk) - 6):
-                    if chunk[i] == 0x03 and chunk[i+1] == 0x03 and chunk[i+2] == 0x00 and chunk[i+3] == 0x03:
-                        l_raw = chunk[i+4]
-                        r_raw = chunk[i+5]
-                        c_raw = chunk[i+6]
-
-                        left = l_raw & 0x7F
-                        left_charging = bool(l_raw & 0x80)
-
-                        right = r_raw & 0x7F
-                        right_charging = bool(r_raw & 0x80)
-
-                        case = c_raw & 0x7F
-                        case_charging = bool(c_raw & 0x80)
-
-                        anc = get_saved_anc_mode()
-                        anc_label = ANC_MODES.get(anc, "ANC")
-
-                        l_str = f"{left}%" + ("⚡" if left_charging else "")
-                        r_str = f"{right}%" + ("⚡" if right_charging else "")
-                        c_str = f"{case}%" + ("⚡" if case_charging else "")
-
-                        return {
-                            "connected": True,
-                            "left": left,
-                            "left_charging": left_charging,
-                            "right": right,
-                            "right_charging": right_charging,
-                            "case": case,
-                            "case_charging": case_charging,
-                            "anc": anc,
-                            "anc_name": anc_label,
-                            "text": f"L:{l_str} R:{r_str} · {anc_label}",
-                            "tooltip": f"🎧 REDMI Buds 8 Lite\nLeft: {l_str}\nRight: {r_str}\nCase: {c_str}\nMode: {anc_label}\n\n• Left-click: Open details panel\n• Right-click: Toggle ANC mode"
-                        }
-            except socket.timeout:
-                break
-        return {"connected": True, "error": "battery_tlv_not_found"}
-    except Exception as e:
-        return {"connected": False, "error": str(e)}
-    finally:
-        s.close()
-
-def set_anc(mode, mac=MAC_ADDRESS, channel=CHANNEL, timeout=2.0):
+def set_anc(mode, mac=MAC_ADDRESS, timeout=1.5):
     if not is_bluez_connected(mac):
         return {"ok": False, "error": "not_connected"}
 
-    s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-    s.settimeout(timeout)
+    s, ch = open_rfcomm_socket(mac, SPP_CHANNELS, timeout=timeout)
+    if not s:
+        return {"ok": False, "error": "rfcomm_connect_failed"}
+
     try:
-        s.connect((mac, channel))
-        # fe dc ba c4 08 00 04 01 02 04 <mode> ef
-        pkt = bytes([0xFE, 0xDC, 0xBA, 0xC4, 0x08, 0x00, 0x04, 0x01, 0x02, 0x04, mode & 0xFF, 0xEF])
-        s.send(pkt)
-        time.sleep(0.15)
+        sn = get_next_seq()
+        # Xiaomi RCSP SetTargetInfo: Opcode 0x08, VendorData: length=0x02, type=0x04, ancType=<mode>
+        pkt = bytes([0xFE, 0xDC, 0xBA, 0xC4, 0x08, 0x00, 0x04, sn, 0x02, 0x04, mode & 0xFF, 0xEF])
+        s.sendall(pkt)
+        time.sleep(0.08)
+
+        # Read responses and ACK any notifications from earbuds
+        try:
+            while True:
+                r = s.recv(1024)
+                if not r:
+                    break
+                idx = 0
+                while True:
+                    idx = r.find(bytes([0xFE, 0xDC, 0xBA, 0xC7]), idx)
+                    if idx == -1:
+                        break
+                    if idx + 7 < len(r):
+                        op = r[idx+4]
+                        r_sn = r[idx+7]
+                        # Send ACK back to earbud
+                        ack = bytes([0xFE, 0xDC, 0xBA, 0x04, op, 0x00, 0x02, 0x00, r_sn, 0xEF])
+                        s.sendall(ack)
+                    idx += 4
+        except socket.timeout:
+            pass
+
         save_anc_mode(mode)
-        return {"ok": True, "anc": mode, "anc_name": ANC_MODES.get(mode, "Unknown")}
+        return {"ok": True, "anc": mode, "anc_name": ANC_MODES.get(mode, "Unknown"), "channel": ch}
     except Exception as e:
         return {"ok": False, "error": str(e)}
     finally:
@@ -139,10 +127,138 @@ def set_anc(mode, mac=MAC_ADDRESS, channel=CHANNEL, timeout=2.0):
 
 def toggle_anc():
     curr = get_saved_anc_mode()
-    # Cycle: 1 (ANC) -> 0 (Off) -> 2 (Transparency) -> 1 (ANC)
-    next_mode = 0 if curr == 1 else (2 if curr == 0 else 1)
+    # Cycle: 1 (ANC) -> 2 (Transparency) -> 0 (Off) -> 1 (ANC)
+    next_mode = 2 if curr == 1 else (0 if curr == 2 else 1)
     res = set_anc(next_mode)
     return res
+
+def get_battery_info(mac=MAC_ADDRESS, timeout=1.5):
+    if not is_bluez_connected(mac):
+        return {"connected": False}
+
+    left = None
+    right = None
+    case = None
+    left_charging = False
+    right_charging = False
+    case_charging = False
+    anc_mode = get_saved_anc_mode()
+
+    # Strategy A: Try Channel 16 (MIUI SPP) for full battery + hardware ANC state
+    s, ch = open_rfcomm_socket(mac, [16], timeout=0.8)
+    if s:
+        try:
+            # Send inquiry packet
+            sn = get_next_seq()
+            s.sendall(bytes([0xFE, 0xDC, 0xBA, 0xC4, 0x02, 0x00, 0x05, sn, 0xFF, 0xFF, 0xFF, 0xFF, 0xEF]))
+            deadline = time.time() + 0.8
+            while time.time() < deadline:
+                try:
+                    chunk = s.recv(1024)
+                    if not chunk:
+                        break
+                    # Parse CMD_REPORT_DEVICE_STATUS (0x0E)
+                    idx = chunk.find(bytes([0xFE, 0xDC, 0xBA, 0xC7, 0x0E]))
+                    if idx != -1:
+                        # Battery block: 04 00 <left> <right> <case>
+                        b_idx = chunk.find(bytes([0x04, 0x00]), idx)
+                        if b_idx != -1 and b_idx + 4 < len(chunk):
+                            l_raw = chunk[b_idx + 2]
+                            r_raw = chunk[b_idx + 3]
+                            c_raw = chunk[b_idx + 4]
+                            left = l_raw & 0x7F
+                            left_charging = bool(l_raw & 0x80)
+                            right = r_raw & 0x7F
+                            right_charging = bool(r_raw & 0x80)
+                            if c_raw != 0xFF:
+                                case = c_raw & 0x7F
+                                case_charging = bool(c_raw & 0x80)
+
+                        # ANC block: 02 04 <mode>
+                        a_idx = chunk.find(bytes([0x02, 0x04]), idx)
+                        if a_idx != -1 and a_idx + 2 < len(chunk):
+                            anc_mode = chunk[a_idx + 2]
+                            save_anc_mode(anc_mode)
+
+                        # Send ACK
+                        r_sn = chunk[idx + 7]
+                        ack = bytes([0xFE, 0xDC, 0xBA, 0x04, 0x0E, 0x00, 0x02, 0x00, r_sn, 0xEF])
+                        s.sendall(ack)
+                        break
+                except socket.timeout:
+                    break
+        except Exception:
+            pass
+        finally:
+            s.close()
+
+    # Strategy B: If battery wasn't read, read from Fast Pair (Channel 17)
+    if left is None:
+        s, ch = open_rfcomm_socket(mac, [GFPS_CHANNEL], timeout=1.0)
+        if s:
+            try:
+                deadline = time.time() + 1.0
+                while time.time() < deadline:
+                    try:
+                        chunk = s.recv(1024)
+                        if not chunk:
+                            break
+                        for i in range(len(chunk) - 6):
+                            if chunk[i] == 0x03 and chunk[i+1] == 0x03 and chunk[i+2] == 0x00 and chunk[i+3] == 0x03:
+                                l_raw = chunk[i+4]
+                                r_raw = chunk[i+5]
+                                c_raw = chunk[i+6]
+                                left = l_raw & 0x7F
+                                left_charging = bool(l_raw & 0x80)
+                                right = r_raw & 0x7F
+                                right_charging = bool(r_raw & 0x80)
+                                if c_raw != 0xFF:
+                                    case = c_raw & 0x7F
+                                    case_charging = bool(c_raw & 0x80)
+                                break
+                        if left is not None:
+                            break
+                    except socket.timeout:
+                        break
+            except Exception:
+                pass
+            finally:
+                s.close()
+
+    if left is None:
+        # Fallback to BlueZ battery property if available
+        try:
+            import subprocess
+            out = subprocess.check_output(["bluetoothctl", "info", mac], stderr=subprocess.DEVNULL).decode()
+            for line in out.splitlines():
+                if "Battery Percentage:" in line:
+                    val = int(line.split("(")[-1].split(")")[0])
+                    left = val
+                    right = val
+        except Exception:
+            pass
+
+    if left is None:
+        return {"connected": True, "error": "battery_tlv_not_found"}
+
+    anc_label = ANC_MODES.get(anc_mode, "ANC")
+    l_str = f"{left}%" + ("⚡" if left_charging else "")
+    r_str = f"{right}%" + ("⚡" if right_charging else "")
+    c_str = f"{case}%" + ("⚡" if case_charging else "") if case is not None else "--"
+
+    return {
+        "connected": True,
+        "left": left,
+        "left_charging": left_charging,
+        "right": right,
+        "right_charging": right_charging,
+        "case": case,
+        "case_charging": case_charging,
+        "anc": anc_mode,
+        "anc_name": anc_label,
+        "text": f"L:{l_str} R:{r_str} · {anc_label}",
+        "tooltip": f"🎧 REDMI Buds 8 Lite\nLeft: {l_str}\nRight: {r_str}\nCase: {c_str}\nMode: {anc_label}\n\n• Left-click: Open details panel\n• Right-click: Toggle ANC mode"
+    }
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

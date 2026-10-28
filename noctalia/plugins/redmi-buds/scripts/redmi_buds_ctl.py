@@ -12,7 +12,7 @@ import socket
 import time
 
 MAC_ADDRESS = "A0:90:B5:23:6C:F2"
-SPP_CHANNELS = [16, 13]
+SPP_CHANNELS = [16]
 GFPS_CHANNEL = 17
 STATE_FILE = os.path.expanduser("~/.cache/redmi_buds_state.json")
 
@@ -88,7 +88,11 @@ def set_anc(mode, mac=MAC_ADDRESS, timeout=1.5):
 
     s, ch = open_rfcomm_socket(mac, SPP_CHANNELS, timeout=timeout)
     if not s:
-        return {"ok": False, "error": "rfcomm_connect_failed"}
+        return {
+            "ok": False,
+            "error": "channel_16_busy",
+            "message": "RFCOMM Channel 16 is busy or refused. Ensure the earbuds are disconnected from other devices (e.g. tablet/phone Bluetooth)."
+        }
 
     try:
         sn = get_next_seq()
@@ -261,19 +265,26 @@ def get_battery_info(mac=MAC_ADDRESS, timeout=1.5):
     }
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        cmd = sys.argv[1]
-        if cmd == "status":
-            print(json.dumps(get_battery_info()))
-        elif cmd == "set-anc":
-            mode = int(sys.argv[2]) if len(sys.argv) > 2 else 1
-            print(json.dumps(set_anc(mode)))
-        elif cmd == "toggle-anc":
-            print(json.dumps(toggle_anc()))
-        elif cmd == "anc":
-            mode = get_saved_anc_mode()
-            print(json.dumps({"anc": mode, "anc_name": ANC_MODES.get(mode, "ANC")}))
-        else:
-            print(json.dumps({"error": f"Unknown command {cmd}"}))
-    else:
+    import argparse
+    parser = argparse.ArgumentParser(description="Redmi Buds 8 Lite Control")
+    parser.add_argument("cmd", nargs="?", default="status", help="Command: status, set-anc, toggle-anc, anc")
+    parser.add_argument("param", nargs="?", default=None, help="Parameter for command (e.g. mode)")
+    parser.add_argument("--action", dest="action", default=None, help="Action name")
+    parser.add_argument("--mode", dest="mode", type=int, default=None, help="ANC Mode (0=Off, 1=ANC, 2=Transparency)")
+
+    args = parser.parse_args()
+
+    action = args.action or args.cmd
+    mode = args.mode if args.mode is not None else (int(args.param) if args.param and args.param.isdigit() else 1)
+
+    if action in ["status"]:
         print(json.dumps(get_battery_info()))
+    elif action in ["set-anc", "set_anc"]:
+        print(json.dumps(set_anc(mode)))
+    elif action in ["toggle-anc", "toggle_anc"]:
+        print(json.dumps(toggle_anc()))
+    elif action in ["anc"]:
+        saved = get_saved_anc_mode()
+        print(json.dumps({"anc": saved, "anc_name": ANC_MODES.get(saved, "ANC")}))
+    else:
+        print(json.dumps({"error": f"Unknown command {action}"}))

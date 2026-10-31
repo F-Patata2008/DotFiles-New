@@ -1,11 +1,11 @@
 [Unit]
-Description=Trigger Brain Auto-Sync Periodically and at End of Day
+Description=Trigger Brain Nightly Git Commit and Push to Remote
+Documentation=man:systemd.timer(5)
 
 [Timer]
 OnCalendar=*-*-* 23:00:00
-OnCalendar=hourly
 Persistent=true
-RandomizedDelaySec=120
+RandomizedDelaySec=30
 
 [Install]
 WantedBy=timers.target

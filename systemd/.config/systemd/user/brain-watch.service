@@ -1,0 +1,16 @@
+[Unit]
+Description=Brain Real-Time Dialogue Watcher (Instant Local Ingestion)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=/home/fpatata/Brain/bin/brain_watcher.py
+Restart=always
+RestartSec=5
+Nice=19
+CPUWeight=20
+MemoryHigh=50M
+MemoryMax=100M
+
+[Install]
+WantedBy=default.target

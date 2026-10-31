@@ -1,0 +1,16 @@
+[Unit]
+Description=iPhone USB Tether Auto-Hotspot Daemon (Saviour Gundam)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/fpatata/.local/bin/iphone-auto-hotspot.py
+Restart=always
+RestartSec=5
+Nice=19
+CPUWeight=20
+MemoryHigh=30M
+MemoryMax=60M
+
+[Install]
+WantedBy=default.target

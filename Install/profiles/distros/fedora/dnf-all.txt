@@ -10,6 +10,7 @@ amd-gpu-firmware
 amd-ucode-firmware
 anaconda-install-env-deps
 anaconda-live
+android-tools
 arduino-cli
 arduino-language-server
 at
@@ -109,6 +110,8 @@ fwupd
 gamemode
 gcc-c++
 gdm
+geary
+gh
 ghostscript
 git
 glibc
@@ -173,9 +176,8 @@ gstreamer1-plugins-ugly-free
 gst-thumbnailers
 gutenprint
 gutenprint-cups
+gvfs
 gvfs-afc
-gvfs-afp
-gvfs-archive
 gvfs-fuse
 gvfs-goa
 gvfs-gphoto2
@@ -197,10 +199,12 @@ ibus-hangul
 ibus-libpinyin
 ibus-m17n
 ibus-typing-booster
+ifuse
 ImageMagick-devel
 intel-audio-firmware
 intel-gpu-firmware
 intel-lpmd
+intel-media-driver
 intel-vsc-firmware
 iproute
 iptables-nft
@@ -225,6 +229,7 @@ kernel-modules-core
 kernel-modules-extra
 kexec-tools
 kitty
+kmscon
 latexmk
 less
 libertas-firmware
@@ -232,7 +237,8 @@ libfprint-devel
 libglvnd-gles
 libgudev-devel
 libgusb-devel
-libheif-freeworld
+libheif-ffmpeg
+libimobiledevice-utils
 libreoffice-calc
 libreoffice-emailmerge
 libreoffice-graphicfilter
@@ -241,6 +247,7 @@ libreoffice-writer
 librsvg2
 libsane-hpaio
 libtermkey-devel
+libva-intel-driver
 libva-intel-media-driver
 libva-utils
 libxcrypt-compat
@@ -281,11 +288,11 @@ NetworkManager
 NetworkManager-adsl
 NetworkManager-bluetooth
 NetworkManager-config-connectivity-fedora
+NetworkManager-libreswan-gnome
 NetworkManager-openconnect-gnome
 NetworkManager-openvpn-gnome
 NetworkManager-ppp
 NetworkManager-ssh-gnome
-NetworkManager-vpnc-gnome
 NetworkManager-wifi
 NetworkManager-wwan
 nfs-utils
@@ -358,13 +365,16 @@ realtek-firmware
 rootfiles
 rpm
 rpm-build
+rpmfusion-free-appstream-data
 rpmfusion-free-release
+rpmfusion-nonfree-appstream-data
 rpmfusion-nonfree-release
 rsync
 rsyslog
 rygel
 samba-client
 sane-backends-drivers-scanners
+scrcpy
 selinux-policy-targeted
 setup
 shadow-utils
@@ -387,6 +397,7 @@ steam-arch-transition
 stow
 s-tui
 sudo
+Sunshine
 symlinks
 system-config-printer-udev
 systemd
@@ -482,6 +493,7 @@ util-linux
 vdpauinfo
 vim-minimal
 virtualbox-guest-additions
+vlc
 vte-profile
 vulkan-loader
 vulkan-tools
@@ -496,6 +508,7 @@ xdg-desktop-portal-gnome
 xdg-desktop-portal-gtk
 xdg-user-dirs-gtk
 xfsprogs
+xorriso
 yazi
 yelp
 zathura

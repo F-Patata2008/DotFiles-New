@@ -1,7 +1,10 @@
+com.discordapp.Discord
+com.github.ahrm.sioyek
 com.heroicgameslauncher.hgl
 com.mattjakeman.ExtensionManager
 com.modrinth.ModrinthApp
 com.spotify.Client
+md.obsidian.Obsidian
 org.cryptomator.Cryptomator
 org.gnome.Mines
 org.gnome.TwentyFortyEight

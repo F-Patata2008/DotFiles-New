@@ -42,6 +42,7 @@ map("n", "<leader>mh", "<cmd>MoltenHideOutput<CR>", { desc = "Molten: Hide Outpu
 map("n", "<leader>md", "<cmd>MoltenDelete<CR>", { desc = "Molten: Delete Cell Output" })
 
 map("n", "<leader>mp", "<cmd>RenderMarkdownToggle<CR>", { desc = "Toggle Markdown Render" })
+map("n", "<leader>sp", "<cmd>setlocal spell!<CR>", { desc = "Toggle [Sp]ell Check" })
 
 map("n", "<leader>/", "gcc", { remap = true, desc = "Toggle Comment" })
 map("v", "<leader>/", "gc", { remap = true, desc = "Toggle Comment" })

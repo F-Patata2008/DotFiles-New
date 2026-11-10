@@ -113,6 +113,7 @@ return {
             "hyprls",
             "marksman",
             "arduino_language_server",
+            "ltex",
           },
           handlers = {
             function(server_name)
@@ -162,6 +163,40 @@ return {
             end,
             ["arduino_language_server"] = function()
               -- Intentionally left empty
+            end,
+            ["ltex"] = function()
+              lspconfig.ltex.setup({
+                cmd = { "ltex-ls" },
+                cmd_env = {
+                  JAVA_OPTS = "-Djdk.xml.totalEntitySizeLimit=0",
+                  JAVA_TOOL_OPTIONS = "-Djdk.xml.totalEntitySizeLimit=0",
+                },
+                on_attach = on_attach,
+                capabilities = capabilities,
+                filetypes = { "latex", "tex", "bib", "markdown", "text" },
+                settings = {
+                  ltex = {
+                    language = "es",
+                    enabled = { "latex", "tex", "bib", "markdown", "text" },
+                    diagnosticSeverity = "information",
+                    additionalRules = {
+                      enablePickyRules = true,
+                      motherTongue = "es",
+                    },
+                    dictionary = {
+                      ["es"] = {
+                        "Patata", "Colli", "Felipe", "Nacha", "Ignacia", "Beauchef", "FCFM", "Cohetería",
+                        "ESP32", "ADS1256", "MAX31865", "RTD", "PT100", "PT1000", "LiPo", "MOSFET", "MOSFETs",
+                        "GPIO", "GPIOs", "VSPI", "SPI", "MISO", "MOSI", "SCK", "SCLK", "DRDY",
+                        "KiCad", "Eeschema", "Pcbnew", "Gerber", "devkit", "pullup", "pulldown", "desacoplo",
+                        "completo", "chacarero", "churrasco", "vienesa", "marraqueta", "hallulla", "merkén",
+                        "piure", "pejerrey", "albacora", "jaiba", "reineta", "merluza", "tostaduría",
+                        "minipimer", "cahuín", "flexear"
+                      },
+                    },
+                  },
+                },
+              })
             end,
           },
         })

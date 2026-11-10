@@ -9,6 +9,20 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
+-- Spell checking settings (Spanish as primary, English secondary)
+vim.opt.spelllang = { "es", "en" }
+vim.opt.spellsuggest = "best,9"
+
+-- Automatically enable spell checking for prose / documentation filetypes
+local prose_group = vim.api.nvim_create_augroup("ProseSpell", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = prose_group,
+  pattern = { "markdown", "tex", "latex", "text", "gitcommit" },
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
 -- Diagnostic settings
 -- Disable inline error messages (virtual text), but keep the signs in the gutter.
 vim.diagnostic.config({
